@@ -8,13 +8,14 @@
 
 
 <div class="column-right">
+ blablabla
 </div>
 
 # Descriptif
 
-  * 4ème de couverture
-  * Avant propos
-  * Sommaire détaillé
+   * 4ème de couverture
+   * Avant propos
+   * Sommaire détaillé
   
 # Les auteurs
 
