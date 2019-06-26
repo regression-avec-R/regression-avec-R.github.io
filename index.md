@@ -1,4 +1,8 @@
 
+<div>
+<div class="column-left">
+<p><img src="couverture_v1.jpg" alt="Couverture" /></p>
+</div>
 
 
 # Descriptif
