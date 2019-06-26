@@ -8,6 +8,7 @@
 
 
 <div class="column-right">
+</div>
 
 # Descriptif
 
@@ -23,4 +24,3 @@
 
 blabla
 
-</div>
