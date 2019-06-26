@@ -5,7 +5,7 @@
 </div>
 
 <div class="column-right">
-blabla
+blablabla
   
 </div>
 </div>  
