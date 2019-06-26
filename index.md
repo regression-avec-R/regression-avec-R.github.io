@@ -1,7 +1,23 @@
----
-title: Régression avec R
----
+
+<div>
+<div class="column-left">
+<p><img src="couverture_v1.jpg" alt="Couverture" /></p>
+</div>
  
+<div class="column-right">
+
+
+# Descriptif
+
+# Les auteurs
+
+[Pierre-André Cornillon](https://perso.univ-rennes2.fr/pierre-andre.cornillon), Nicolas Hengartner, [Eric Matzner-L\o ber](https://perso.univ-rennes2.fr/eric.matzner), [Laurent Rouvière](https://perso.univ-rennes2.fr/laurent.rouviere)
+
+</div>
+</div>
+
+
+
 
 ## Welcome to GitHub Pages
 
