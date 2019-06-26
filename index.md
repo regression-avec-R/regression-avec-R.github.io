@@ -16,7 +16,7 @@ blabla
 
 [Pierre-André Cornillon](https://perso.univ-rennes2.fr/pierre-andre.cornillon), Nicolas Hengartner, [Eric Matzner-L\o ber](https://perso.univ-rennes2.fr/eric.matzner), [Laurent Rouvière](https://perso.univ-rennes2.fr/laurent.rouviere)
 
-
+# Exercices
 
 
 
