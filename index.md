@@ -1,3 +1,8 @@
+---
+title: Régression avec R
+---
+ 
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/regression-avec-R/regression-avec-R.gihtub.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
