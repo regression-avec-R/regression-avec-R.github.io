@@ -4,6 +4,11 @@
 <p><img src="couverture_v1.jpg" alt="Couverture" /></p>
 </div>
 
+<div class="column-right">
+blabla
+  
+</div>
+</div>  
 
 # Descriptif
 
