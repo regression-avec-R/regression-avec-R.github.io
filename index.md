@@ -41,3 +41,5 @@ Nicolas Hengartner,
 </div>
 </div>
 
+
+  * [test](https://regression-avec-r.github.io/correction_exo_html/correction_exo.md)
