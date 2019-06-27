@@ -19,7 +19,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
-    <link rel="stylesheet" href="/assets/css/style.css?v=cd20c33da53b04e0d8ea516da53274eb1be97cc3">
+    <link rel="stylesheet" href="../assets/css/style.css?v=cd20c33da53b04e0d8ea516da53274eb1be97cc3">
   </head>
   <body>
     <section class="page-header">
@@ -35,8 +35,8 @@
 
 
 
-  * Chapitre 1
-  * Chapitre 2
+    * Chapitre 1
+    * Chapitre 2
   
   
   
