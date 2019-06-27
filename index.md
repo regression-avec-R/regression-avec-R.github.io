@@ -25,7 +25,7 @@ Nicolas Hengartner,
 <a href="https://perso.univ-rennes2.fr/laurent.rouviere">Laurent Rouvière</a>
 
 
-<h2 id="auteurs">Boutique en ligne</h2>
+<h2 id="boutique">Boutique en ligne</h2>
 
 [<a href="https://www.edpsciences.org/fr/livres">Par ici!</a>]
 
@@ -35,7 +35,7 @@ Nicolas Hengartner,
 <li><a href="/liste_don.html">Jeux de données</a></li>
 <li><a href="/code_html/code.html">Ligne de code utilisées dans les chapitres (y compris les fiches)</a></li>
 <li><a href="https://regression-avec-r.github.io/correction_exo_html/correction_exo.html">Proposition de correction des exercices</a></li>
-<li><a href="correction_exo_html/correction_exo.md">Proposition1 de correction des exercices</a></li>
+<li><a href="https://regression-avec-r.github.io/correction_exo_html/correction_exo.md">Proposition1 de correction des exercices</a></li>
 <li><a href="geocodeGratuit.R">Fonction permettant d'obtenir la géolocalisation (latitudes et longitudes) d'adresses</a></li>
 </ul>
 
