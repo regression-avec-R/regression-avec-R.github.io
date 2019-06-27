@@ -42,4 +42,4 @@ Nicolas Hengartner,
 </div>
 
 
-  * [test]("https://regression-avec-r.github.io/correction.md")
+  * [test](https://regression-avec-r.github.io/correction.md)
