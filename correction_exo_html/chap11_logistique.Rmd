@@ -16,7 +16,6 @@ output:
 ---
 
 
-# Essai
 
 ## Exercice 1
 
