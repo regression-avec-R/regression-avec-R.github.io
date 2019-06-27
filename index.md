@@ -32,7 +32,7 @@ Nicolas Hengartner,
 <h2 id="matériel-disponible">Matériel disponible</h2>
 
 <ul>
-<li><a href="/liste_don.html">Jeux de données</a></li>
+<li><a href="https://regression-avec-r.github.io/donnees.html">Jeux de données</a></li>
 <li><a href="/code_html/code.html">Ligne de code utilisées dans les chapitres (y compris les fiches)</a></li>
 <li><a href="https://regression-avec-r.github.io/correction_exo.html">Proposition de correction des exercices</a></li>
 </ul>
