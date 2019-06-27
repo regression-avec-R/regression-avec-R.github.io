@@ -1810,8 +1810,181 @@ Anova(model,type=3,test.statistic=&quot;Wald&quot;)</code></pre>
 ## Residual Deviance: 43.52     AIC: 49.52</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li><p>Il y a interaction si l’age agit différemment sur la panne en fonction de la marque.</p></li>
+<li><p>Le modèle ajusté sur <strong>R</strong> est</p></li>
+</ol>
+<p><span class="math display">\[\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\delta_0+\delta_1\mathsf{1}_{x_2=B}+\delta_2\mathsf{1}_{x_2=C}+\delta_3x_1+\delta_4x_1\mathsf{1}_{x_2=B}+\delta_5x_1\mathsf{1}_{x_2=C}.\]</span></p>
+<p>On obtient ainsi par identification : <span class="math display">\[\begin{cases}
+\alpha_0=\delta_0\\
+\alpha_1=\delta_3\\
+\beta_0=\delta_0+\delta_1\\
+\beta_1=\delta_3+\delta_4\\
+\gamma_0=\delta_0+\delta_2\\
+\gamma_1=\delta_3+\delta_5
+\end{cases}\]</span> On peut ainsi en déduire les valeurs des estimateurs que l’on peut retrouver avec la commande :</p>
+<pre class="r"><code>glm(etat~-1+marque+marque:age,data=panne,family=&quot;binomial&quot;)</code></pre>
+<pre><code>## 
+## Call:  glm(formula = etat ~ -1 + marque + marque:age, family = &quot;binomial&quot;, 
+##     data = panne)
+## 
+## Coefficients:
+##     marqueA      marqueB      marqueC  marqueA:age  marqueB:age  
+##     0.23512      0.43375     -2.19633      0.05641     -0.05547  
+## marqueC:age  
+##     0.27228  
+## 
+## Degrees of Freedom: 33 Total (i.e. Null);  27 Residual
+## Null Deviance:       45.75 
+## Residual Deviance: 42.62     AIC: 54.62</code></pre>
+</div>
+<div id="exercice-6" class="section level2">
+<h2>Exercice 6</h2>
+<pre class="r"><code>df &lt;- read.csv(&quot;logit_ex6.csv&quot;)
+mod &lt;- glm(Y~.,data=df,family=binomial)
+mod1 &lt;- glm(Y~X1,data=df,family=binomial)
+summary(mod)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Y ~ ., family = binomial, data = df)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.8187  -0.9950  -0.2107   1.1100   1.6524  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.57866    0.11926  -4.852 1.22e-06 ***
+## X1          -0.19471    0.06556  -2.970  0.00298 ** 
+## X2           0.31899    0.04404   7.244 4.36e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 693.15  on 499  degrees of freedom
+## Residual deviance: 618.26  on 497  degrees of freedom
+## AIC: 624.26
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>summary(mod1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Y ~ X1, family = binomial, data = df)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.21649  -1.17734  -0.00548   1.17606   1.22529  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)  0.001092   0.089499   0.012    0.990
+## X1          -0.020467   0.051733  -0.396    0.692
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 693.15  on 499  degrees of freedom
+## Residual deviance: 692.99  on 498  degrees of freedom
+## AIC: 696.99
+## 
+## Number of Fisher Scoring iterations: 3</code></pre>
+<p>On remarque que la nullité du paramètre associé à <strong>X1</strong> est accepté dans le modèle avec uniquement <strong>X1</strong> alors qu’elle est refusée lorsqu’on considère <strong>X1</strong> et <strong>X2</strong> dans le modèle.</p>
+</div>
+<div id="exercice-7" class="section level2">
+<h2>Exercice 7</h2>
+<ol style="list-style-type: decimal">
+<li><p>Le modèle s’écrit <span class="math display">\[log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x.\]</span></p></li>
+<li><p>La log vraisemblance s’obtient avec</p></li>
+</ol>
+<pre class="r"><code>p &lt;- c(0.76,0.4,0.6,0.89,0.35)
+Y &lt;- c(1,0,0,1,1)
+L1 &lt;- log(prod(p^Y*(1-p)^(1-Y)))
+L1</code></pre>
+<pre><code>## [1] -2.867909</code></pre>
+<ol start="3" style="list-style-type: decimal">
 <li></li>
 </ol>
+<p>a). On calcule les écart-type des estimateurs</p>
+<pre class="r"><code>X1 &lt;- c(0.47,-0.55,-0.01,1.07,-0.71)
+X &lt;- matrix(c(rep(1,5),X1),ncol=2)
+W &lt;- diag(p*(1-p))
+SIG &lt;- solve(t(X)%*%W%*%X)
+sig &lt;- sqrt(diag(SIG))
+sig</code></pre>
+<pre><code>## [1] 1.023252 1.744935</code></pre>
+<p>On en déduit les statistiques de test :</p>
+<pre class="r"><code>beta &lt;- c(0.4383,1.5063)
+beta/sig</code></pre>
+<pre><code>## [1] 0.4283401 0.8632411</code></pre>
+<p>b). On peut faire le test de Wald et du rapport de vraisemblance.</p>
+<p>c). La statistique de test vaut 0.8632411, on obtient donc la probabilité critique</p>
+<pre class="r"><code>2*(1-pnorm(0.8632411))</code></pre>
+<pre><code>## [1] 0.3880049</code></pre>
+<p>On peut également effectuer un test du rapport de vraisemblance. Le modèle null sans <strong>X1</strong> a pour log-vraisemblance</p>
+<pre class="r"><code>p0 &lt;- 3/5
+L0 &lt;- log(prod(p0^Y*(1-p0)^(1-Y)))
+L0</code></pre>
+<pre><code>## [1] -3.365058</code></pre>
+<p>La statistique de test vaut donc</p>
+<pre class="r"><code>2*(L1-L0)</code></pre>
+<pre><code>## [1] 0.9942984</code></pre>
+<p>et la probabilité critique vaut</p>
+<pre class="r"><code>1-pchisq(2*(L1-L0),df=1)</code></pre>
+<pre><code>## [1] 0.3186941</code></pre>
+<p>On peut retrouver (aux arrondis près) les résultats de l’exercice avec</p>
+<pre class="r"><code>X &lt;- c(0.47,-0.55,-0.01,1.07,-0.71)
+Y &lt;- c(1,0,0,1,1)
+df &lt;- data.frame(X,Y)
+model &lt;- glm(Y~X,data=df,family=&quot;binomial&quot;)
+logLik(model)</code></pre>
+<pre><code>## 'log Lik.' -2.898765 (df=2)</code></pre>
+<pre class="r"><code>Anova(model,type=3,test.statistic = &quot;Wald&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type III tests)
+## 
+## Response: Y
+##             Df  Chisq Pr(&gt;Chisq)
+## (Intercept)  1 0.1846     0.6675
+## X            1 0.7552     0.3848</code></pre>
+<pre class="r"><code>Anova(model,type=3,test.statistic = &quot;LR&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table (Type III tests)
+## 
+## Response: Y
+##   LR Chisq Df Pr(&gt;Chisq)
+## X  0.93259  1     0.3342</code></pre>
+</div>
+<div id="exercice-8" class="section level2">
+<h2>Exercice 8</h2>
+</div>
+<div id="exercice-9" class="section level2">
+<h2>Exercice 9</h2>
+</div>
+<div id="exercice-10" class="section level2">
+<h2>Exercice 10</h2>
+<ol start="2" style="list-style-type: decimal">
+<li>a).</li>
+</ol>
+<pre class="r"><code>df &lt;- read.csv(&quot;logit_ex6.csv&quot;)
+set.seed(1234)
+perm &lt;- sample(nrow(df))
+dapp &lt;- df[perm[1:300],]
+dval &lt;- df[-perm[1:300],]</code></pre>
+<p>b).</p>
+<pre class="r"><code>mod &lt;- glm(Y~.,data=dapp,family=&quot;binomial&quot;)</code></pre>
+<p>c).</p>
+<pre class="r"><code>score &lt;- predict(mod,newdata = dval)</code></pre>
+<p>d).</p>
+<pre class="r"><code>D0 &lt;- which(dval$Y==0)
+D1 &lt;- which(dval$Y==1)
+S0 &lt;-score[D0]
+S1 &lt;- score[D1]
+S01 &lt;- expand.grid(S0=S0,S1=S1)
+mean(S01$S1&gt;S01$S0)</code></pre>
+<pre><code>## [1] 0.7385817</code></pre>
+<p>e).</p>
+<pre class="r"><code>library(pROC) 
+auc(dval$Y,score)</code></pre>
+<pre><code>## Area under the curve: 0.7386</code></pre>
+</div>
+<div id="exercice-11" class="section level2">
+<h2>Exercice 11</h2>
 </div>
 
 

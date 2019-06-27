@@ -212,8 +212,160 @@ glm(etat~C(marque,base=3),data=panne,family="binomial")
 
 5. Il y a interaction si l'age agit différemment sur la panne en fonction de la marque.
 
-6.
+6. Le modèle ajusté sur **R** est
+
+$$\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\delta_0+\delta_1\mathsf{1}_{x_2=B}+\delta_2\mathsf{1}_{x_2=C}+\delta_3x_1+\delta_4x_1\mathsf{1}_{x_2=B}+\delta_5x_1\mathsf{1}_{x_2=C}.$$
+
+On obtient ainsi par identification :
+$$\begin{cases}
+\alpha_0=\delta_0\\
+\alpha_1=\delta_3\\
+\beta_0=\delta_0+\delta_1\\
+\beta_1=\delta_3+\delta_4\\
+\gamma_0=\delta_0+\delta_2\\
+\gamma_1=\delta_3+\delta_5
+\end{cases}$$
+On peut ainsi en déduire les valeurs des estimateurs que l'on peut retrouver avec la commande :
+
+```{r}
+glm(etat~-1+marque+marque:age,data=panne,family="binomial")
+```
+
+
+## Exercice 6
+
+```{r}
+df <- read.csv("logit_ex6.csv")
+mod <- glm(Y~.,data=df,family=binomial)
+mod1 <- glm(Y~X1,data=df,family=binomial)
+summary(mod)
+summary(mod1)
+```
+
+
+On remarque que la nullité du paramètre associé à **X1** est accepté dans le modèle avec uniquement **X1** alors qu'elle est refusée lorsqu'on considère **X1** et **X2** dans le modèle.
+
+## Exercice 7
+
+1. Le modèle s'écrit
+$$log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x.$$
+
+2. La log vraisemblance s'obtient avec
+```{r}
+p <- c(0.76,0.4,0.6,0.89,0.35)
+Y <- c(1,0,0,1,1)
+L1 <- log(prod(p^Y*(1-p)^(1-Y)))
+L1
+```
+
+3. 
+  
+  a). On calcule les écart-type des estimateurs
+
+```{r}
+X1 <- c(0.47,-0.55,-0.01,1.07,-0.71)
+X <- matrix(c(rep(1,5),X1),ncol=2)
+W <- diag(p*(1-p))
+SIG <- solve(t(X)%*%W%*%X)
+sig <- sqrt(diag(SIG))
+sig
+```
+
+On en déduit les statistiques de test :
+
+```{r}
+beta <- c(0.4383,1.5063)
+beta/sig
+```
+
+  b). On peut faire le test de Wald et du rapport de vraisemblance. 
+  
+  c). La statistique de test vaut 0.8632411, on obtient donc la probabilité critique
+
+```{r}
+2*(1-pnorm(0.8632411))
+```
+
+On peut également effectuer un test du rapport de vraisemblance. Le modèle null sans **X1** a pour log-vraisemblance
+
+```{r}
+p0 <- 3/5
+L0 <- log(prod(p0^Y*(1-p0)^(1-Y)))
+L0
+```
+La statistique de test vaut donc
+
+```{r}
+2*(L1-L0)
+```
+
+et la probabilité critique vaut
+
+```{r}
+1-pchisq(2*(L1-L0),df=1)
+```
+
+On peut retrouver (aux arrondis près) les résultats de l'exercice avec
+
+```{r}
+X <- c(0.47,-0.55,-0.01,1.07,-0.71)
+Y <- c(1,0,0,1,1)
+df <- data.frame(X,Y)
+model <- glm(Y~X,data=df,family="binomial")
+logLik(model)
+Anova(model,type=3,test.statistic = "Wald")
+Anova(model,type=3,test.statistic = "LR")
+```
 
 
 
+## Exercice 8
 
+
+## Exercice 9
+
+## Exercice 10
+
+2.
+  a).
+```{r}
+df <- read.csv("logit_ex6.csv")
+set.seed(1234)
+perm <- sample(nrow(df))
+dapp <- df[perm[1:300],]
+dval <- df[-perm[1:300],]
+```
+
+  b). 
+  
+```{r}
+mod <- glm(Y~.,data=dapp,family="binomial")
+```
+
+  c).
+  
+```{r}
+score <- predict(mod,newdata = dval)
+```
+
+  d).
+  
+```{r}
+D0 <- which(dval$Y==0)
+D1 <- which(dval$Y==1)
+S0 <-score[D0]
+S1 <- score[D1]
+S01 <- expand.grid(S0=S0,S1=S1)
+mean(S01$S1>S01$S0)
+```
+  
+  e).
+  
+```{r message=FALSE, warning=FALSE}
+library(pROC) 
+auc(dval$Y,score)
+```
+  
+  
+  
+## Exercice 11
