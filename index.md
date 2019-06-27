@@ -34,8 +34,8 @@ Nicolas Hengartner,
 <ul>
 <li><a href="/liste_don.html">Jeux de données</a></li>
 <li><a href="/code_html/code.html">Ligne de code utilisées dans les chapitres (y compris les fiches)</a></li>
-<li><a href="https://regression-avec-r.github.io/correction_exo_html/correction_exo.html">Proposition de correction des exercices</a></li>
-<li><a href="https://regression-avec-r.github.io/correction_exo_html/correction_exo.md">Proposition1 de correction des exercices</a></li>
+<li><a href="https://regression-avec-r.github.io/correction_exo/correction_exo.html">Proposition de correction des exercices</a></li>
+<li><a href="https://regression-avec-r.github.io/correction_exo/correction_exo.md">Proposition1 de correction des exercices</a></li>
 <li><a href="geocodeGratuit.R">Fonction permettant d'obtenir la géolocalisation (latitudes et longitudes) d'adresses</a></li>
 </ul>
 
