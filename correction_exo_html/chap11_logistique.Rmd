@@ -1,5 +1,6 @@
 ---
 title: "Chapitre 11 : régression logistique"
+layout: default
 output: 
   html_document:
     toc: true
