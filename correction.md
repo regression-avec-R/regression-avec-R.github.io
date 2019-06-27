@@ -1,2 +1,7 @@
+---
+layout: default
+---
+
+
 ## Test
   * blabla
