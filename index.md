@@ -34,7 +34,7 @@ Nicolas Hengartner,
 <ul>
 <li><a href="/liste_don.html">Jeux de données</a></li>
 <li><a href="/code_html/code.html">Ligne de code utilisées dans les chapitres (y compris les fiches)</a></li>
-<li><a href="correction_exo_html/correction_exo.md">Proposition de correction des exercices</a></li>
+<li><a href="correction_exo_html/correction_exo.html">Proposition de correction des exercices</a></li>
 <li><a href="https://regression-avec-r.github.io/correction_exo_html/correction_exo.md">Test</a></li>
 <li><a href="https://regression-avec-r.github.io/correction_exo_html/correction_exo.html">Test2</a></li>
 
