@@ -1,6 +1,8 @@
 Chapitre 11 : régression logistique
 ================
 
+# Essai
+
 ## Exercice 1
 
 1.  A

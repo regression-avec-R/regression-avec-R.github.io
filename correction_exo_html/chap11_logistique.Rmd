@@ -3,10 +3,13 @@ title: "Chapitre 11 : régression logistique"
 output: 
   github_document:
     toc: true
-    toc_depth: 2
+    toc_depth: 3
 #  html_notebook:
 #    css: styles.css
 ---
+
+
+# Essai
 
 ## Exercice 1
 

@@ -7,4 +7,5 @@ layout: default
    * Chapitre 1
    * Chapitre 2
    * [Chapitre 11](chap11_logistique.md)
+   * [Chapitre 12](chap11_logistique.html)
 
