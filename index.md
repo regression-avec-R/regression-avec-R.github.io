@@ -1,3 +1,6 @@
+---
+title: R pour la statistique et la science des données 
+---
 
 <div>
 <div class="column-left">
