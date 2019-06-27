@@ -6,4 +6,3 @@ layout: default
 
    * Chapitre 1
 
-<h3>Proposition de correction des exercicesaaa</h3>
