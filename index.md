@@ -43,5 +43,5 @@ Nicolas Hengartner,
 
 
   * [test](correction.md)
-  * [test1](coorection_exo_html/correction_exo.md)
+  * [test1](correction_exo_html/correction_exo.md)
 
