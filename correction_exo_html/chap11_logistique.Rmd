@@ -2,12 +2,12 @@
 title: "Chapitre 11 : régression logistique"
 layout: default
 output: 
-  html_document:
-    toc: true
-    toc_depth: 3
-#  github_document:
+#  html_document:
 #    toc: true
 #    toc_depth: 3
+  github_document:
+    toc: true
+    toc_depth: 3
 #  html_notebook:
 #    css: styles.css
 ---
