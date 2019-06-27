@@ -3,16 +3,22 @@
 <div class="column-left">
 <p><img src="couverture_v1.jpg" alt="Couverture" /></p>
 </div>
+</div>
 
 
 
 <div class="column-right">
+ blablabla
+ # essai
+   
+   * item 1
+</div>
 
 # Descriptif
 
-  * 4ème de couverture
-  * Avant propos
-  * Sommaire détaillé
+   * 4ème de couverture
+   * Avant propos
+   * Sommaire détaillé
   
 # Les auteurs
 
@@ -22,5 +28,3 @@
 
 blabla
 
-</div>
-</div>
