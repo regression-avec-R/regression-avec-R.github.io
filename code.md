@@ -2,7 +2,7 @@
 layout: default
 ---
 
-## Proposition de correction des exercices
+## Lignes de code utilisées dans le livre
 
    * Chapitre 1
    * Chapitre 2
