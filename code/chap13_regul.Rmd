@@ -1,0 +1,179 @@
+---
+title: "Chapitre 13 : régularisation de la vraisemblance"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    layout: default
+---
+
+# Régressions pénalisées avec glmnet
+
+
+```{r message=FALSE, warning=FALSE}
+library(bestglm)
+data(SAheart)
+SAheart.X <- model.matrix(chd~.,data=SAheart)[,-1]
+SAheart.Y <- SAheart$chd 
+library(glmnet)
+ridge <- glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=0)
+lasso <- glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=1)
+par(mfrow=c(2,2))
+plot(ridge,ylim=c(-0.1,0.2))
+plot(lasso,ylim=c(-0.1,0.2))
+plot(ridge,ylim=c(-0.1,0.2),xvar="lambda")
+plot(lasso,ylim=c(-0.1,0.2),xvar="lambda")
+plot(ridge,ylim=c(-0.1,0.2),cex.lab=0.5)
+plot(lasso,ylim=c(-0.1,0.2),cex.lab=0.5)
+plot(ridge,ylim=c(-0.1,0.2),xvar="lambda",cex.lab=0.5)
+plot(lasso,ylim=c(-0.1,0.2),xvar="lambda",cex.lab=0.5)
+```
+
+# Validation croisée
+
+```{r}
+set.seed(2398)
+m1.ridge <- cv.glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=0)
+m1.lasso <- cv.glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=1)
+m2.ridge <- cv.glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=0,type.measure="class")
+m2.lasso <- cv.glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=1,type.measure="class")
+m3.ridge <- cv.glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=0,type.measure="auc")
+m3.lasso <- cv.glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=1,type.measure="auc")
+```
+
+
+```{r}
+m1.ridge$lambda.min
+m1.ridge$lambda.1se
+```
+
+```{r}
+par(mfrow=c(3,2))
+plot(m1.ridge,main="Ridge")
+plot(m1.lasso,main="Lasso")
+plot(m2.ridge,main="Ridge")
+plot(m2.lasso,main="Lasso")
+plot(m3.ridge,main="Ridge")
+plot(m3.lasso,main="Lasso")
+```
+
+# Group-lasso et elastic net
+
+```{r}
+library(gglasso)
+X1 <- c(rep("A",60),rep("B",90),rep("C",50))
+X2 <- c(rep("E",40),rep("F",60),rep("G",55),rep("H",45))
+set.seed(1298)
+X_3 <- runif(200)
+set.seed(2381)
+Y <- round(runif(200))
+donnees <- data.frame(X1,X2,X_3,Y)
+```
+
+```{r}
+D <- model.matrix(Y~.,data=donnees)[,-1]
+lasso <- glmnet(D,Y,alpha=1,lambda=exp(seq(-3,-5,length=100)))
+groupe <- c(1,1,2,2,2,3)
+library(gglasso)
+Y1 <- 2*Y-1 
+g.lasso <- gglasso(D,Y1,group=groupe,loss="logit",lambda=exp(seq(-4.5,-5.5,length=100)))
+plot(lasso,xvar="lambda",lwd=2,main="Lasso")
+plot(g.lasso,main="Group-lasso")
+```
+
+```{r message=FALSE, warning=FALSE}
+library(caret)
+alpha <- seq(0,1,by=0.1)
+lambda <- exp(seq(-7,2,length=100))
+grille <- expand.grid(alpha=alpha,lambda=lambda)
+ctrl <- trainControl(method="cv")
+SAheart$chd <- as.factor(SAheart$chd)
+set.seed(1234)
+sel <- train(chd~.,data=SAheart,method="glmnet",family="binomial",trControl=ctrl,tuneGrid=grille)
+sel$bestTune
+getTrainPerf(sel)
+```
+
+
+# Application : détection d'images publicitaires
+
+```{r}
+ad.data <- read.table("ad_data.txt",header=FALSE,sep=",",dec=".",na.strings = "?",strip.white = TRUE)
+names(ad.data)[ncol(ad.data)] <- "Y"
+ad.data$Y <- as.factor(ad.data$Y)
+
+ad.data1 <- na.omit(ad.data)
+dim(ad.data1)
+```
+
+```{r}
+set.seed(1234)
+ind.app <- sample(nrow(ad.data1),1800)
+dapp <- ad.data1[ind.app,]
+dtest <- ad.data1[-ind.app,]
+```
+
+```{r}
+X.app <- model.matrix(Y~.,data=dapp)[,-1]
+X.test <- model.matrix(Y~.,data=dtest)[,-1]
+Y.app <- dapp$Y
+Y.test <- dtest$Y
+```
+
+```{r}
+logit <- glm(Y~.,data=dapp,family="binomial") 
+```
+
+```{r}
+set.seed(123)
+lasso.cv <- cv.glmnet(X.app,Y.app,family="binomial")
+ridge.cv <- cv.glmnet(X.app,Y.app,family="binomial",alpha=0,lambda=exp(seq(-8,0,length=100)))
+en.cv <- cv.glmnet(X.app,Y.app,family="binomial",alpha=0.5)
+```
+
+```{r}
+par(mfrow=c(1,3))
+plot(lasso.cv,main="Lasso")
+plot(ridge.cv,main="Ridge")
+plot(en.cv,main="Elastic net")
+```
+
+```{r message=FALSE, warning=FALSE}
+score <- data.frame(obs=dtest$Y,logit=predict(logit,newdata=dtest,type="response"),
+                                lasso=as.vector(predict(lasso.cv,newx = X.test,type="response")),
+                                ridge=as.vector(predict(ridge.cv,newx = X.test,type="response")),
+                                en=as.vector(predict(en.cv,newx = X.test,type="response")))
+```
+
+```{r message=FALSE, warning=FALSE}
+library(pROC)
+roc.ad <- roc(obs~logit+lasso+ridge+en,data=score)
+
+couleur <- c("black","red","blue","green")
+mapply(plot,roc.ad,col=couleur,lty=1:4,add=c(F,T,T,T),lwd=2,legacy.axes=TRUE)
+legend("bottomright",legend=c("logit","lasso","ridge","elastic net"),col=couleur,lty=1:4,lwd=2,cex=0.65)
+
+```
+
+```{r}
+sort(round(unlist(lapply(roc.ad,auc)),3),decreasing=TRUE)
+```
+
+```{r}
+prev1 <- data.frame(apply(round(score[,-1]),2,factor,labels=c("ad.","nonad.")))
+err <- apply(sweep(prev1,1,dtest$Y,FUN="!="),2,mean)
+sort(round(err,3))
+```
+
+
+
+
+
+
+
+
+
+
+
