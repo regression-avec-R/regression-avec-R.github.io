@@ -8,6 +8,7 @@ layout: default
 * [artere.txt](donnees/artere.txt)  
 * [logit_ex6.csv](donnees/logit_ex6.csv)
 * [logit_ridge_lasso.csv](donnees/logit_ridge_lasso.csv)
+* [ozone.txt](donnees/ozone.txt)
 * [panne.txt](donnees/panne.txt)
 * [poissonData.csv](donnees/poissonData.csv)
 * [poissonData3.csv](donnees/poissonData3.csv)

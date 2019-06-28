@@ -9,6 +9,7 @@ layout: default
    * [Chapitre 11](code/chap11_logistique.html)
    * [Chapitre 12](code/chap12_poisson.html)
    * [Chapitre 13](code/chap13_regul.html)
+   * [Chapitre 15](code/chap15_noyau_kppvl.html)
 
 
 
