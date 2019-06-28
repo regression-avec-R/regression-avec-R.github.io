@@ -184,11 +184,10 @@ bloc <- sample(1:10,nrow(ad.data1),replace=TRUE)
 table(bloc)
 ```
 2. On effectue la validation croisée 10 blocs (elle peut être longue...)
-```{r}
+```{r message=FALSE, warning=FALSE}
 score <- data.frame(matrix(0,nrow=nrow(ad.data1),ncol=4))
 names(score) <- c("logit","ridge","lasso","en")
 for (k in 1:10){
-  print(k)
   ind.test <- bloc==k
   dapp <- ad.data1[!ind.test,]
   dtest <- ad.data1[ind.test,]
@@ -207,7 +206,8 @@ for (k in 1:10){
 }
 ```
 
-3.  On en déduit les indicateur demandés
+3.  On en déduit les indicateurs demandés
+
 ```{r message=FALSE, warning=FALSE}
 score$obs <- ad.data1$Y
 ```
@@ -226,7 +226,7 @@ legend("bottomright",legend=c("logit","lasso","ridge","elastic net"),col=couleur
 sort(round(unlist(lapply(roc.ad,auc)),3),decreasing=TRUE)
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 prev1 <- data.frame(apply(round(score[,-5]),2,factor,labels=c("ad.","nonad.")))
 err <- apply(sweep(prev1,1,dtest$Y,FUN="!="),2,mean)
 sort(round(err,3))
