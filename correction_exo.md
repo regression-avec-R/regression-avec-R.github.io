@@ -7,6 +7,7 @@ layout: default
    * Chapitre 1
    * Chapitre 2
    * [Chapitre 11](correction_exo/chap11_logistique.html)
+   * [Chapitre 13](correction_exo/chap13_regul.html)
 
 
 
