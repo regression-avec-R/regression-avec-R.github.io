@@ -150,7 +150,6 @@ model
 ```
 ajuste le modèle
 $$\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x_1+\beta_2\mathsf{1}_{x_2=B}+\beta_3\mathsf{1}_{x_2=C}$$
-
 où $x_1$ et $x_2$ désigne respectivement les variables **age** et **marque**. On obtient les estimateurs avec
     ```{r}
 coef(model)

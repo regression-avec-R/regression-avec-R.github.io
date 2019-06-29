@@ -1730,18 +1730,10 @@ model</code></pre>
 ## Degrees of Freedom: 32 Total (i.e. Null);  29 Residual
 ## Null Deviance:       45.72 
 ## Residual Deviance: 43.5  AIC: 51.5</code></pre>
-<p>ajuste le modèle <span class="math display">\[\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x_1+\beta_2\mathsf{1}_{x_2=B}+\beta_3\mathsf{1}_{x_2=C}\]</span></p></li>
-</ol>
-<p>où <span class="math inline">\(x_1\)</span> et <span class="math inline">\(x_2\)</span> désigne respectivement les variables <strong>age</strong> et <strong>marque</strong>. On obtient les estimateurs avec</p>
-<pre><code>```r
-coef(model)
-```
-
-```
-## (Intercept)         age     marqueB     marqueC 
-##  0.47808311  0.01388395 -0.41941071 -1.45608147
-```</code></pre>
-<ol start="2" style="list-style-type: decimal">
+<p>ajuste le modèle <span class="math display">\[\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x_1+\beta_2\mathsf{1}_{x_2=B}+\beta_3\mathsf{1}_{x_2=C}\]</span> où <span class="math inline">\(x_1\)</span> et <span class="math inline">\(x_2\)</span> désigne respectivement les variables <strong>age</strong> et <strong>marque</strong>. On obtient les estimateurs avec</p>
+<pre class="r"><code>coef(model)</code></pre>
+<pre><code>## (Intercept)         age     marqueB     marqueC 
+##  0.47808311  0.01388395 -0.41941071 -1.45608147</code></pre></li>
 <li><p>Il s’agit des tests de Wald pour tester l’effet des variables dans le modèle. Pour l’effet de marque, on va par exemple tester <span class="math display">\[H_0:\beta_2=\beta_3=0\quad\text{contre}\quad H_1:\beta_2\neq 0\text{ ou }\beta_3\neq 0.\]</span> Sous <span class="math inline">\(H_0\)</span> la statistique de Wald suit une loi du <span class="math inline">\(\chi^2\)</span> à 4-2=2 degrés de liberté. Pour le test de la variable <strong>age</strong> le nombre de degrés de liberté manquant est 1. On retrouve cela dans la sortie</p>
 <pre class="r"><code>library(car)
 Anova(model,type=3,test.statistic=&quot;Wald&quot;)</code></pre>
