@@ -7,6 +7,12 @@ output:
     toc: true
     toc_float: true
     layout: default
+header-includes:
+  - \newcommand{\prob}{\mathbf P}
+  - \newcommand{\esp}{\mathbf E}
+  - \newcommand{\var}{\mathbf V}
+  - \newcommand{\ind}{\mathbf 1}
+
 #  html_document:
 #    toc: true
 #    toc_depth: 3
@@ -323,6 +329,38 @@ Anova(model,type=3,test.statistic = "LR")
 
 
 ## Exercice 9
+
+1.  
+    a). Par définition $g^\star(x)=1$ si $\prob(Y=1|X=x)\geq 0.5$, $0$ sinon. L'erreur de Bayes vaut $L^\star=L(g^\star)=\prob(g^\star(X)\neq Y)$.
+    
+    b). On a
+  \begin{align*}
+\prob(g(X)\neq Y|X=x) & = 1-\left(\prob(g(X)=Y,g(X)=1|X=x)+\prob(g(X)=Y,g(X)=0|X=x)\right) \\
+& = 1-\left(\ind_{g(x)=1}\prob(Y=1|X=x)+\ind_{g(x)=0}\prob(Y=0|X=x)\right) \\
+& = 1-(\ind_{g(x)=1}\eta(x)+\ind_{g(x)=0}(1-\eta(x))).
+  \end{align*}
+  
+    c). On déduit
+\begin{align*}
+\prob(g(X)\neq Y|X=x)- & \prob(g^\star(X)\neq Y|X=x) \\
+& = \eta(x)\left(\ind_{g^\star(x)=1}-\ind_{g(x)=1}\right)+(1-\eta(x)) \left(\ind_{g^\star(x)=0}-\ind_{g(x)=0}\right) \\
+& = (2\eta(x)-1) \left(\ind_{g^\star(x)=1}-\ind_{g(x)=1}\right) \\
+& \geq 0
+\end{align*}
+puisque par définition $g^\star=1$ si et seulement si $\eta(x)\geq 1/2$.
+
+    d). En intégrant l'inégalité précédente par rapport à la loi de $X$ on conclut 
+$$\prob(g(X)\neq Y)\geq \prob(g^\star(X)\neq Y).$$
+
+2. Si $x\leq 0$ alors $\prob(Y=1|X=x)=\prob(U\leq 2)=1/5$ donc $g^\star(x)=0$. On montre de même que $g^\star(x)=1$ si $x>0$. Il reste à calculer l'erreur de Bayes :
+$$L^\star=\prob(g^\star(X)\neq Y|X\leq 0)\prob(X\leq 0)+\prob(g^\star(X)\neq Y|X>0)\prob(X>0).$$
+Or
+$$\prob(g^\star(X)\neq Y|X\leq 0)=\prob(Y\neq 0|X\leq 0)=\prob(U\leq 2|X\leq 0)=\frac{1}{5}$$
+et
+$$\prob(g^\star(X)\neq Y|X>0)=\prob(Y\neq 1|X>0)=\prob(U<1|X\leq 0)=\frac{1}{10}.$$
+On obtient 
+$$L^\star=\frac{1}{5}\,\frac{1}{2}+\frac{1}{10}\,\frac{1}{2}=\frac{3}{20}.$$
+
 
 ## Exercice 10
 
