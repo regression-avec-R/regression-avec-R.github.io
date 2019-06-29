@@ -266,7 +266,7 @@ L1
 
 3. 
   
-  a). On calcule les écart-type des estimateurs
+  a) On calcule les écart-type des estimateurs
 
 ```{r}
 X1 <- c(0.47,-0.55,-0.01,1.07,-0.71)
@@ -284,9 +284,9 @@ beta <- c(0.4383,1.5063)
 beta/sig
 ```
 
-  b). On peut faire le test de Wald et du rapport de vraisemblance. 
+  b) On peut faire le test de Wald et du rapport de vraisemblance. 
   
-  c). La statistique de test vaut 0.8632411, on obtient donc la probabilité critique
+  c) La statistique de test vaut 0.8632411, on obtient donc la probabilité critique
 
 ```{r}
 2*(1-pnorm(0.8632411))
@@ -327,19 +327,43 @@ Anova(model,type=3,test.statistic = "LR")
 
 ## Exercice 8
 
+1. Les variables $(y_t,t=1,\dots,y_T)$ étant indépendantes et de loi binomiales $B(n_t,p_t)$, la log-vraisemblance est donnée par
+\begin{align*}
+\mathcal L_{\text{sat}}(Y,p)= & \log\left(\prod_{t=1}^T
+\begin{pmatrix}
+n_t\\
+\tilde y_t
+\end{pmatrix}
+p_t^{\tilde y_t}(1-p_t)^{n_t-\tilde y_t}\right) \\
+= &
+\sum_{t=1}^T\left(\log
+\begin{pmatrix}
+n_t\\
+\tilde y_t
+\end{pmatrix}
++\tilde y_t\log(p_t)+(n_t-\tilde y_t)\log(1-p_t)\right)
+\end{align*}
+
+2. La dérivée de la log-vraisemblance par rapport à $p_t$ s'écrit
+$$\frac{\tilde y_t}{p_t}-\frac{n_t-\tilde y_t}{1-p_t}.$$
+Cette dérivée s'annule pour
+$$\widehat p_t=\frac{\tilde y_t}{n_t}.$$
+
+3. On note $\widehat \beta$ l'EMV du modèle logistique et $p_{\widehat\beta}$ le vecteur qui contient les valeurs ajustées $p_{\widehat\beta}(x_t),t=1,\dots,T$. On a pour tout $\beta\in\mathbb R^p$ :
+$$\mathcal L(Y,\beta)\leq\mathcal L(Y,\widehat\beta)=\mathcal L_{\text{sat}}(Y,p_{\widehat\beta})\leq L_{\text{sat}}(Y,\widehat p_t).$$
 
 ## Exercice 9
 
 1.  
     a). Par définition $g^\star(x)=1$ si $\prob(Y=1|X=x)\geq 0.5$, $0$ sinon. L'erreur de Bayes vaut $L^\star=L(g^\star)=\prob(g^\star(X)\neq Y)$.
-    
+
     b). On a
   \begin{align*}
 \prob(g(X)\neq Y|X=x) & = 1-\left(\prob(g(X)=Y,g(X)=1|X=x)+\prob(g(X)=Y,g(X)=0|X=x)\right) \\
 & = 1-\left(\ind_{g(x)=1}\prob(Y=1|X=x)+\ind_{g(x)=0}\prob(Y=0|X=x)\right) \\
 & = 1-(\ind_{g(x)=1}\eta(x)+\ind_{g(x)=0}(1-\eta(x))).
   \end{align*}
-  
+
     c). On déduit
 \begin{align*}
 \prob(g(X)\neq Y|X=x)- & \prob(g^\star(X)\neq Y|X=x) \\
@@ -349,9 +373,8 @@ Anova(model,type=3,test.statistic = "LR")
 \end{align*}
 puisque par définition $g^\star=1$ si et seulement si $\eta(x)\geq 1/2$.
 
-    d). En intégrant l'inégalité précédente par rapport à la loi de $X$ on conclut 
+    d). En intégrant l'inégalité précédente par rapport à la loi de $X$ on conclut
 $$\prob(g(X)\neq Y)\geq \prob(g^\star(X)\neq Y).$$
-
 2. Si $x\leq 0$ alors $\prob(Y=1|X=x)=\prob(U\leq 2)=1/5$ donc $g^\star(x)=0$. On montre de même que $g^\star(x)=1$ si $x>0$. Il reste à calculer l'erreur de Bayes :
 $$L^\star=\prob(g^\star(X)\neq Y|X\leq 0)\prob(X\leq 0)+\prob(g^\star(X)\neq Y|X>0)\prob(X>0).$$
 Or
@@ -364,45 +387,51 @@ $$L^\star=\frac{1}{5}\,\frac{1}{2}+\frac{1}{10}\,\frac{1}{2}=\frac{3}{20}.$$
 
 ## Exercice 10
 
-2.
-  a).
-```{r}
+1. On peut  estimer l'AUC en calculant, parmi les paires qui vérifient $(Y,Y')=(0,1)$, la proportion de paires qui vérifient $S(X)>S(X')$. Si on note
+$$\mathcal I=\{(i,j),y_i=0,y_j=1\},$$
+alors l'estimateur s'écrit
+$$\widehat{\text{AUC}}(S)=\frac{1}{|\mathcal I|}\sum_{(i,j)\in\mathcal I}\ind_{S(x_i)>S(x_j)}.$$
+
+2. 
+    a). On importe les données et on les sépare en 2 échantillons.
+  
+    ```{r}
 df <- read.csv("logit_ex6.csv")
 set.seed(1234)
 perm <- sample(nrow(df))
 dapp <- df[perm[1:300],]
 dval <- df[-perm[1:300],]
-```
+    ```
 
-  b). 
+    b). Ajustement du modèle.
   
-```{r}
+    ```{r}
 mod <- glm(Y~.,data=dapp,family="binomial")
-```
+    ```
 
-  c).
+    c). Construction des scores.
   
-```{r}
+    ```{r}
 score <- predict(mod,newdata = dval)
-```
+    ```
 
-  d).
+    d). On peut maintenant calculer l'AUC.
   
-```{r}
+    ```{r}
 D0 <- which(dval$Y==0)
 D1 <- which(dval$Y==1)
 S0 <-score[D0]
 S1 <- score[D1]
 S01 <- expand.grid(S0=S0,S1=S1)
 mean(S01$S1>S01$S0)
-```
+    ```
   
-  e).
+    e). On retrouve la valeur avec la fonction **auc** de **pROC**.
   
-```{r message=FALSE, warning=FALSE}
+    ```{r message=FALSE, warning=FALSE}
 library(pROC) 
 auc(dval$Y,score)
-```
+    ```
   
   
   

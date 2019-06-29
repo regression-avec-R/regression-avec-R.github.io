@@ -77,6 +77,67 @@ $$\esp[\widehat\beta]=\beta\quad\textrm{et}\quad\var(\widehat\beta)=\frac{\sigma
 $$\sum_{i=1}^nx_i^2=\frac{(n+1)(2n+1)}{6n},$$
 on obtient le résultat demandé.
 
+## Exercice 6
+
+1. On désigne par $\widehat F_h$ le vecteur $(\widehat f_h(x_i),i=1,\dots,n)$, $\widehat F_k$ le vecteur $(\widehat f_k(x_i),i=1,\dots,n)$ et $\mathbb Y=(y_1,\dots,y_n)$. On voit facilement que
+$$\widehat F_h=S_h\mathbb Y\quad\text{et}\quad \widehat F_k=S_k\mathbb Y$$
+où $S_h$ et $S_k$ sont des matrices $n\times n$ dont le terme général est défini par
+$$S_{ij,h}=\frac{K((x_i-x_j)/h)}{\sum_l K((x_i-x_l)/h)}.
+\quad\text{et}\quad
+S_{ij,k}=
+\left\{
+\begin{array}{ll}
+  1/k&\text{ si $x_j$ est parmi les $k$-ppv de $x_i$} \\
+  0 & \text{ sinon}.
+  \end{array}
+\right.$$
 
 
+2. Pour simplifier on note $K_{ij}=K((x_i-x_j)/h)$ On a
+$$\widehat f_h^i(x_i)=\frac{\sum_{j\neq i}K_{ij}y_j}{\sum_{j\neq i}K_{ij}}.$$
+Par conséquent
+$$\widehat f_h^i(x_i)\left[\sum_{j=1}^nK_{ij}-K_{ii}\right]=\sum_{j\neq i}K_{ij}y_j.$$
+On obtient le résultat demandé en divisant tout $\sum_{j=1}^nK_{ij}$. Pour l'estimateur de plus proches voisins, on remarque que, si on enlève la $i$ème observation alors l'estimateur des $k$ plus proches voisins de $x_i$ s'obtient à partir ce celui des $k+1$ plus proches voisins avec la $i$ème observation de la façon suivante :
+$$\widehat f_k^i(x_i)=\frac{k+1}{k}\sum_{j\neq i}S_{ij,k+1}y_j.$$
+On obtient le résultat demandé on observant que $S_{ii,k+1}=1/(k+1)$ et donc
+$$\frac{1}{1-S_{ii,k+1}}=\frac{k+1}{k}.$$
 
+3. On obtient pour l'estimateur à noyau
+\begin{align*}
+LOO(\widehat f_h)= & \frac{1}{n}\sum_{i=1}^n\left(y_i-\widehat f_h^i(x_i)\right)^2 \\
+= & \frac{1}{n}\sum_{i=1}^n\left(\frac{y_i-S_{ii,h}y_i-\sum_{j\neq i}S_{ij,h}y_{j}}{1-S_{ii,h}}\right)^2 \\
+= & \frac{1}{n}\sum_{i=1}^n\left(\frac{y_i-\widehat f_h(x_i)}{1-S_{ii,h}}\right)^2.
+\end{align*}
+Le calcul est similaire pour l'estimateur des plus proches voisins.
+
+## Exercice 7
+
+On importe les données et on ne garde que les deux variables demandées :
+```{r}
+ozone <- read.table("ozone.txt",header=TRUE,sep=";")
+df <- ozone[,c("O3","T12")]
+```
+
+On construit la grille de plus proches voisins candidats :
+```{r}
+grille <- data.frame(k=1:40)
+```
+
+On indique à **caret** qu'on veut faire de la validation croisée 10 blocs :
+```{r message=FALSE, warning=FALSE}
+library(caret)
+ctrl <- trainControl(method="cv")
+```
+
+On lance la validation croisée avec la fonction **train** :
+```{r}
+set.seed(1234)
+sel.k <- train(O3~.,data=df,method="knn",trControl=ctrl,tuneGrid=grille)
+sel.k
+```
+
+On sélectionnera 
+```{r}
+sel.k$bestTune
+```
+plus proches voisins.

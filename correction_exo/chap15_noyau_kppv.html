@@ -1511,6 +1511,100 @@ div.tocify {
 <li><p>Comme <span class="math display">\[\sum_{i=1}^nx_i^2=\frac{(n+1)(2n+1)}{6n},\]</span> on obtient le résultat demandé.</p></li>
 </ol>
 </div>
+<div id="exercice-6" class="section level2">
+<h2>Exercice 6</h2>
+<ol style="list-style-type: decimal">
+<li><p>On désigne par <span class="math inline">\(\widehat F_h\)</span> le vecteur <span class="math inline">\((\widehat f_h(x_i),i=1,\dots,n)\)</span>, <span class="math inline">\(\widehat F_k\)</span> le vecteur <span class="math inline">\((\widehat f_k(x_i),i=1,\dots,n)\)</span> et <span class="math inline">\(\mathbb Y=(y_1,\dots,y_n)\)</span>. On voit facilement que <span class="math display">\[\widehat F_h=S_h\mathbb Y\quad\text{et}\quad \widehat F_k=S_k\mathbb Y\]</span> où <span class="math inline">\(S_h\)</span> et <span class="math inline">\(S_k\)</span> sont des matrices <span class="math inline">\(n\times n\)</span> dont le terme général est défini par <span class="math display">\[S_{ij,h}=\frac{K((x_i-x_j)/h)}{\sum_l K((x_i-x_l)/h)}.
+\quad\text{et}\quad
+S_{ij,k}=
+\left\{
+\begin{array}{ll}
+  1/k&amp;\text{ si $x_j$ est parmi les $k$-ppv de $x_i$} \\
+  0 &amp; \text{ sinon}.
+  \end{array}
+\right.\]</span></p></li>
+<li><p>Pour simplifier on note <span class="math inline">\(K_{ij}=K((x_i-x_j)/h)\)</span> On a <span class="math display">\[\widehat f_h^i(x_i)=\frac{\sum_{j\neq i}K_{ij}y_j}{\sum_{j\neq i}K_{ij}}.\]</span> Par conséquent <span class="math display">\[\widehat f_h^i(x_i)\left[\sum_{j=1}^nK_{ij}-K_{ii}\right]=\sum_{j\neq i}K_{ij}y_j.\]</span> On obtient le résultat demandé en divisant tout <span class="math inline">\(\sum_{j=1}^nK_{ij}\)</span>. Pour l’estimateur de plus proches voisins, on remarque que, si on enlève la <span class="math inline">\(i\)</span>ème observation alors l’estimateur des <span class="math inline">\(k\)</span> plus proches voisins de <span class="math inline">\(x_i\)</span> s’obtient à partir ce celui des <span class="math inline">\(k+1\)</span> plus proches voisins avec la <span class="math inline">\(i\)</span>ème observation de la façon suivante : <span class="math display">\[\widehat f_k^i(x_i)=\frac{k+1}{k}\sum_{j\neq i}S_{ij,k+1}y_j.\]</span> On obtient le résultat demandé on observant que <span class="math inline">\(S_{ii,k+1}=1/(k+1)\)</span> et donc <span class="math display">\[\frac{1}{1-S_{ii,k+1}}=\frac{k+1}{k}.\]</span></p></li>
+<li><p>On obtient pour l’estimateur à noyau <span class="math display">\[\begin{align*}
+LOO(\widehat f_h)= &amp; \frac{1}{n}\sum_{i=1}^n\left(y_i-\widehat f_h^i(x_i)\right)^2 \\
+= &amp; \frac{1}{n}\sum_{i=1}^n\left(\frac{y_i-S_{ii,h}y_i-\sum_{j\neq i}S_{ij,h}y_{j}}{1-S_{ii,h}}\right)^2 \\
+= &amp; \frac{1}{n}\sum_{i=1}^n\left(\frac{y_i-\widehat f_h(x_i)}{1-S_{ii,h}}\right)^2.
+\end{align*}\]</span> Le calcul est similaire pour l’estimateur des plus proches voisins.</p></li>
+</ol>
+</div>
+<div id="exercice-7" class="section level2">
+<h2>Exercice 7</h2>
+<p>On importe les données et on ne garde que les deux variables demandées :</p>
+<pre class="r"><code>ozone &lt;- read.table(&quot;ozone.txt&quot;,header=TRUE,sep=&quot;;&quot;)
+df &lt;- ozone[,c(&quot;O3&quot;,&quot;T12&quot;)]</code></pre>
+<p>On construit la grille de plus proches voisins candidats :</p>
+<pre class="r"><code>grille &lt;- data.frame(k=1:40)</code></pre>
+<p>On indique à <strong>caret</strong> qu’on veut faire de la validation croisée 10 blocs :</p>
+<pre class="r"><code>library(caret)
+ctrl &lt;- trainControl(method=&quot;cv&quot;)</code></pre>
+<p>On lance la validation croisée avec la fonction <strong>train</strong> :</p>
+<pre class="r"><code>set.seed(1234)
+sel.k &lt;- train(O3~.,data=df,method=&quot;knn&quot;,trControl=ctrl,tuneGrid=grille)
+sel.k</code></pre>
+<pre><code>## k-Nearest Neighbors 
+## 
+## 50 samples
+##  1 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 44, 45, 46, 44, 46, 44, ... 
+## Resampling results across tuning parameters:
+## 
+##   k   RMSE      Rsquared   MAE     
+##    1  26.60291  0.3232751  22.77117
+##    2  19.18810  0.4972687  16.15950
+##    3  17.66466  0.5014478  14.63312
+##    4  16.80332  0.5288045  14.04983
+##    5  16.59355  0.5234591  14.11702
+##    6  16.61378  0.5314055  14.24197
+##    7  16.64367  0.5146348  14.52228
+##    8  16.54108  0.5208530  14.53584
+##    9  16.70734  0.5442673  14.43367
+##   10  16.81646  0.5321803  14.36648
+##   11  16.83264  0.5478960  14.51368
+##   12  17.22654  0.5419725  14.90498
+##   13  17.50551  0.5427412  15.24218
+##   14  17.46968  0.5350384  15.28519
+##   15  17.70147  0.5265543  15.44272
+##   16  17.78485  0.5458961  15.50878
+##   17  18.11041  0.5229272  15.65186
+##   18  18.48671  0.5163457  15.87335
+##   19  18.93825  0.5032374  16.23438
+##   20  19.17165  0.4979142  16.32529
+##   21  19.34814  0.5012102  16.30577
+##   22  19.50420  0.5101244  16.28836
+##   23  19.92923  0.4880172  16.59264
+##   24  19.93475  0.4960782  16.61232
+##   25  20.05621  0.4904583  16.60986
+##   26  20.23166  0.4901551  16.75063
+##   27  20.27193  0.4952363  16.77151
+##   28  20.51116  0.4887783  16.96227
+##   29  20.65172  0.4844417  17.02319
+##   30  20.89309  0.4667390  17.26761
+##   31  20.90581  0.4660672  17.21967
+##   32  21.09780  0.4612659  17.36973
+##   33  21.48512  0.4326771  17.59078
+##   34  21.76836  0.3980821  17.80276
+##   35  21.96842  0.3877269  17.94800
+##   36  22.15736  0.3713269  18.06642
+##   37  22.36868  0.3344192  18.21053
+##   38  22.44476  0.3128895  18.22829
+##   39  22.54226  0.3210366  18.27722
+##   40  22.60877  0.3432457  18.27704
+## 
+## RMSE was used to select the optimal model using the smallest value.
+## The final value used for the model was k = 8.</code></pre>
+<p>On sélectionnera</p>
+<pre class="r"><code>sel.k$bestTune</code></pre>
+<pre><code>##   k
+## 8 8</code></pre>
+<p>plus proches voisins.</p>
+</div>
 
 
 

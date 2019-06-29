@@ -67,8 +67,6 @@ overflow: auto;
 margin-left: 2%;
 position: fixed;
 border: 1px solid #ccc;
-webkit-border-radius: 6px;
-moz-border-radius: 6px;
 border-radius: 6px;
 }
 
@@ -96,9 +94,14 @@ font-size: 12px;
 .tocify-subheader .tocify-subheader {
 text-indent: 30px;
 }
-
 .tocify-subheader .tocify-subheader .tocify-subheader {
 text-indent: 40px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 50px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 60px;
 }
 
 .tocify .tocify-item > a, .tocify .nav-list .nav-header {
@@ -502,13 +505,13 @@ float: none;
 
           item.append($("<a/>", {
 
-            "text": self.text()
+            "html": self.html()
 
           }));
 
         } else {
 
-          item.text(self.text());
+          item.html(self.html());
 
         }
 
@@ -1326,9 +1329,7 @@ h6 {
 
 <link href="data:text/css;charset=utf-8,%3Cstyle%20type%3D%22text%2Fcss%22%3E%0Abody%7B%20%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Atd%20%7B%20%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Ah1%2Etitle%20%7B%0Afont%2Dsize%3A%2048px%3B%0Acolor%3A%20DarkRed%3B%0A%7D%0Ah1%20%7B%20%0Afont%2Dsize%3A%2035px%3B%0Acolor%3A%20DarkBlue%3B%0A%7D%0Ah2%20%7B%20%0Afont%2Dsize%3A%2028px%3B%0Acolor%3A%20DarkBlue%3B%0A%7D%0Ah3%20%7B%20%0Afont%2Dsize%3A%2024px%3B%0Afont%2Dfamily%3A%20%22Times%20New%20Roman%22%2C%20Times%2C%20serif%3B%0Acolor%3A%20DarkBlue%3B%0A%7D%0Acode%2Er%7B%20%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Apre%20%7B%20%0Afont%2Dsize%3A%2014px%3B%0A%7D%0A%3C%2Fstyle%3E%0A" rel="stylesheet" type="text/css" />
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -1353,21 +1354,82 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -1445,8 +1507,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -1455,6 +1515,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -1522,21 +1592,21 @@ summary(model1)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -2.5674  -0.2408   0.2747   0.4056   2.6666  
+## -2.4267  -0.2561   0.3288   0.4512   2.6207  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   2.4567     0.6016   4.084 4.43e-05 ***
-## XB            0.8014     1.1834   0.677    0.498    
-## XC           -5.9831     1.1795  -5.072 3.93e-07 ***
+## (Intercept)   2.2336     0.6075   3.677 0.000236 ***
+## XB            0.6568     0.9470   0.694 0.487977    
+## XC           -5.6348     1.1842  -4.758 1.95e-06 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 132.813  on 99  degrees of freedom
-## Residual deviance:  38.627  on 97  degrees of freedom
-## AIC: 44.627
+##     Null deviance: 129.489  on 99  degrees of freedom
+## Residual deviance:  44.218  on 97  degrees of freedom
+## AIC: 50.218
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <p>On obtient les résultats du <strong>test de Wald</strong> sur la nullité des paramètres <span class="math inline">\(\beta_0,\beta_2\)</span> et <span class="math inline">\(\beta_3\)</span>.</p>
@@ -1551,21 +1621,21 @@ summary(model2)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -2.5674  -0.2408   0.2747   0.4056   2.6666  
+## -2.4267  -0.2561   0.3288   0.4512   2.6207  
 ## 
 ## Coefficients:
 ##                 Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -3.526      1.015  -3.476  0.00051 ***
-## C(X, base = 3)1    5.983      1.180   5.072 3.93e-07 ***
-## C(X, base = 3)2    6.784      1.438   4.718 2.38e-06 ***
+## (Intercept)       -3.401      1.017  -3.346  0.00082 ***
+## C(X, base = 3)1    5.635      1.184   4.758 1.95e-06 ***
+## C(X, base = 3)2    6.292      1.249   5.035 4.77e-07 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 132.813  on 99  degrees of freedom
-## Residual deviance:  38.627  on 97  degrees of freedom
-## AIC: 44.627
+##     Null deviance: 129.489  on 99  degrees of freedom
+## Residual deviance:  44.218  on 97  degrees of freedom
+## AIC: 50.218
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <p>On obtient les résultats du <strong>test de Wald</strong> sur la nullité des paramètres <span class="math inline">\(\beta_0,\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>.</p>
@@ -1584,7 +1654,7 @@ Anova(model1,type=3,test.statistic=&quot;LR&quot;)</code></pre>
 ## 
 ## Response: Y
 ##   LR Chisq Df Pr(&gt;Chisq)    
-## X   94.186  2  &lt; 2.2e-16 ***
+## X   85.271  2  &lt; 2.2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <pre class="r"><code>Anova(model2,type=3,test.statistic=&quot;LR&quot;)</code></pre>
@@ -1592,7 +1662,7 @@ Anova(model1,type=3,test.statistic=&quot;LR&quot;)</code></pre>
 ## 
 ## Response: Y
 ##                LR Chisq Df Pr(&gt;Chisq)    
-## C(X, base = 3)   94.186  2  &lt; 2.2e-16 ***
+## C(X, base = 3)   85.271  2  &lt; 2.2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>On remarque ici que ces deux tests sont identiques : ils ne dépendent pas de la contrainte identifiante choisie.</p>
@@ -1832,7 +1902,9 @@ L1</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li></li>
 </ol>
-<p>a). On calcule les écart-type des estimateurs</p>
+<ol style="list-style-type: lower-alpha">
+<li>On calcule les écart-type des estimateurs</li>
+</ol>
 <pre class="r"><code>X1 &lt;- c(0.47,-0.55,-0.01,1.07,-0.71)
 X &lt;- matrix(c(rep(1,5),X1),ncol=2)
 W &lt;- diag(p*(1-p))
@@ -1844,8 +1916,10 @@ sig</code></pre>
 <pre class="r"><code>beta &lt;- c(0.4383,1.5063)
 beta/sig</code></pre>
 <pre><code>## [1] 0.4283401 0.8632411</code></pre>
-<p>b). On peut faire le test de Wald et du rapport de vraisemblance.</p>
-<p>c). La statistique de test vaut 0.8632411, on obtient donc la probabilité critique</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><p>On peut faire le test de Wald et du rapport de vraisemblance.</p></li>
+<li><p>La statistique de test vaut 0.8632411, on obtient donc la probabilité critique</p></li>
+</ol>
 <pre class="r"><code>2*(1-pnorm(0.8632411))</code></pre>
 <pre><code>## [1] 0.3880049</code></pre>
 <p>On peut également effectuer un test du rapport de vraisemblance. Le modèle null sans <strong>X1</strong> a pour log-vraisemblance</p>
@@ -1882,6 +1956,25 @@ logLik(model)</code></pre>
 </div>
 <div id="exercice-8" class="section level2">
 <h2>Exercice 8</h2>
+<ol style="list-style-type: decimal">
+<li><p>Les variables <span class="math inline">\((y_t,t=1,\dots,y_T)\)</span> étant indépendantes et de loi binomiales <span class="math inline">\(B(n_t,p_t)\)</span>, la log-vraisemblance est donnée par <span class="math display">\[\begin{align*}
+\mathcal L_{\text{sat}}(Y,p)= &amp; \log\left(\prod_{t=1}^T
+\begin{pmatrix}
+n_t\\
+\tilde y_t
+\end{pmatrix}
+p_t^{\tilde y_t}(1-p_t)^{n_t-\tilde y_t}\right) \\
+= &amp;
+\sum_{t=1}^T\left(\log
+\begin{pmatrix}
+n_t\\
+\tilde y_t
+\end{pmatrix}
++\tilde y_t\log(p_t)+(n_t-\tilde y_t)\log(1-p_t)\right)
+\end{align*}\]</span></p></li>
+<li><p>La dérivée de la log-vraisemblance par rapport à <span class="math inline">\(p_t\)</span> s’écrit <span class="math display">\[\frac{\tilde y_t}{p_t}-\frac{n_t-\tilde y_t}{1-p_t}.\]</span> Cette dérivée s’annule pour <span class="math display">\[\widehat p_t=\frac{\tilde y_t}{n_t}.\]</span></p></li>
+<li><p>On note <span class="math inline">\(\widehat \beta\)</span> l’EMV du modèle logistique et <span class="math inline">\(p_{\widehat\beta}\)</span> le vecteur qui contient les valeurs ajustées <span class="math inline">\(p_{\widehat\beta}(x_t),t=1,\dots,T\)</span>. On a pour tout <span class="math inline">\(\beta\in\mathbb R^p\)</span> : <span class="math display">\[\mathcal L(Y,\beta)\leq\mathcal L(Y,\widehat\beta)=\mathcal L_{\text{sat}}(Y,p_{\widehat\beta})\leq L_{\text{sat}}(Y,\widehat p_t).\]</span></p></li>
+</ol>
 </div>
 <div id="exercice-9" class="section level2">
 <h2>Exercice 9</h2>
@@ -1898,36 +1991,37 @@ logLik(model)</code></pre>
 &amp; = (2\eta(x)-1) \left(\mathbf 1_{g^\star(x)=1}-\mathbf 1_{g(x)=1}\right) \\
 &amp; \geq 0
 \end{align*}\]</span> puisque par définition <span class="math inline">\(g^\star=1\)</span> si et seulement si <span class="math inline">\(\eta(x)\geq 1/2\)</span>.</p>
-<p>d). En intégrant l’inégalité précédente par rapport à la loi de <span class="math inline">\(X\)</span> on conclut <span class="math display">\[\mathbf P(g(X)\neq Y)\geq \mathbf P(g^\star(X)\neq Y).\]</span></p></li>
+d). En intégrant l’inégalité précédente par rapport à la loi de <span class="math inline">\(X\)</span> on conclut <span class="math display">\[\mathbf P(g(X)\neq Y)\geq \mathbf P(g^\star(X)\neq Y).\]</span></li>
 <li><p>Si <span class="math inline">\(x\leq 0\)</span> alors <span class="math inline">\(\mathbf P(Y=1|X=x)=\mathbf P(U\leq 2)=1/5\)</span> donc <span class="math inline">\(g^\star(x)=0\)</span>. On montre de même que <span class="math inline">\(g^\star(x)=1\)</span> si <span class="math inline">\(x&gt;0\)</span>. Il reste à calculer l’erreur de Bayes : <span class="math display">\[L^\star=\mathbf P(g^\star(X)\neq Y|X\leq 0)\mathbf P(X\leq 0)+\mathbf P(g^\star(X)\neq Y|X&gt;0)\mathbf P(X&gt;0).\]</span> Or <span class="math display">\[\mathbf P(g^\star(X)\neq Y|X\leq 0)=\mathbf P(Y\neq 0|X\leq 0)=\mathbf P(U\leq 2|X\leq 0)=\frac{1}{5}\]</span> et <span class="math display">\[\mathbf P(g^\star(X)\neq Y|X&gt;0)=\mathbf P(Y\neq 1|X&gt;0)=\mathbf P(U&lt;1|X\leq 0)=\frac{1}{10}.\]</span> On obtient <span class="math display">\[L^\star=\frac{1}{5}\,\frac{1}{2}+\frac{1}{10}\,\frac{1}{2}=\frac{3}{20}.\]</span></p></li>
 </ol>
 </div>
 <div id="exercice-10" class="section level2">
 <h2>Exercice 10</h2>
-<ol start="2" style="list-style-type: decimal">
-<li>a).</li>
-</ol>
+<ol style="list-style-type: decimal">
+<li><p>On peut estimer l’AUC en calculant, parmi les paires qui vérifient <span class="math inline">\((Y,Y')=(0,1)\)</span>, la proportion de paires qui vérifient <span class="math inline">\(S(X)&gt;S(X')\)</span>. Si on note <span class="math display">\[\mathcal I=\{(i,j),y_i=0,y_j=1\},\]</span> alors l’estimateur s’écrit <span class="math display">\[\widehat{\text{AUC}}(S)=\frac{1}{|\mathcal I|}\sum_{(i,j)\in\mathcal I}\mathbf 1_{S(x_i)&gt;S(x_j)}.\]</span></p></li>
+<li><p>a). On importe les données et on les sépare en 2 échantillons.</p>
 <pre class="r"><code>df &lt;- read.csv(&quot;logit_ex6.csv&quot;)
 set.seed(1234)
 perm &lt;- sample(nrow(df))
 dapp &lt;- df[perm[1:300],]
 dval &lt;- df[-perm[1:300],]</code></pre>
-<p>b).</p>
+<p>b). Ajustement du modèle.</p>
 <pre class="r"><code>mod &lt;- glm(Y~.,data=dapp,family=&quot;binomial&quot;)</code></pre>
-<p>c).</p>
+<p>c). Construction des scores.</p>
 <pre class="r"><code>score &lt;- predict(mod,newdata = dval)</code></pre>
-<p>d).</p>
+<p>d). On peut maintenant calculer l’AUC.</p>
 <pre class="r"><code>D0 &lt;- which(dval$Y==0)
 D1 &lt;- which(dval$Y==1)
 S0 &lt;-score[D0]
 S1 &lt;- score[D1]
 S01 &lt;- expand.grid(S0=S0,S1=S1)
 mean(S01$S1&gt;S01$S0)</code></pre>
-<pre><code>## [1] 0.7120802</code></pre>
-<p>e).</p>
+<pre><code>## [1] 0.7385817</code></pre>
+<p>e). On retrouve la valeur avec la fonction <strong>auc</strong> de <strong>pROC</strong>.</p>
 <pre class="r"><code>library(pROC) 
 auc(dval$Y,score)</code></pre>
-<pre><code>## Area under the curve: 0.7121</code></pre>
+<pre><code>## Area under the curve: 0.7386</code></pre></li>
+</ol>
 </div>
 <div id="exercice-11" class="section level2">
 <h2>Exercice 11</h2>
