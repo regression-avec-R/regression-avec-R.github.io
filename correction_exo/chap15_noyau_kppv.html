@@ -67,8 +67,6 @@ overflow: auto;
 margin-left: 2%;
 position: fixed;
 border: 1px solid #ccc;
-webkit-border-radius: 6px;
-moz-border-radius: 6px;
 border-radius: 6px;
 }
 
@@ -96,9 +94,14 @@ font-size: 12px;
 .tocify-subheader .tocify-subheader {
 text-indent: 30px;
 }
-
 .tocify-subheader .tocify-subheader .tocify-subheader {
 text-indent: 40px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 50px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 60px;
 }
 
 .tocify .tocify-item > a, .tocify .nav-list .nav-header {
@@ -502,13 +505,13 @@ float: none;
 
           item.append($("<a/>", {
 
-            "text": self.text()
+            "html": self.html()
 
           }));
 
         } else {
 
-          item.text(self.text());
+          item.html(self.html());
 
         }
 
@@ -1326,9 +1329,7 @@ h6 {
 
 <link href="data:text/css;charset=utf-8,%3Cstyle%20type%3D%22text%2Fcss%22%3E%0Abody%7B%20%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Atd%20%7B%20%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Ah1%2Etitle%20%7B%0Afont%2Dsize%3A%2048px%3B%0Acolor%3A%20DarkRed%3B%0A%7D%0Ah1%20%7B%20%0Afont%2Dsize%3A%2035px%3B%0Acolor%3A%20DarkBlue%3B%0A%7D%0Ah2%20%7B%20%0Afont%2Dsize%3A%2028px%3B%0Acolor%3A%20DarkBlue%3B%0A%7D%0Ah3%20%7B%20%0Afont%2Dsize%3A%2024px%3B%0Afont%2Dfamily%3A%20%22Times%20New%20Roman%22%2C%20Times%2C%20serif%3B%0Acolor%3A%20DarkBlue%3B%0A%7D%0Acode%2Er%7B%20%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Apre%20%7B%20%0Afont%2Dsize%3A%2014px%3B%0A%7D%0A%3C%2Fstyle%3E%0A" rel="stylesheet" type="text/css" />
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -1353,21 +1354,82 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -1445,8 +1507,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -1455,6 +1515,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -1552,50 +1622,50 @@ sel.k</code></pre>
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (10 fold) 
-## Summary of sample sizes: 44, 45, 46, 44, 46, 44, ... 
+## Summary of sample sizes: 44, 46, 45, 44, 45, 45, ... 
 ## Resampling results across tuning parameters:
 ## 
 ##   k   RMSE      Rsquared   MAE     
-##    1  26.60291  0.3232751  22.77117
-##    2  19.18810  0.4972687  16.15950
-##    3  17.66466  0.5014478  14.63312
-##    4  16.80332  0.5288045  14.04983
-##    5  16.59355  0.5234591  14.11702
-##    6  16.61378  0.5314055  14.24197
-##    7  16.64367  0.5146348  14.52228
-##    8  16.54108  0.5208530  14.53584
-##    9  16.70734  0.5442673  14.43367
-##   10  16.81646  0.5321803  14.36648
-##   11  16.83264  0.5478960  14.51368
-##   12  17.22654  0.5419725  14.90498
-##   13  17.50551  0.5427412  15.24218
-##   14  17.46968  0.5350384  15.28519
-##   15  17.70147  0.5265543  15.44272
-##   16  17.78485  0.5458961  15.50878
-##   17  18.11041  0.5229272  15.65186
-##   18  18.48671  0.5163457  15.87335
-##   19  18.93825  0.5032374  16.23438
-##   20  19.17165  0.4979142  16.32529
-##   21  19.34814  0.5012102  16.30577
-##   22  19.50420  0.5101244  16.28836
-##   23  19.92923  0.4880172  16.59264
-##   24  19.93475  0.4960782  16.61232
-##   25  20.05621  0.4904583  16.60986
-##   26  20.23166  0.4901551  16.75063
-##   27  20.27193  0.4952363  16.77151
-##   28  20.51116  0.4887783  16.96227
-##   29  20.65172  0.4844417  17.02319
-##   30  20.89309  0.4667390  17.26761
-##   31  20.90581  0.4660672  17.21967
-##   32  21.09780  0.4612659  17.36973
-##   33  21.48512  0.4326771  17.59078
-##   34  21.76836  0.3980821  17.80276
-##   35  21.96842  0.3877269  17.94800
-##   36  22.15736  0.3713269  18.06642
-##   37  22.36868  0.3344192  18.21053
-##   38  22.44476  0.3128895  18.22829
-##   39  22.54226  0.3210366  18.27722
-##   40  22.60877  0.3432457  18.27704
+##    1  25.39941  0.2777479  21.83800
+##    2  20.89184  0.3784027  17.05972
+##    3  17.81455  0.5039548  14.88541
+##    4  16.49216  0.5636676  14.01838
+##    5  16.75867  0.5579746  14.33716
+##    6  16.76845  0.5384320  13.92737
+##    7  16.11270  0.5792998  13.77474
+##    8  15.96855  0.5992164  13.64931
+##    9  16.48290  0.5679445  14.13226
+##   10  16.89146  0.5572318  14.62217
+##   11  17.14669  0.5541549  14.68934
+##   12  17.69184  0.5469553  15.27732
+##   13  17.41791  0.5668045  15.10278
+##   14  17.53775  0.5484378  15.17445
+##   15  17.61846  0.5669393  15.35179
+##   16  17.89693  0.5550383  15.60799
+##   17  18.08559  0.5579067  15.72184
+##   18  18.25932  0.5655324  15.89826
+##   19  18.84244  0.5402343  16.27675
+##   20  19.08747  0.5429639  16.30312
+##   21  19.44070  0.5266746  16.57676
+##   22  19.66410  0.5196443  16.65315
+##   23  19.69539  0.5339187  16.60436
+##   24  19.94851  0.5245251  16.73931
+##   25  20.04650  0.5072557  16.78093
+##   26  20.14871  0.5013264  16.78305
+##   27  20.28257  0.5036138  16.89089
+##   28  20.45060  0.4988594  16.89900
+##   29  20.54389  0.5105147  16.92002
+##   30  20.79567  0.5080200  17.12472
+##   31  20.96099  0.5014461  17.25705
+##   32  21.14524  0.4891512  17.23304
+##   33  21.38173  0.4875148  17.38980
+##   34  21.59260  0.4810615  17.43883
+##   35  21.83266  0.4707654  17.67392
+##   36  22.06004  0.4448406  17.74640
+##   37  22.34462  0.4236828  17.95419
+##   38  22.54304  0.3999950  18.11507
+##   39  22.61034  0.4147744  18.15091
+##   40  22.68049  0.4296545  18.23871
 ## 
 ## RMSE was used to select the optimal model using the smallest value.
 ## The final value used for the model was k = 8.</code></pre>

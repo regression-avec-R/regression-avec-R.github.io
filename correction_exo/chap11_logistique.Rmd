@@ -41,8 +41,9 @@ header-includes:
   
 ## Exercice 2
 
-1. 
-```{r}
+1. On génère l'échantillon.
+
+    ```{r}
 n <- 100
 set.seed(48967365)
 X <- sample(c("A","B","C"),100,replace=TRUE)
@@ -55,18 +56,17 @@ set.seed(4653965)
 Y[X=="C"] <- rbinom(sum(X=="C"),size=1,prob=0.05)
 Y <- factor(Y)
 donnees<-data.frame(Y,X)
-```
+    ```
 
-2. 
-```{r}
+2. On ajuste le modèle avec les contraintes par défaut. 
+    ```{r}
 model1 <- glm(Y~X,data=donnees,family=binomial)
 summary(model1)
 ```
-
 On obtient les résultats du **test de Wald** sur la nullité des paramètres $\beta_0,\beta_2$ et $\beta_3$.
 
-3.
-```{r}
+3. On change la modalité de référence.
+    ```{r}
 model2 <- glm(Y~C(X,base=3),data=donnees,family=binomial)
 summary(model2)
 ```
@@ -75,24 +75,21 @@ On obtient les résultats du **test de Wald** sur la nullité des paramètres $\
 4. On remarque que dans **model1** on accepte la nullité de $\beta_2$ alors qu'on la rejette dans **model2**. Ceci est logique dans la mesure où ces tests dépendent de la contrainte identifiante choisie. Dans **model1** le test de nullité de $\beta_2$ permet de vérifier si $B$ à un effet similaire à $A$ sur $Y$. Dans **model2**, on compare l'effet de $B$ à celui de $C$. On peut donc conclure $A$ et $B$ ont des effets proches sur $Y$ alors que $B$ et $C$ ont un impact différent. Ceci est logique vu la façon dont les données ont été générées.
 
 5. Tester l'effet global de $X$ sur $Y$ revient à tester si les coefficients $\beta_1,\beta_2$ et $\beta_3$ sont égaux, ce qui, compte tenu des contraintes revient à considérer les hypothèses nulles :
-  * $\beta_2=\beta_3=0$ dans **model1** ;
-  * $\beta_1=\beta_2=0$ dans **model2**.
-  
+    * $\beta_2=\beta_3=0$ dans **model1** ;
+    * $\beta_1=\beta_2=0$ dans **model2**.
 On peut effectuer les tests de **Wald** ou du **rapport de vraisemblance**. On obtient les résultats du **rapport de vraisemblance** avec :
 
-```{r message=FALSE, warning=FALSE}
+    ```{r message=FALSE, warning=FALSE}
 library(car)
 Anova(model1,type=3,test.statistic="LR")
 Anova(model2,type=3,test.statistic="LR")
 ```
-
-
 On remarque ici que ces deux tests sont identiques : ils ne dépendent pas de la contrainte identifiante choisie.
 
 ## Exercice 3
 
-1.
-```{r}
+1. On génère l'échantillon demandé.
+    ```{r}
 set.seed(1234)
 X <- c(runif(50,-1,0),runif(50,0,1))
 set.seed(5678)
@@ -101,8 +98,8 @@ df <- data.frame(X,Y)
 ```
 
 
-2.
-```{r}
+2. Le graphe s'obtient avec :
+    ```{r}
 beta <- seq(0,100,by=0.01)
 log_vrais <- function(X,Y,beta){
   LV <- rep(0,length(beta))
@@ -117,16 +114,15 @@ LL <- log_vrais(X,Y,beta)
 plot(beta,LL,type="l")
 ```
 
-3.
-```{r}
+3. On obtient un avertissement qui nous dit que l'algorithme d'optimisation n'a pas convergé.
+    ```{r}
 model <- glm(Y~X-1,data=df,family="binomial")
 model$coef
 ```
-On obtient un avertissement qui nous dit que l'algorithme d'optimisation n'a pas convergé.
 
-4.
+4. Le changement proposé supprime la séparabilité des données. On obtient bien un maximum fini pour cette nouvelle vraisemblance.
 
-```{r}
+    ```{r}
 Y1 <- Y;Y1[1] <- 1
 LL1 <- log_vrais(X,Y1,beta)
 plot(beta,LL1,type="l")
@@ -148,46 +144,40 @@ head(panne)
 
 
 1. La commande
-```{r}
+    ```{r}
 model <- glm(etat~.,data=panne,family=binomial)
 model
 ```
-
 ajuste le modèle
-
 $$\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x_1+\beta_2\mathsf{1}_{x_2=B}+\beta_3\mathsf{1}_{x_2=C}$$
 
 où $x_1$ et $x_2$ désigne respectivement les variables **age** et **marque**. On obtient les estimateurs avec
-```{r}
+    ```{r}
 coef(model)
 ```
 
-2. 
-
-Il s'agit des tests de Wald pour tester l'effet des variables dans le modèle. Pour l'effet de marque, on va par exemple tester 
+2. Il s'agit des tests de Wald pour tester l'effet des variables dans le modèle. Pour l'effet de marque, on va par exemple tester 
 $$H_0:\beta_2=\beta_3=0\quad\text{contre}\quad H_1:\beta_2\neq 0\text{ ou }\beta_3\neq 0.$$
 Sous $H_0$ la statistique de Wald suit une loi du $\chi^2$ à 4-2=2 degrés de liberté. Pour le test de la variable **age** le nombre de degrés de liberté manquant est 1. On retrouve cela dans la sortie
-
-```{r}
+    ```{r}
 library(car)
 Anova(model,type=3,test.statistic="Wald")
 ```
 
 3. Il s'agit cett fois du test du rapport de vraisemblance. Les degrés de liberté manquants sont identiques.
 
-```{r}
+    ```{r}
 Anova(model,type=3,test.statistic="LR")
 ```
 
 
 
 4. 
-  a). Le modèle s'écrit
+    a). Le modèle s'écrit
   $$\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1\mathsf{1}_{x_2=A}+\beta_2\mathsf{1}_{x_2=B}.$$
 
-  b). Le modèle ajusté ici est
+    b). Le modèle ajusté ici est
     $$\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\gamma_0+\gamma_1\mathsf{1}_{x_2=B}+\gamma_2\mathsf{1}_{x_2=C}.$$
-
 Par identification on a
 $$\begin{cases}
 \beta_0+\beta_1=\gamma_0 \\
@@ -206,12 +196,8 @@ $$\begin{cases}
 \widehat\beta_1=1.48 \\
 \widehat\beta_2=1.05 \\
 \end{cases}$$
-
-
-
 On peut retrouver ces résultats avec
-
-```{r}
+    ```{r}
 glm(etat~C(marque,base=3),data=panne,family="binomial")
 ```
 
@@ -219,9 +205,7 @@ glm(etat~C(marque,base=3),data=panne,family="binomial")
 5. Il y a interaction si l'age agit différemment sur la panne en fonction de la marque.
 
 6. Le modèle ajusté sur **R** est
-
 $$\log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\delta_0+\delta_1\mathsf{1}_{x_2=B}+\delta_2\mathsf{1}_{x_2=C}+\delta_3x_1+\delta_4x_1\mathsf{1}_{x_2=B}+\delta_5x_1\mathsf{1}_{x_2=C}.$$
-
 On obtient ainsi par identification :
 $$\begin{cases}
 \alpha_0=\delta_0\\
@@ -232,8 +216,7 @@ $$\begin{cases}
 \gamma_1=\delta_3+\delta_5
 \end{cases}$$
 On peut ainsi en déduire les valeurs des estimateurs que l'on peut retrouver avec la commande :
-
-```{r}
+    ```{r}
 glm(etat~-1+marque+marque:age,data=panne,family="binomial")
 ```
 
@@ -257,7 +240,7 @@ On remarque que la nullité du paramètre associé à **X1** est accepté dans l
 $$log\left(\frac{p_\beta(x)}{1-p_\beta(x)}\right)=\beta_0+\beta_1x.$$
 
 2. La log vraisemblance s'obtient avec
-```{r}
+    ```{r}
 p <- c(0.76,0.4,0.6,0.89,0.35)
 Y <- c(1,0,0,1,1)
 L1 <- log(prod(p^Y*(1-p)^(1-Y)))
@@ -266,9 +249,8 @@ L1
 
 3. 
   
-  a) On calcule les écart-type des estimateurs
-
-```{r}
+    a). On calcule les écart-type des estimateurs
+    ```{r}
 X1 <- c(0.47,-0.55,-0.01,1.07,-0.71)
 X <- matrix(c(rep(1,5),X1),ncol=2)
 W <- diag(p*(1-p))
@@ -276,44 +258,38 @@ SIG <- solve(t(X)%*%W%*%X)
 sig <- sqrt(diag(SIG))
 sig
 ```
-
 On en déduit les statistiques de test :
-
-```{r}
+    ```{r}
 beta <- c(0.4383,1.5063)
 beta/sig
 ```
 
-  b) On peut faire le test de Wald et du rapport de vraisemblance. 
+    b). On peut faire le test de Wald et du rapport de vraisemblance. 
   
-  c) La statistique de test vaut 0.8632411, on obtient donc la probabilité critique
-
-```{r}
+    c). La statistique de test vaut 0.8632411, on obtient donc la probabilité critique
+    ```{r}
 2*(1-pnorm(0.8632411))
 ```
-
 On peut également effectuer un test du rapport de vraisemblance. Le modèle null sans **X1** a pour log-vraisemblance
 
-```{r}
+    ```{r}
 p0 <- 3/5
 L0 <- log(prod(p0^Y*(1-p0)^(1-Y)))
 L0
 ```
 La statistique de test vaut donc
 
-```{r}
+    ```{r}
 2*(L1-L0)
 ```
-
 et la probabilité critique vaut
 
-```{r}
+    ```{r}
 1-pchisq(2*(L1-L0),df=1)
 ```
-
 On peut retrouver (aux arrondis près) les résultats de l'exercice avec
 
-```{r}
+    ```{r}
 X <- c(0.47,-0.55,-0.01,1.07,-0.71)
 Y <- c(1,0,0,1,1)
 df <- data.frame(X,Y)
