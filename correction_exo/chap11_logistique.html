@@ -1703,6 +1703,13 @@ model1$coef</code></pre>
 </div>
 <div id="exercice-4" class="section level2">
 <h2>Exercice 4</h2>
+<p>Le gradient de la log-vraisemblance en <span class="math inline">\(\beta\)</span> est donné par <span class="math inline">\(\nabla \mathcal L(Y,\beta)=X'(Y-P_\beta)\)</span>. Sa <span class="math inline">\(j\)</span>ème composante vaut <span class="math display">\[\frac{\partial\mathcal L}{\partial\beta_j}(\beta)=\sum_{i=1}^nx_{ij}(y_i-p_\beta(x_i)).\]</span></p>
+<p>On peut donc calculer la drivée par rapport à <span class="math inline">\(\beta_\ell\)</span> : <span class="math display">\[\begin{align*}
+\frac{\partial\mathcal L}{\partial\beta_j\partial\beta_\ell}(\beta)= &amp; \frac{\partial}{\partial\beta_\ell}\left[
+\sum_{i=1}^nx_ij(y_i-\frac{\exp(x_i'\beta)}{1+\exp(x_i'\beta)})\right] \\
+=&amp; -\sum_{i=1}^nx_{ij}x_{i\ell}\frac{\exp(x_i'\beta)}{[1+\exp(x_i'\beta)]^2} \\
+=&amp; -\sum_{i=1}^nx_{ij}x_{i\ell}p_\beta(x_i)(1-p_\beta(x_i)).
+\end{align*}\]</span> Matriciellement on déduit donc que la hessienne vaut <span class="math display">\[\nabla^2\mathcal L(Y,\beta)=-X'W_\beta X,\]</span> où <span class="math inline">\(W_\beta\)</span> est la matrice <span class="math inline">\(n\times n\)</span> diagonale dont le <span class="math inline">\(i\)</span>ème terme de la diagonale vaut <span class="math inline">\(p_\beta(x_i)(1-p_\beta(x_i))\)</span>. Par ailleurs, comme pour tout <span class="math inline">\(i=1,\dots,n\)</span>, on a <span class="math inline">\(p_\beta(x_i)(1-p_\beta(x_i))&gt;0\)</span> et que <span class="math inline">\(X\)</span> est de plein rang, on déduit que <span class="math inline">\(X'W_\beta X\)</span> est définie positive et par conséquent que la hessienne est définie négative.</p>
 </div>
 <div id="exercice-5" class="section level2">
 <h2>Exercice 5</h2>
@@ -1989,6 +1996,43 @@ auc(dval$Y,score)</code></pre>
 </div>
 <div id="exercice-11" class="section level2">
 <h2>Exercice 11</h2>
+<ol style="list-style-type: decimal">
+<li><p>On commence par importer les données et ajuster le modèle :</p>
+<pre class="r"><code>artere &lt;- read.table(&quot;artere.txt&quot;,sep=&quot;;&quot;,header=TRUE)
+artere &lt;- read.table(&quot;artere.txt&quot;,header=T)
+modele &lt;- glm(chd~age,data=artere,family=binomial)
+B0 &lt;- coef(modele)
+OriginalDeviance &lt;- modele$deviance</code></pre></li>
+<li><p>On fixe <span class="math inline">\(\alpha\)</span> à 0.05.</p>
+<pre class="r"><code>alpha &lt;- 0.05    </code></pre></li>
+<li><p>On effectue les opérations demandées :</p>
+<pre class="r"><code>stderr &lt;- summary(modele)$coefficients[, &quot;Std. Error&quot;]
+delta &lt;- sqrt(qchisq((1-alpha/4),df=1))* stderr[2] /5
+grille &lt;- B0[2]+(-10):10*delta</code></pre></li>
+<li><p>On a <span class="math display">\[\begin{align*}
+\mathcal D_1&amp;=-2(\mathcal L(Y,\hat\beta)-\mathcal L_{sat})
+  \end{align*}\]</span> La déviance avec l’offset <span class="math inline">\(K_i=x_i\beta_2^*\)</span> vaut <span class="math display">\[\begin{align*}
+\mathcal D_o&amp;=-2(\mathcal L(Y,K,\hat\beta_1)-\mathcal L_{sat})
+  \end{align*}\]</span> où <span class="math inline">\(\hat \beta_1\)</span> maximise <span class="math inline">\(\mathcal L(Y,K,\hat\beta_1)\)</span> c’est à dire <span class="math inline">\(\mathcal L(Y,K,\hat\beta_1)=l(\beta_2^*)\)</span> et nous avons donc <span class="math display">\[\begin{align*}
+\mathcal D_o - \mathcal D_1= 2(\mathcal L(Y,\hat\beta)-\mathcal L(Y,K,\beta_1)= 2(\mathcal L(Y,\hat\beta)-l(\beta_2^*))=P(\beta_2^*).
+  \end{align*}\]</span></p></li>
+<li><p>On calcule <strong>profil2</strong></p>
+<pre class="r"><code>profil2 &lt;- rep(0,length(grille))
+for (k in 1:length(grille)) {
+  modeleo &lt;- glm(chd~1,family=binomial,offset=artere[,&quot;age&quot;]*grille[k],data=artere)
+  profil2[k] &lt;- modeleo$deviance - OriginalDeviance
+}</code></pre></li>
+<li><p>On passe maintenant à <strong>profil</strong> :</p>
+<pre class="r"><code>profil &lt;- sign(-10:10)*sqrt(profil2)</code></pre></li>
+<li><p>On effectue l’interpolation avec la fonction <strong>spline</strong> :</p>
+<pre class="r"><code>spline(x=profil,y=grille,xout=c(-sqrt(qchisq(1-alpha,1)),sqrt(qchisq(1-alpha,1))))$y</code></pre>
+<pre><code>## [1] 0.0669275 0.1620014</code></pre></li>
+<li><p>On obtient avec la fonction <strong>confint</strong> :</p>
+<pre class="r"><code>confint(modele)</code></pre>
+<pre><code>##                   2.5 %     97.5 %
+## (Intercept) -7.72587162 -3.2461547
+## age          0.06693158  0.1620067</code></pre></li>
+</ol>
 </div>
 
 

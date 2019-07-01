@@ -132,6 +132,20 @@ model1$coef
 
 
 ## Exercice 4
+Le gradient de la log-vraisemblance en $\beta$ est donné par $\nabla \mathcal L(Y,\beta)=X'(Y-P_\beta)$. Sa $j$ème composante vaut
+$$\frac{\partial\mathcal L}{\partial\beta_j}(\beta)=\sum_{i=1}^nx_{ij}(y_i-p_\beta(x_i)).$$
+
+On peut donc calculer la drivée par rapport à $\beta_\ell$ :
+\begin{align*}
+\frac{\partial\mathcal L}{\partial\beta_j\partial\beta_\ell}(\beta)= & \frac{\partial}{\partial\beta_\ell}\left[
+\sum_{i=1}^nx_ij(y_i-\frac{\exp(x_i'\beta)}{1+\exp(x_i'\beta)})\right] \\
+=& -\sum_{i=1}^nx_{ij}x_{i\ell}\frac{\exp(x_i'\beta)}{[1+\exp(x_i'\beta)]^2} \\
+=& -\sum_{i=1}^nx_{ij}x_{i\ell}p_\beta(x_i)(1-p_\beta(x_i)).
+\end{align*}
+Matriciellement on déduit donc que la hessienne vaut
+$$\nabla^2\mathcal L(Y,\beta)=-X'W_\beta X,$$
+où $W_\beta$ est la matrice $n\times n$ diagonale dont le $i$ème terme de la diagonale vaut $p_\beta(x_i)(1-p_\beta(x_i))$.
+Par ailleurs, comme pour tout $i=1,\dots,n$, on a $p_\beta(x_i)(1-p_\beta(x_i))>0$ et que $X$ est de plein rang, on déduit que $X'W_\beta X$ est définie positive et par conséquent que la hessienne est définie négative.
 
 
 ## Exercice 5
@@ -411,3 +425,76 @@ auc(dval$Y,score)
   
   
 ## Exercice 11
+
+1. On commence par importer les données et ajuster le modèle :
+    ```{r}
+artere <- read.table("artere.txt",sep=";",header=TRUE)
+artere <- read.table("artere.txt",header=T)
+modele <- glm(chd~age,data=artere,family=binomial)
+B0 <- coef(modele)
+OriginalDeviance <- modele$deviance
+```
+
+
+2. On fixe $\alpha$ à 0.05.
+
+    ```{r}
+alpha <- 0.05    
+```
+
+
+3. On effectue les opérations demandées :
+
+    ```{r}
+stderr <- summary(modele)$coefficients[, "Std. Error"]
+delta <- sqrt(qchisq((1-alpha/4),df=1))* stderr[2] /5
+grille <- B0[2]+(-10):10*delta
+```
+
+4.  On a
+\begin{align*}
+\mathcal D_1&=-2(\mathcal L(Y,\hat\beta)-\mathcal L_{sat})
+  \end{align*}
+La déviance avec l'offset \(K_i=x_i\beta_2^*\)  vaut 
+  \begin{align*}
+\mathcal D_o&=-2(\mathcal L(Y,K,\hat\beta_1)-\mathcal L_{sat})
+  \end{align*}
+où \(\hat \beta_1\) maximise \(\mathcal L(Y,K,\hat\beta_1)\) c'est à dire \(\mathcal L(Y,K,\hat\beta_1)=l(\beta_2^*)\)  et nous avons donc
+  \begin{align*}
+\mathcal D_o - \mathcal D_1= 2(\mathcal L(Y,\hat\beta)-\mathcal L(Y,K,\beta_1)= 2(\mathcal L(Y,\hat\beta)-l(\beta_2^*))=P(\beta_2^*).
+  \end{align*}
+
+
+5. On calcule **profil2**
+
+    ```{r}
+profil2 <- rep(0,length(grille))
+for (k in 1:length(grille)) {
+  modeleo <- glm(chd~1,family=binomial,offset=artere[,"age"]*grille[k],data=artere)
+  profil2[k] <- modeleo$deviance - OriginalDeviance
+}
+```
+
+6. On passe maintenant à **profil** :
+
+    ```{r}
+profil <- sign(-10:10)*sqrt(profil2)
+```
+
+7. On effectue l'interpolation avec la fonction **spline** :
+
+    ```{r}
+spline(x=profil,y=grille,xout=c(-sqrt(qchisq(1-alpha,1)),sqrt(qchisq(1-alpha,1))))$y
+```
+
+8. On obtient avec la fonction **confint** :
+
+    ```{r message=FALSE, warning=FALSE}
+confint(modele)
+```
+
+
+
+
+
+
