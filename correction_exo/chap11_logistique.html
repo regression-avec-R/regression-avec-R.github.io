@@ -1706,7 +1706,7 @@ model1$coef</code></pre>
 <p>Le gradient de la log-vraisemblance en <span class="math inline">\(\beta\)</span> est donné par <span class="math inline">\(\nabla \mathcal L(Y,\beta)=X'(Y-P_\beta)\)</span>. Sa <span class="math inline">\(j\)</span>ème composante vaut <span class="math display">\[\frac{\partial\mathcal L}{\partial\beta_j}(\beta)=\sum_{i=1}^nx_{ij}(y_i-p_\beta(x_i)).\]</span></p>
 <p>On peut donc calculer la drivée par rapport à <span class="math inline">\(\beta_\ell\)</span> : <span class="math display">\[\begin{align*}
 \frac{\partial\mathcal L}{\partial\beta_j\partial\beta_\ell}(\beta)= &amp; \frac{\partial}{\partial\beta_\ell}\left[
-\sum_{i=1}^nx_ij(y_i-\frac{\exp(x_i'\beta)}{1+\exp(x_i'\beta)})\right] \\
+\sum_{i=1}^nx_{ij}(y_i-\frac{\exp(x_i'\beta)}{1+\exp(x_i'\beta)})\right] \\
 =&amp; -\sum_{i=1}^nx_{ij}x_{i\ell}\frac{\exp(x_i'\beta)}{[1+\exp(x_i'\beta)]^2} \\
 =&amp; -\sum_{i=1}^nx_{ij}x_{i\ell}p_\beta(x_i)(1-p_\beta(x_i)).
 \end{align*}\]</span> Matriciellement on déduit donc que la hessienne vaut <span class="math display">\[\nabla^2\mathcal L(Y,\beta)=-X'W_\beta X,\]</span> où <span class="math inline">\(W_\beta\)</span> est la matrice <span class="math inline">\(n\times n\)</span> diagonale dont le <span class="math inline">\(i\)</span>ème terme de la diagonale vaut <span class="math inline">\(p_\beta(x_i)(1-p_\beta(x_i))\)</span>. Par ailleurs, comme pour tout <span class="math inline">\(i=1,\dots,n\)</span>, on a <span class="math inline">\(p_\beta(x_i)(1-p_\beta(x_i))&gt;0\)</span> et que <span class="math inline">\(X\)</span> est de plein rang, on déduit que <span class="math inline">\(X'W_\beta X\)</span> est définie positive et par conséquent que la hessienne est définie négative.</p>
