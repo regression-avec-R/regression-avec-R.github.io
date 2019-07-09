@@ -4,7 +4,7 @@ title: R pour la statistique et la science des données
 
 <div>
 <div class="column-left">
-<p><img src="couverture_v2.jpg" height="500" width="400" alt="Couverture" /></p>
+<p><img src="couverture_v2.jpg" height="650" width="420" alt="Couverture" /></p>
 </div>
 
 
