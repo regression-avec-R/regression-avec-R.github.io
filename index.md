@@ -12,9 +12,9 @@ title: Régression avec R
 
 <h2 id="descriptif">Descriptif</h2>
 <ul>
-<li><a href="/pdf/4eme_COUV.pdf">4e de couverture</a></li>
+<li><a href="quatrieme.pdf">4e de couverture</a></li>
 <li><a href="avantpropos.pdf">Avant-propos</a></li>
-<li><a href="/pdf/TableDesMatieres.pdf">Sommaire détaillé</a></li>
+<li><a href="tdm.pdf">Sommaire détaillé</a></li>
 </ul>
 
 
