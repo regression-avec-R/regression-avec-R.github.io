@@ -1,10 +1,10 @@
 ---
-title: R pour la statistique et la science des données 
+title: Régression avec R
 ---
 
 <div>
 <div class="column-left">
-<p><img src="couverture_v2.jpg" height="650" width="420" alt="Couverture" /></p>
+<p><img src="couverture_v2.jpg" height="650" width="430" alt="Couverture" /></p>
 </div>
 
 
