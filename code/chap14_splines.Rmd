@@ -1,0 +1,92 @@
+---
+title: "Chapitre 14 : Introduction à la régression spline"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+#    toc: true
+#    toc_float: true
+    layout: default
+---
+
+```{r}
+ozone <- read.table("ozone_simple.txt",header=T,sep=";")
+```
+
+```{r}
+polyreg <- function(donnee,d=3){
+  sigmax <- sd(donnee[,"T12"])
+  grillex <- seq(min(donnee[,"T12"])-sigmax,max(donnee[,"T12"])+sigmax,length=100)
+  aprevoir <- data.frame(T12=grillex)
+  regpol <- lm(O3~poly(T12,degree=d,raw=TRUE),data=donnee)
+  prev <- predict(regpol,aprevoir)
+  return(list(grillex=grillex,grilley=prev))
+}
+```
+
+```{r}
+plot(O3~T12,data=ozone,xlab="T12",ylab="O3")
+iter <- 1
+for(ii in c(1,2,3,9)){
+ tmp <- polyreg(ozone,d=ii)
+ lines(tmp$grillex,tmp$grilley,col=iter,lty=iter)
+ iter <- iter+1
+}
+legend(15,150,c("d=1","d=2","d=3","d=9"),col=1:4,lty=1:4)
+```
+
+```{r}
+ind <- which(ozone[,2]<23)
+regd <- lm(O3~T12,data=ozone[ind,])
+regf <- lm(O3~T12,data=ozone[-ind,])
+gxd <- seq(3,23,length=50)
+gyd <- regd$coef[1]+gxd*regd$coef[2]
+gxf <- seq(23,35,length=50)
+gyf <- regf$coef[1]+gxf*regf$coef[2]
+plot(O3~T12,data=ozone)
+lines(gxd,gyd,col=2,lty=1,lwd=2)
+lines(gxf,gyf,col=2,lty=1,lwd=2)
+abline(v=23)
+```
+
+```{r}
+library(splines)
+XB <- bs(ozone[,2], knots=c(15,23), degree=2,Boundary.knots=c(5,32))
+regs <- lm(ozone[,"O3"] ~ XB)
+regs$coef
+```
+
+
+```{r}
+grillex <- seq(5,32,length=100)
+bgrillex <- bs(grillex, knots=c(15,23), degree=2,Boundary.knots=c(5,32))
+prev <- bgrillex%*%as.matrix(regs$coeff[-1])+regs$coeff[1]
+plot(O3~T12,data=ozone)
+lines(grillex,prev,col=2)
+abline(v=c(15,23))
+```
+
+```{r}
+regssplinel1 <- smooth.spline(ozone[,2],ozone[,1],lambda =100)
+prevl1 <- predict(regssplinel1,grillex)
+plot(O3~T12,data=ozone)
+lines(prevl1$x,prevl1$y,col=2)
+```
+
+```{r}
+regsspline <- smooth.spline(ozone[,2],ozone[,1])
+prev <- predict(regsspline,grillex)
+plot(O3~T12,data=ozone)
+lines(prev$x,prev$y,col=2)
+```
+
+```{r}
+regsspline
+```
+
+```{r}
+
+```
+
+
+
