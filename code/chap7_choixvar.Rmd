@@ -1,0 +1,34 @@
+---
+title: "Chapitre 7 : Choix de variables"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    layout: default
+---
+
+```{r}
+ozone <- read.table("ozone.txt", header = T, sep = ";")
+library(leaps)
+recherche <- regsubsets(O3 ~ T12 + T15 + Ne12 + N12 + S12 + E12 + W12 + Vx + O3v, int = T,nbest = 1, nvmax = 10, method = "exhaustive", data = ozone)
+```
+
+```{r}
+plot(recherche, scale = "bic")
+plot(recherche, scale = "Cp")
+plot(recherche, scale = "adjr2")
+plot(recherche, scale = "r2")
+```
+
+```{r}
+resume <- summary(recherche)
+nomselec <- colnames(resume$which)[resume$which[which.min(resume$bic),]][-1]
+formule <- formula(paste("O3~",paste(nomselec,collapse="+")))
+modeleslectionne <- lm(formule, data = ozone)
+modeleslectionne
+```
+
+
+
