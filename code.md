@@ -10,6 +10,8 @@ layout: default
    * [Chapitre 5](code/chap5_infgauss.html)
    * [Chapitre 6](code/chap6_anova.html)
    * [Chapitre 7](code/chap7_choixvar.html)
+   * [Chapitre 8](code/chap8_ridge_lasso.html)
+   * [Chapitre 9](code/chap8_reg_comp.html)
    * [Chapitre 11](code/chap11_logistique.html)
    * [Chapitre 12](code/chap12_poisson.html)
    * [Chapitre 13](code/chap13_regul.html)
