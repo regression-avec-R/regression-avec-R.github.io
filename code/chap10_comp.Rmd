@@ -1,0 +1,294 @@
+---
+title: "Chapitre 10 : Comparaison de différentes méthodes, étude de cas réels"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    layout: default
+---
+
+```{r}
+ozone <- read.table("ozone_complet.txt", header = T, sep = ";")
+dim(ozone)
+```
+
+```{r}
+indNA <- which(is.na(ozone), arr.ind = T)[,1]
+ozone2 <- ozone[-indNA,]
+```
+
+```{r}
+ozone <- read.table("ozone_transf.txt", header = T, sep = ";")
+```
+
+```{r}
+RES <- data.frame(Y = ozone$maxO3)
+```
+
+```{r}
+nbbloc <- 10
+blocseq <- rep(1:nbbloc, length = nrow(ozone))
+```
+
+```{r}
+set.seed(1234)
+bloc <- sample(blocseq)
+```
+
+# Régression multiple
+
+```{r message=FALSE, warning=FALSE}
+library(leaps)
+```
+
+```{r}
+for(i in 1:nbbloc){
+  ###MCO global
+  reg <- lm(maxO3~.,data=ozone[bloc!=i,])
+  RES[bloc==i,"MCO"] <- predict(reg,ozone[bloc==i,])
+  ###MCO choix
+  recherche <- regsubsets(maxO3~., int=T, nbest=1, nvmax=22,
+                                        data=ozone[bloc!=i,])
+  resume <- summary(recherche)
+  nomselec <- colnames(resume$which)[
+                       resume$which[which.min(resume$bic),] ][-1]
+     formule <- formula(paste("maxO3~",paste(nomselec,collapse="+")))
+  regbic <- lm(formule,data=ozone[bloc!=i,])
+  RES[bloc==i,"choix"] <- predict(regbic,ozone[bloc==i,])
+}
+```
+
+
+# Ridge, lasso, elastic net
+
+```{r}
+ozone.X <- model.matrix(maxO3~.,data=ozone)[,-1]
+ozone.Y <- ozone[,"maxO3"]
+```
+
+```{r message=FALSE, warning=FALSE}
+library(glmnet)
+for(i in 1:nbbloc){
+  XA <- ozone.X[bloc!=i,]
+  YA <- ozone.Y[bloc!=i]
+  XT <- ozone.X[bloc==i,]
+  ###ridge
+  tmp <- cv.glmnet(XA,YA,alpha=0)
+  mod <- glmnet(XA,YA,alpha=0,lambda=tmp$lambda.min)
+  RES[bloc==i,"ridge"] <- predict(mod,XT)
+  ###lasso
+  tmp <- cv.glmnet(XA,YA,alpha=1)
+  mod <- glmnet(XA,YA,alpha=0,lambda=tmp$lambda.min)
+  RES[bloc==i,"lasso"] <- predict(mod,XT)
+  ###elastic
+  tmp <- cv.glmnet(XA,YA,alpha=0.5)
+  mod <- glmnet(XA,YA,alpha=.5,lambda=tmp$lambda.min)
+  RES[bloc==i,"elastic"] <- predict(mod,XT)
+}
+```
+
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+RES %>% summarize_at(-1,funs(mean((Y-.)^2)))
+```
+
+
+# Régression sur composantes
+
+```{r}
+library(pls)
+for(i in 1:nbbloc){
+   #####PLS
+   tmp <- plsr(maxO3~.,data=ozone[bloc!=i,],ncomp=20,
+                                 validation="CV",scale=TRUE)
+   mse <- MSEP(tmp,estimate=c("train","CV"))
+   npls <- which.min(mse$val["CV",,])-1
+   mod <- plsr(maxO3~.,ncomp=npls,data=ozone[bloc!=i,],scale=TRUE)
+   RES[bloc==i,"PLS"] <- predict(mod,ozone[bloc==i,],ncomp=npls)
+   #####PCR
+   tmp <- pcr(maxO3~.,data=ozone[bloc!=i,],ncomp=20,
+                                    validation="CV",scale=TRUE)
+   mse <- MSEP(tmp,estimate=c("train","CV"))
+   npcr <- which.min(mse$val["CV",,])-1
+   mod <- pcr(maxO3~.,ncomp=npcr,data=ozone[bloc!=i,],scale=TRUE)
+   RES[bloc==i,"PCR"] <- predict(mod,ozone[bloc==i,],ncomp=npcr)
+}
+```
+
+```{r}
+RES %>% summarize_at(-1,funs(mean((Y-.)^2)))
+
+```
+
+# Pour aller plus loin
+
+```{r}
+sse_reg <- function(don,bloc,b) {
+    m_reg <- lm(maxO3~.,data=don[bloc!=b,])
+    previsions <- predict(m_reg,don[bloc==b,])
+    return(sum((don[bloc==b,"maxO3"]-previsions)^2))
+}
+```
+
+### Exercice 10.1
+
+```{r}
+sse_regbic <- function(don,bloc,b,nvmax,method) {
+    recherche <- regsubsets(maxO3~., int=T, nbest=1,data=don[bloc!=b,],
+                           nvmax=nvmax,method=method)
+    resume <- summary(recherche)
+    nomselec <- colnames(resume$which)[resume$which[which.min(resume$bic),]][-1]
+    formule <- formula(paste("maxO3 ~", paste(nomselec, collapse = "+")))
+    m_reg <- lm(formule,data=don[bloc!=b,])
+    previsions <- predict(m_reg,don[bloc==b,])
+    return(sum((don[bloc==b,"maxO3"]-previsions)^2))
+}
+```
+
+```{r}
+sse_glmnet <- function(X,Y,bloc,b,a) {
+  rech <- cv.glmnet(X[bloc!=b,], Y[bloc!=b,drop=FALSE], alpha=a)
+  prev <- predict(rech, newx=X[bloc==b,], s=rech$lambda.min)
+  return(sum((Y[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+
+```
+
+```{r}
+library(pls)
+sse_pls <- function(don,bloc,b) {
+  rech <- plsr(maxO3~.,data=don[bloc!=b,],ncomp=10,validation="CV",scale=TRUE)
+  ncomp <- which.min(MSEP(rech)$val["CV",,])-1
+  prev <- predict(rech,newdata=don[bloc==b,],ncomp=ncomp)
+  return(sum((don[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+
+```
+
+```{r}
+sse_pcrS <- function(don,bloc,b) {
+  rech <- pcr(maxO3~.,data=don[bloc!=b,],ncomp=10,validation="CV",scale=TRUE)
+  ncomp <- which.min(MSEP(rech)$val["CV",,])-1
+  prev <- predict(rech,newdata=don[bloc==b,],ncomp=ncomp)
+  return(sum((don[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+
+```
+
+### MCO
+
+```{r}
+set.seed(1234)
+ssereg  <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssereg[r] <- ssereg[r] + sse_reg(ozone,bloc,b)
+  }
+}
+mean(ssereg/nrow(ozone))
+```
+
+### BIC
+
+```{r}
+set.seed(1234)
+sseregbic <-  rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    sseregbic[r] <- sseregbic[r] + sse_regbic(ozone,bloc,b,22,"exhaustive")
+  }
+}
+mean(sseregbic/nrow(ozone)) 
+```
+
+### Lasso
+
+```{r}
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sselasso <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sselasso[r] <- sselasso[r] + sse_glmnet(X,Y,bloc,b,a=1)
+  }
+}
+mean(sselasso/nrow(ozone)) 
+```
+
+
+### Ridge
+
+```{r}
+set.seed(1234)
+sseridge <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseridge[r] <- sseridge[r] + sse_glmnet(X,Y,bloc,b,a=0)
+  }
+}
+mean(sseridge/nrow(ozone)) 
+```
+
+### Elastic net
+
+```{r}
+set.seed(1234)
+sseelasticnet <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseelasticnet[r] <- sseelasticnet[r] + sse_glmnet(X,Y,bloc,b,a=0.5)
+  }
+}
+mean(sseelasticnet/nrow(ozone)) 
+```
+
+### PLS
+
+
+```{r}
+set.seed(1234)
+ssepls <-  rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+  }
+}
+mean(ssepls/nrow(ozone)) 
+```
+
+
+### PCR
+
+
+```{r}
+set.seed(1234)
+ssepcr <-  rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+  }
+}
+mean(ssepcr/nrow(ozone)) 
+```
+
+## Interaction
+
+## Polynomes
+
+## Splines
+
+## Splines et interaction
+
+
+
