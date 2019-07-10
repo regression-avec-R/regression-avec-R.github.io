@@ -1,0 +1,44 @@
+---
+title: "Chapitre 2 : La régression linéaire multiple"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    layout: default
+---
+
+# La concentration en ozone
+
+```{r message=FALSE, warning=FALSE}
+ozone <- read.table("ozone.txt", header = T, sep = ";")
+library("scatterplot3d")
+scatterplot3d(ozone[,"T12"],ozone[,"Vx"],ozone[,"O3"],
+              type="h",pch=16, box=FALSE, xlab="T12", ylab="Vx", zlab="O3")
+```
+
+```{r}
+regmulti <- lm(O3~T12+Vx, data = ozone)
+summary(regmulti)
+```
+
+# La hauteur des eucalyptus
+
+```{r}
+eucalypt <- read.table("eucalyptus.txt", header = T, sep = ";")
+plot(ht~circ, data = eucalypt, xlab = "circ", ylab = "ht")
+```
+
+```{r}
+regmult <- lm(ht ~ circ + I(sqrt(circ)), data = eucalypt)
+resume.mult <- summary(regmult)
+resume.mult
+```
+
+```{r}
+plot(ht ~ circ, data = eucalypt, pch = "+", col = "grey60")
+grille <- data.frame(circ = seq(min(eucalypt[,"circ"]),max(eucalypt[,"circ"]), length = 100))
+lines(grille[,"circ"], predict(regmult, grille))
+```
+

@@ -5,7 +5,7 @@ layout: default
 ## Lignes de code utilisées dans le livre
 
    * [Chapitre 1](code/chap1_regsimple.html)
-   * Chapitre 2
+   * [Chapitre 2](code/chap2_regmult.html)
    * [Chapitre 11](code/chap11_logistique.html)
    * [Chapitre 12](code/chap12_poisson.html)
    * [Chapitre 13](code/chap13_regul.html)
