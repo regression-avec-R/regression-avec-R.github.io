@@ -4,8 +4,8 @@ layout: default
 output: 
   html_document:
     css: styles.css
-    toc: true
-    toc_float: true
+#    toc: true
+#    toc_float: true
     layout: default
 ---
 
