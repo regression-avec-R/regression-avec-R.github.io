@@ -10,6 +10,8 @@ layout: default
 * [logit_ex6.csv](donnees/logit_ex6.csv)
 * [logit_ridge_lasso.csv](donnees/logit_ridge_lasso.csv)
 * [ozone.txt](donnees/ozone.txt)
+* [ozone_complet.txt](donnees/ozone_complet.txt)
+* [ozone_long.txt](donnees/ozone_long.txt)
 * [ozone_simple.txt](donnees/ozone_simple.txt)
 * [panne.txt](donnees/panne.txt)
 * [poissonData.csv](donnees/poissonData.csv)
