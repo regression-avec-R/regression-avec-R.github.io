@@ -29,6 +29,7 @@ modeleBIC <- lm(formule,data=ozone[,1:10])
 round(coefficients(modeleBIC),2)
 BIC(modeleBIC)
 ```
+# Mise en place des données centrées réduites
 
 ```{r}
 X <- ozone[,2:10]
