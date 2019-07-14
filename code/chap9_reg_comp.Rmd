@@ -9,6 +9,8 @@ output:
     layout: default
 ---
 
+# Régression MCO et choix de variables
+
 ```{r}
 ozone <- read.table("ozone.txt",header=TRUE,sep=";",row.names=1)
 modeleinit <- lm(O3 ~ ., data = ozone[,1:10])
