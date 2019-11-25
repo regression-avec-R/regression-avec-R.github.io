@@ -13,6 +13,7 @@ layout: default
 * [ozone_complet.txt](donnees/ozone_complet.txt)
 * [ozone_long.txt](donnees/ozone_long.txt)
 * [ozone_simple.txt](donnees/ozone_simple.txt)
+* [ozone_transf.txt](donnees/ozone_transf.txt)
 * [panne.txt](donnees/panne.txt)
 * [poissonData.csv](donnees/poissonData.csv)
 * [poissonData3.csv](donnees/poissonData3.csv)
