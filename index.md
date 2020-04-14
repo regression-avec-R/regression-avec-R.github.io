@@ -1,5 +1,5 @@
 ---
-title: Régression avec R1
+title: Régression avec R
 ---
 
 <div>
