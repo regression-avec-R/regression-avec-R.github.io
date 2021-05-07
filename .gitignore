@@ -1,2 +1,5 @@
 index.html
 .DS_store
+# fichier R
+*.Rhistory
+*.RData

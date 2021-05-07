@@ -1,0 +1,731 @@
+---
+title: "Chapitre 10 : Comparaison des différentes méthodes, étude de cas réels"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    layout: default
+---
+
+# Préliminaires
+Importation de l'ozone
+```{r}
+ozone <- read.table("ozone_complet.txt", header = T, sep = ";")
+dim(ozone)
+```
+Elimination des individus avec une valeur manquante
+```{r}
+indNA <- which(is.na(ozone), arr.ind = T)[,1]
+ozone2 <- ozone[-indNA,]
+```
+Importation du fichier d'ozone sans valeurs manquantes avec les projections
+```{r}
+ozone <- read.table("ozone_transf.txt", header = T, sep = ";")
+```
+et préparation du data-frame qui contiendra les résultats de chaque méthode
+```{r}
+RES <- data.frame(Y = ozone$maxO3)
+```
+Pour le moment il ne contient qu'une seule colonne avec les données à prévoir.
+
+# Méthodes et comparaison
+Nous séparons en 10 blocs en 2 étapes: création des affectations des individus à chaque bloc
+```{r}
+nbbloc <- 10
+blocseq <- rep(1:nbbloc, length = nrow(ozone))
+```
+Puis nous utilisons une permutation aléatoire de ces affectations
+```{r}
+set.seed(1234)
+bloc <- sample(blocseq)
+```
+
+## Régression multiple
+Chargement du package pour la sélection de variables
+```{r}
+library(leaps)
+```
+Evaluation de la qualité prédictive de la régression linéaire et de la
+sélection de variables via BIC (algorithme exhaustif)
+```{r}
+for(i in 1:nbbloc){
+  ###MCO global
+  reg <- lm(maxO3~.,data=ozone[bloc!=i,])
+  RES[bloc==i,"MCO"] <- predict(reg,ozone[bloc==i,])
+  ###MCO choix
+  recherche <- regsubsets(maxO3~., int=T, nbest=1, nvmax=22, 
+                                        data=ozone[bloc!=i,])
+  resume <- summary(recherche)
+  nomselec <- colnames(resume$which)[
+                       resume$which[which.min(resume$bic),] ][-1]
+  formule <- formula(paste("maxO3~",paste(nomselec,collapse="+")))
+  regbic <- lm(formule,data=ozone[bloc!=i,])
+  RES[bloc==i,"choix"] <- predict(regbic,ozone[bloc==i,])
+}
+```
+
+## Lasso, ridge et elasticnet
+Chargement du package pour lasso, ridge et elasticnet
+et création des matrices nécessaires à son utilisation:
+```{r}
+library(glmnet)
+ozone.X <- model.matrix(maxO3~.,data=ozone)[,-1]
+ozone.Y <- ozone[,"maxO3"]
+```
+Evaluation de la qualité prédictive des régressions lasso, ridge et elasticnet:
+
+```{r}
+for(i in 1:nbbloc){  
+  XA <- ozone.X[bloc!=i,]
+  YA <- ozone.Y[bloc!=i]
+  XT <- ozone.X[bloc==i,]
+  ###ridge
+  tmp <- cv.glmnet(XA,YA,alpha=0)
+  mod <- glmnet(XA,YA,alpha=0,lambda=tmp$lambda.min)
+  RES[bloc==i,"ridge"] <- predict(mod,XT)
+  ###lasso
+  tmp <- cv.glmnet(XA,YA,alpha=1)
+  mod <- glmnet(XA,YA,alpha=0,lambda=tmp$lambda.min)
+  RES[bloc==i,"lasso"] <- predict(mod,XT)
+  ###elastic
+  tmp <- cv.glmnet(XA,YA,alpha=0.5)
+  mod <- glmnet(XA,YA,alpha=.5,lambda=tmp$lambda.min)
+  RES[bloc==i,"elastic"] <- predict(mod,XT)
+}
+```
+
+## Régressions sur composantes
+Chargement du package pour les régressions sur composantes
+```{r}
+library(pls)
+```
+Evaluation de la qualité prédictive des régressions PCR et PLS
+
+```{r}
+for(i in 1:nbbloc){
+   #####PLS
+   tmp <- plsr(maxO3~.,data=ozone[bloc!=i,],ncomp=20,
+                                 validation="CV",scale=TRUE)
+   mse <- MSEP(tmp,estimate=c("train","CV"))
+   npls <- which.min(mse$val["CV",,])-1 
+   mod <- plsr(maxO3~.,ncomp=npls,data=ozone[bloc!=i,],scale=TRUE)
+   RES[bloc==i,"PLS"] <- predict(mod,ozone[bloc==i,],ncomp=npls)
+   #####PCR
+   tmp <- pcr(maxO3~.,data=ozone[bloc!=i,],ncomp=20,
+                                    validation="CV",scale=TRUE)
+   mse <- MSEP(tmp,estimate=c("train","CV"))
+   npcr <- which.min(mse$val["CV",,])-1 
+   mod <- pcr(maxO3~.,ncomp=npcr,data=ozone[bloc!=i,],scale=TRUE)
+   RES[bloc==i,"PCR"] <- predict(mod,ozone[bloc==i,],ncomp=npcr)
+ }
+```
+# Pour aller plus loin
+## Régression linéaire
+La fonction
+```{r}
+sse_reg <- function(don,bloc,b) {
+    m_reg <- lm(maxO3~.,data=don[bloc!=b,])
+    previsions <- predict(m_reg,don[bloc==b,])
+    return(sum((don[bloc==b,"maxO3"]-previsions)^2))
+}
+```
+La qualité de la modélisation
+```{r}
+set.seed(1234)
+ssereg  <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssereg[r] <- ssereg[r] + sse_reg(ozone,bloc,b)
+  }
+}
+mean(ssereg/nrow(ozone))
+```
+
+## Choix de variables
+La fonction
+```{r}
+library(leaps)
+sse_regbic <- function(don,bloc,b,nvmax,method) {
+    recherche <- regsubsets(maxO3~., int=T, nbest=1,data=don[bloc!=b,],
+                           nvmax=nvmax,method=method)
+    resume <- summary(recherche)
+    nomselec <- colnames(resume$which)[resume$which[which.min(resume$bic),]][-1]
+    formule <- formula(paste("maxO3 ~", paste(nomselec, collapse = "+")))
+    m_reg <- lm(formule,data=don[bloc!=b,])
+    previsions <- predict(m_reg,don[bloc==b,])
+    return(sum((don[bloc==b,"maxO3"]-previsions)^2))
+}
+```
+La qualité de la modélisation
+```{r}
+set.seed(1234)
+sseregbic <-  rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    sseregbic[r] <- sseregbic[r] + sse_regbic(ozone,bloc,b,22,"exhaustive")
+  }
+}
+mean(sseregbic/nrow(ozone)) 
+```
+## Lasso
+La fonction
+```{r}
+library(glmnet)
+sse_glmnet <- function(X,Y,bloc,b,a) {
+  rech <- cv.glmnet(X[bloc!=b,], Y[bloc!=b,drop=FALSE], alpha=a)
+  prev <- predict(rech, newx=X[bloc==b,], s=rech$lambda.min)
+  return(sum((Y[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+```
+La qualité de la modélisation
+```{r}
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sselasso <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sselasso[r] <- sselasso[r] + sse_glmnet(X,Y,bloc,b,a=1)
+  }
+}
+mean(sselasso/nrow(ozone)) 
+```
+## RIDGE
+La qualité de la modélisation
+```{r}
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sseridge <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseridge[r] <- sseridge[r] + sse_glmnet(X,Y,bloc,b,a=0)
+  }
+}
+mean(sseridge/nrow(ozone)) 
+```
+## Elastic-net
+La qualité de la modélisation
+```{r}
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sseelasticnet <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseelasticnet[r] <- sseelasticnet[r] + sse_glmnet(X,Y,bloc,b,a=0.5)
+  }
+}
+mean(sseelasticnet/nrow(ozone)) 
+```
+
+# Avec interaction
+Rappelons les données et la répartition par bloc (avant la permutation aléatoire):
+```{r}
+ozone <- read.table("ozone_transf.txt",header=T,sep=";")
+nbbloc <- 10
+blocseq <- rep(1:nbbloc, length = nrow(ozone))
+```
+## Régression linéaire
+La fonction
+```{r}
+ssei_reg <- function(don,bloc,b) {
+    m_reg <- lm(maxO3~.^2,data=don[bloc!=b,])
+    previsions <- predict(m_reg,don[bloc==b,])
+    return(sum((don[bloc==b,"maxO3"]-previsions)^2))
+}
+```
+La qualité de la modélisation
+```{r}
+set.seed(1234)
+ssereg  <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssereg[r] <- ssereg[r] + ssei_reg(ozone,bloc,b)
+  }
+}
+mean(ssereg/nrow(ozone))
+```
+## Régression linéaire, sélection de variable via BIC (algorithme forward)
+La fonction
+```{r}
+library(leaps)
+ssei_regbic <- function(don,bloc,b,nvmax,method) {
+    recherche <- regsubsets(maxO3~.^2, int=T, nbest=1,data=don[bloc!=b,],
+                           nvmax=nvmax,method=method)
+    resume <- summary(recherche)
+    nomselec <- colnames(resume$which)[resume$which[which.min(resume$bic),]][-1]
+    formule <- formula(paste("maxO3 ~", paste(nomselec, collapse = "+")))
+    m_reg <- lm(formule,data=don[bloc!=b,])
+    previsions <- predict(m_reg,don[bloc==b,])
+    return(sum((don[bloc==b,"maxO3"]-previsions)^2))
+}
+```
+La qualité de la modélisation
+```{r}
+set.seed(1234)
+sseregbic <-  rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    sseregbic[r] <- sseregbic[r] + ssei_regbic(ozone,bloc,b,254,"forward")
+  }
+}
+mean(sseregbic/nrow(ozone)) 
+```
+## Régression lasso
+La fonction
+```{r}
+library(glmnet)
+ssei_glmnet <- function(X,Y,bloc,b,a) {
+  rech <- cv.glmnet(X[bloc!=b,], Y[bloc!=b,drop=FALSE], alpha=a)
+  prev <- predict(rech, newx=X[bloc==b,], s=rech$lambda.min)
+  return(sum((Y[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+```
+La qualité de la modélisation
+```{r}
+X <-  model.matrix(maxO3~.^2,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sselasso <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  print(r)
+  for(b in 1:nbbloc){
+      sselasso[r] <- sselasso[r] + ssei_glmnet(X,Y,bloc,b,a=1)
+  }
+}
+mean(sselasso/nrow(ozone)) 
+```
+## Régression ridge
+La qualité de la modélisation
+```{r}
+X <-  model.matrix(maxO3~.^2,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sseridge <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  print(r)
+  for(b in 1:nbbloc){
+      sseridge[r] <- sseridge[r] + ssei_glmnet(X,Y,bloc,b,a=0)
+  }
+}
+mean(sseridge/nrow(ozone)) 
+```
+## Régression elasticnet
+La qualité de la modélisation
+```{r}
+library(glmnet)
+X <-  model.matrix(maxO3~.^2,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+set.seed(1234)
+sseelasticnet <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  print(r)
+  for(b in 1:nbbloc){
+      sseelasticnet[r] <- sseelasticnet[r] + ssei_glmnet(X,Y,bloc,b,a=0.5)
+  }
+}
+mean(sseelasticnet/nrow(ozone)) 
+```
+## Régression PLS
+La fonction
+```{r}
+library(pls)
+ssei_pls <- function(don,bloc,b) {
+  rech <- plsr(maxO3~.^2,data=don[bloc!=b,],ncomp=30,validation="CV",scale=TRUE)
+  ncomp <- which.min(MSEP(rech)$val["CV",,])-1
+  prev <- predict(rech,newdata=don[bloc==b,],ncomp=ncomp)
+  return(sum((don[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+```
+La qualité de la modélisation
+```{r}
+set.seed(1234)
+ssepls <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  print(r)
+  for(b in 1:nbbloc){
+      ssepls[r] <- ssepls[r] + ssei_pls(ozone,bloc,b)
+  }
+}
+mean(ssepls/nrow(ozone))
+```
+## Régression PCR (séquentiel)
+La fonction
+```{r}
+library(pls)
+ssei_pcrS <- function(don,bloc,b) {
+  rech <- pcr(maxO3~.^2,data=don[bloc!=b,],ncomp=30,validation="CV",scale=TRUE)
+  ncomp <- which.min(MSEP(rech)$val["CV",,])-1
+  prev <- predict(rech,newdata=don[bloc==b,],ncomp=ncomp)
+  return(sum((don[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+```
+La qualité de la modélisation
+```{r}
+set.seed(1234)
+ssepcrS <- rep(0,50)
+for (r in 1:50) {
+  bloc <- sample(blocseq)
+  print(r)
+  for(b in 1:nbbloc){
+      ssepcrS[r] <- ssepcrS[r] + ssei_pcrS(ozone,bloc,b)
+  }
+}
+mean(ssepcrS/nrow(ozone)) 
+```
+# Régression polynomiale (degré 3)
+Création des données
+```{r}
+ozone <- read.table("ozone_transf.txt",header=T,sep=";")
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+ozone <- data.frame(maxO3=ozone$maxO3,X,X^2,X^3)
+X <- model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+```
+et rappelons les blocs
+```{r}
+nbbloc <- 10
+blocseq <- rep(1:nbbloc, length = nrow(ozone))
+set.seed(1234)
+bloc <- sample(blocseq)
+```
+
+## La qualité de la modélisation de la régression polynomiale
+```{r}
+set.seed(1234)
+ssereg  <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssereg[r] <- ssereg[r] + sse_reg(ozone,bloc,b)
+  }
+}
+round(mean(ssereg/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression polynomiale avec sélection BIC
+```{r}
+set.seed(1234)
+sseregbic <-  rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    sseregbic[r] <- sseregbic[r] +  sse_regbic(ozone,bloc,b,22,"forward")
+  }
+}
+round(mean(sseregbic/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression PLS sur polynômes
+Redéfinissons une fonction pour évaluer PLS mais sans intéractions:
+```{r}
+library(pls)
+sse_pls <- function(don,bloc,b,ncmax=30) {
+  rech <- plsr(maxO3~.,data=don[bloc!=b,],ncomp=ncmax,validation="CV",scale=TRUE)
+  ncomp <- which.min(MSEP(rech)$val["CV",,])-1
+  prev <- predict(rech,newdata=don[bloc==b,],ncomp=ncomp)
+  return(sum((don[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+```
+L'évaluation de la qualité de la modélisation est alors:
+```{r}
+set.seed(1234)
+ssepls <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+  }
+}
+round(mean(ssepls/nrow(ozone)),2)
+```
+
+## La qualité de la modélisation de la régression PCR sur polynômes
+La fonction sans intéractions:
+```{r}
+library(pls)
+sse_pcrS <- function(don,bloc,b,ncmax=30) {
+  rech <- pcr(maxO3~.,data=don[bloc!=b,],ncomp=ncmax,validation="CV",scale=TRUE)
+  ncomp <- which.min(MSEP(rech)$val["CV",,])-1
+  prev <- predict(rech,newdata=don[bloc==b,],ncomp=ncomp)
+  return(sum((don[bloc==b,"maxO3"] - as.vector(prev))^2))
+}
+```
+et l'évaluation de la modélisation
+```{r}
+set.seed(1234)
+ssepcr <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+  }
+}
+round(mean(ssepcr/nrow(ozone)),2)
+```
+
+## La qualité de la modélisation de la régression lasso sur polynômes
+```{r}
+set.seed(1234)
+sselasso <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sselasso[r] <- sselasso[r] + sse_glmnet(X,Y,bloc,b,a=1)
+  }
+}
+round(mean(sselasso/nrow(ozone)),2)
+```
+
+## La qualité de la modélisation de la régression ridge sur polynômes
+```{r}
+set.seed(1234)
+sseridge <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseridge[r] <- sseridge[r] + sse_glmnet(X,Y,bloc,b,a=0)
+  }
+}
+round(mean(sseridge/nrow(ozone)),2)
+```
+
+## La qualité de la modélisation de la régression elasticnet sur polynômes
+```{r}
+set.seed(1234)
+sseelast <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseelast[r] <- sseelast[r] + sse_glmnet(X,Y,bloc,b,a=0.5)
+  }
+}
+round(mean(sseelast/nrow(ozone)),2)
+```
+
+# Régression avec des splines (degré 3, 3 noeuds intérieurs)
+Les données ici
+```{r}
+ozone <- read.table("ozone_transf.txt", header = T, sep = ";")
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+library(splines)
+BB <- NULL
+for(i in 1:ncol(X)){
+    var <- X[,i]
+    BX <- bs(var,knots=quantile(var,prob=c(.25,.5,.75)),degre=3,
+             Boundary.knots=c(min(var),max(var)))
+    colnames(BX) <- paste(colnames(X)[i],"-b",1:6,sep="")
+    BB <- cbind(BB,BX)
+}
+ozone <- data.frame(maxO3=ozone$maxO3,BB)
+X <- model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+```
+et rappelons les blocs
+```{r}
+nbbloc <- 10
+blocseq <- rep(1:nbbloc, length = nrow(ozone))
+```
+## La qualité de la modélisation de la régression spline
+```{r}
+set.seed(1234)
+ssereg  <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssereg[r] <- ssereg[r] + sse_reg(ozone,bloc,b)
+  }
+}
+round(mean(ssereg/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression spline avec sélection BIC
+```{r}
+set.seed(1234)
+sseregbic <-  rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    sseregbic[r] <- sseregbic[r] +  sse_regbic(ozone,bloc,b,22,"forward")
+  }
+}
+round(mean(sseregbic/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression PLS sur splines
+```{r}
+set.seed(1234)
+ssepls <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+  }
+}
+```
+## La qualité de la modélisation de la régression PCR sur splines
+```{r}
+set.seed(1234)
+ssepcr <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+  }
+}
+round(mean(ssepcr/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression lasso sur splines
+```{r}
+set.seed(1234)
+sselasso <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sselasso[r] <- sselasso[r] + sse_glmnet(X,Y,bloc,b,a=1)
+  }
+}
+round(mean(sselasso/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression ridge sur splines
+```{r}
+set.seed(1234)
+sseridge <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseridge[r] <- sseridge[r] + sse_glmnet(X,Y,bloc,b,a=0)
+  }
+}
+round(mean(sseridge/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression elasticnet sur splines
+```{r}
+set.seed(1234)
+sseelast <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseelast[r] <- sseelast[r] + sse_glmnet(X,Y,bloc,b,a=0.5)
+  }
+}
+round(mean(sseelast/nrow(ozone)),2)
+```
+# Régression avec des splines (degré 3, 3 noeuds intérieurs) avec interactions
+Les données ici
+```{r}
+ozone <- read.table("ozone_transf.txt",header=T,sep=";")
+X <-  model.matrix(maxO3~.,data=ozone)[,-1]
+library(splines)
+BB <- NULL
+for(i in 1:ncol(X)){
+    var <- X[,i]
+    BX <- bs(var,knots=quantile(var,prob=c(.25,.5,.75)),degre=3,
+             Boundary.knots=c(min(var),max(var)))
+    colnames(BX) <- paste(colnames(X)[i],"-b",1:6,sep="")
+    BB <- cbind(BB,BX)
+}
+X <-  model.matrix(maxO3~.^2,data=ozone)[,-1]
+ozone <- data.frame(maxO3=ozone$maxO3,BB,X[,-c(1:21)])
+X <- model.matrix(maxO3~.,data=ozone)[,-1]
+Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
+```
+et rappelons les blocs
+```{r}
+nbbloc <- 10
+blocseq <- rep(1:nbbloc, length = nrow(ozone))
+```
+
+## La qualité de la modélisation de la régression spline
+```{r}
+set.seed(1234)
+ssereg  <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    ssereg[r] <- ssereg[r] + sse_reg(ozone,bloc,b)
+  }
+}
+round(mean(ssereg/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression spline avec sélection BIC
+```{r}
+set.seed(1234)
+sseregbic <-  rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+    sseregbic[r] <- sseregbic[r] +  sse_regbic(ozone,bloc,b,22,"forward")
+  }
+}
+round(mean(sseregbic/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression PLS sur splines
+```{r}
+set.seed(1234)
+ssepls <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+  }
+}
+```
+## La qualité de la modélisation de la régression PCR sur splines
+```{r}
+set.seed(1234)
+ssepcr <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+  }
+}
+round(mean(ssepcr/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression lasso sur splines
+```{r}
+set.seed(1234)
+sselasso <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sselasso[r] <- sselasso[r] + sse_glmnet(X,Y,bloc,b,a=1)
+  }
+}
+round(mean(sselasso/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression ridge sur splines
+```{r}
+set.seed(1234)
+sseridge <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseridge[r] <- sseridge[r] + sse_glmnet(X,Y,bloc,b,a=0)
+  }
+}
+round(mean(sseridge/nrow(ozone)),2)
+```
+## La qualité de la modélisation de la régression elasticnet sur splines
+```{r}
+set.seed(1234)
+sseelast <- rep(0,20)
+for (r in 1:20) {
+  bloc <- sample(blocseq)
+  for(b in 1:nbbloc){
+      sseelast[r] <- sseelast[r] + sse_glmnet(X,Y,bloc,b,a=0.5)
+  }
+}
+round(mean(sseelast/nrow(ozone)),2)
+```
