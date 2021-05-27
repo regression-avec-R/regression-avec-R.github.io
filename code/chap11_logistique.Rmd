@@ -61,6 +61,9 @@ coef(model1)
 ```{r message=FALSE, warning=FALSE}
 library(bestglm)
 data(SAheart)
+new.SAheart <- SAheart[c(2,408,35),]
+row.names(new.SAheart) <- NULL
+SAheart <- SAheart[-c(2,408,35),]
 model <- glm(chd~.,data=SAheart,family=binomial)
 round(summary(model)$coefficients,4)
 confint.default(model)
@@ -79,20 +82,20 @@ donnees <- data.frame(X1,X2,X3,Y)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model <- glm(Y~.,data=donnees,family=binomial)
+m1 <- glm(Y~.,data=donnees,family=binomial)
 library(car)
-Anova(model,type=3,test.statistic="Wald")
-Anova(model,type=3,test.statistic="LR")
+Anova(m1,type=3,test.statistic="Wald")
+Anova(m1,type=3,test.statistic="LR")
 
-model01 <- glm(Y~X2+X3,data=donnees,family=binomial)
-model02 <- glm(Y~X1+X3,data=donnees,family=binomial)
-model03 <- glm(Y~X1+X2,data=donnees,family=binomial)
-anova(model01,model,test="LRT")
-anova(model02,model,test="LRT")
-anova(model03,model,test="LRT")
+m01 <- glm(Y~X2+X3,data=donnees,family=binomial)
+m02 <- glm(Y~X1+X3,data=donnees,family=binomial)
+m03 <- glm(Y~X1+X2,data=donnees,family=binomial)
+anova(m01,m1,test="LRT")
+anova(m02,m1,test="LRT")
+anova(m03,m1,test="LRT")
 
 library(aod)
-wald.test(Sigma=vcov(model),b=coef(model),Terms=c(2,3))
+wald.test(Sigma=vcov(m1),b=coef(m1),Terms=c(2,3))
 
 ```
 
@@ -101,7 +104,7 @@ wald.test(Sigma=vcov(model),b=coef(model),Terms=c(2,3))
 
 
 ```{r}
-mod <- glm(chd~.,data=SAheart,family=binomial)
+model <- glm(chd~.,data=SAheart,family=binomial)
 ```
 
 
@@ -112,15 +115,15 @@ new.SAheart
 ```
 
 ```{r}
-predict(mod,newdata=new.SAheart)
+predict(model, newdata=new.SAheart)
 ```
 
 ```{r}
-predict(mod,newdata=new.SAheart,type="response")
+predict(model, newdata=new.SAheart,type="response")
 ```
 
 ```{r}
-prev <- predict(mod,newdata=new.SAheart,type="link",se.fit = TRUE)
+prev <- predict(model,newdata=new.SAheart,type="link",se.fit = TRUE)
 cl_inf <- prev$fit-qnorm(0.975)*prev$se.fit
 cl_sup <- prev$fit+qnorm(0.975)*prev$se.fit
 binf <- exp(cl_inf)/(1+exp(cl_inf))
@@ -143,8 +146,8 @@ lines(p~age,data=sature)
 
 ```{r message=FALSE, warning=FALSE}
 model <- glm(chd~.,data=SAheart,family=binomial)
-library(MKmisc)
-HLgof.test(fit=fitted(model),obs=SAheart$chd)$C
+library(generalhoslem)
+logitgof(obs= SAheart$chd, exp = fitted(model))
 ```
 
 ```{r}
@@ -175,6 +178,7 @@ anova(model0,model1,test="LRT")
 ```
 
 ```{r message=FALSE, warning=FALSE}
+data(SAheart)
 mod_sel <- bestglm(SAheart,family=binomial,IC="BIC")
 mod_sel$BestModels
 mod_sel1 <- bestglm(SAheart,family=binomial,IC="AIC")

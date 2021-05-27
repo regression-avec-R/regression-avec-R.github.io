@@ -24,11 +24,15 @@ Importation du fichier d'ozone sans valeurs manquantes avec les projections
 ```{r}
 ozone <- read.table("ozone_transf.txt", header = T, sep = ";")
 ```
+<<<<<<< HEAD
 et préparation du data-frame qui contiendra les résultats de chaque méthode
 ```{r}
 RES <- data.frame(Y = ozone$maxO3)
 ```
 Pour le moment il ne contient qu'une seule colonne avec les données à prévoir.
+=======
+
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 
 # Méthodes et comparaison
 Nous séparons en 10 blocs en 2 étapes: création des affectations des individus à chaque bloc
@@ -38,8 +42,13 @@ blocseq <- rep(1:nbbloc, length = nrow(ozone))
 ```
 Puis nous utilisons une permutation aléatoire de ces affectations
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
 bloc <- sample(blocseq)
+=======
+> set.seed(1234)
+> bloc <- sample(blocseq)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ```
 
 ## Régression multiple
@@ -229,7 +238,11 @@ mean(sseelasticnet/nrow(ozone))
 # Avec interaction
 Rappelons les données et la répartition par bloc (avant la permutation aléatoire):
 ```{r}
+<<<<<<< HEAD
 ozone <- read.table("ozone_transf.txt",header=T,sep=";")
+=======
+ozone <- read.table("../commandes_regressionavecR/ozone_transf.txt",header=T,sep=";")
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 nbbloc <- 10
 blocseq <- rep(1:nbbloc, length = nrow(ozone))
 ```
@@ -396,6 +409,7 @@ ozone <- data.frame(maxO3=ozone$maxO3,X,X^2,X^3)
 X <- model.matrix(maxO3~.,data=ozone)[,-1]
 Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
 ```
+<<<<<<< HEAD
 et rappelons les blocs
 ```{r}
 nbbloc <- 10
@@ -404,6 +418,8 @@ set.seed(1234)
 bloc <- sample(blocseq)
 ```
 
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ## La qualité de la modélisation de la régression polynomiale
 ```{r}
 set.seed(1234)
@@ -418,7 +434,10 @@ round(mean(ssereg/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression polynomiale avec sélection BIC
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseregbic <-  rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -429,6 +448,7 @@ for (r in 1:20) {
 round(mean(sseregbic/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression PLS sur polynômes
+<<<<<<< HEAD
 Redéfinissons une fonction pour évaluer PLS mais sans intéractions:
 ```{r}
 library(pls)
@@ -442,17 +462,27 @@ sse_pls <- function(don,bloc,b,ncmax=30) {
 L'évaluation de la qualité de la modélisation est alors:
 ```{r}
 set.seed(1234)
+=======
+```{r}
+set.seed(1234)
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssepls <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
   for(b in 1:nbbloc){
+<<<<<<< HEAD
       ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+=======
+      ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b,50)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
   }
 }
 round(mean(ssepls/nrow(ozone)),2)
 ```
 
 ## La qualité de la modélisation de la régression PCR sur polynômes
+<<<<<<< HEAD
 La fonction sans intéractions:
 ```{r}
 library(pls)
@@ -466,11 +496,20 @@ sse_pcrS <- function(don,bloc,b,ncmax=30) {
 et l'évaluation de la modélisation
 ```{r}
 set.seed(1234)
+=======
+```{r}
+set.seed(1234)
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssepcr <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
   for(b in 1:nbbloc){
+<<<<<<< HEAD
       ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+=======
+      ssepcr[r] <- ssepcr[r] + sse_pcr(ozone,bloc,b,50)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
   }
 }
 round(mean(ssepcr/nrow(ozone)),2)
@@ -479,6 +518,10 @@ round(mean(ssepcr/nrow(ozone)),2)
 ## La qualité de la modélisation de la régression lasso sur polynômes
 ```{r}
 set.seed(1234)
+<<<<<<< HEAD
+=======
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sselasso <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -492,6 +535,10 @@ round(mean(sselasso/nrow(ozone)),2)
 ## La qualité de la modélisation de la régression ridge sur polynômes
 ```{r}
 set.seed(1234)
+<<<<<<< HEAD
+=======
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseridge <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -518,7 +565,10 @@ round(mean(sseelast/nrow(ozone)),2)
 # Régression avec des splines (degré 3, 3 noeuds intérieurs)
 Les données ici
 ```{r}
+<<<<<<< HEAD
 ozone <- read.table("ozone_transf.txt", header = T, sep = ";")
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 X <-  model.matrix(maxO3~.,data=ozone)[,-1]
 library(splines)
 BB <- NULL
@@ -533,6 +583,7 @@ ozone <- data.frame(maxO3=ozone$maxO3,BB)
 X <- model.matrix(maxO3~.,data=ozone)[,-1]
 Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
 ```
+<<<<<<< HEAD
 et rappelons les blocs
 ```{r}
 nbbloc <- 10
@@ -541,6 +592,10 @@ blocseq <- rep(1:nbbloc, length = nrow(ozone))
 ## La qualité de la modélisation de la régression spline
 ```{r}
 set.seed(1234)
+=======
+## La qualité de la modélisation de la régression spline
+```{r}
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssereg  <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -552,7 +607,10 @@ round(mean(ssereg/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression spline avec sélection BIC
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseregbic <-  rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -564,30 +622,49 @@ round(mean(sseregbic/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression PLS sur splines
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssepls <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
   for(b in 1:nbbloc){
+<<<<<<< HEAD
       ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+=======
+      ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b,50)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
   }
 }
 ```
 ## La qualité de la modélisation de la régression PCR sur splines
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssepcr <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
   for(b in 1:nbbloc){
+<<<<<<< HEAD
       ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+=======
+      ssepcr[r] <- ssepcr[r] + sse_pcr(ozone,bloc,b,50)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
   }
 }
 round(mean(ssepcr/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression lasso sur splines
+<<<<<<< HEAD
 ```{r}
 set.seed(1234)
+=======
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sselasso <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -596,10 +673,17 @@ for (r in 1:20) {
   }
 }
 round(mean(sselasso/nrow(ozone)),2)
+<<<<<<< HEAD
 ```
 ## La qualité de la modélisation de la régression ridge sur splines
 ```{r}
 set.seed(1234)
+=======
+```{r}
+```
+## La qualité de la modélisation de la régression ridge sur splines
+```{r}
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseridge <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -611,7 +695,10 @@ round(mean(sseridge/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression elasticnet sur splines
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseelast <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -640,12 +727,15 @@ ozone <- data.frame(maxO3=ozone$maxO3,BB,X[,-c(1:21)])
 X <- model.matrix(maxO3~.,data=ozone)[,-1]
 Y <- data.matrix(ozone[,"maxO3",drop=FALSE])
 ```
+<<<<<<< HEAD
 et rappelons les blocs
 ```{r}
 nbbloc <- 10
 blocseq <- rep(1:nbbloc, length = nrow(ozone))
 ```
 
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ## La qualité de la modélisation de la régression spline
 ```{r}
 set.seed(1234)
@@ -660,7 +750,10 @@ round(mean(ssereg/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression spline avec sélection BIC
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseregbic <-  rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -672,30 +765,49 @@ round(mean(sseregbic/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression PLS sur splines
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssepls <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
   for(b in 1:nbbloc){
+<<<<<<< HEAD
       ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b)
+=======
+      ssepls[r] <- ssepls[r] + sse_pls(ozone,bloc,b,50)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
   }
 }
 ```
 ## La qualité de la modélisation de la régression PCR sur splines
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 ssepcr <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
   for(b in 1:nbbloc){
+<<<<<<< HEAD
       ssepcr[r] <- ssepcr[r] + sse_pcrS(ozone,bloc,b)
+=======
+      ssepcr[r] <- ssepcr[r] + sse_pcr(ozone,bloc,b,50)
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
   }
 }
 round(mean(ssepcr/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression lasso sur splines
+<<<<<<< HEAD
 ```{r}
 set.seed(1234)
+=======
+nbbloc <- 10
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sselasso <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -704,10 +816,17 @@ for (r in 1:20) {
   }
 }
 round(mean(sselasso/nrow(ozone)),2)
+<<<<<<< HEAD
 ```
 ## La qualité de la modélisation de la régression ridge sur splines
 ```{r}
 set.seed(1234)
+=======
+```{r}
+```
+## La qualité de la modélisation de la régression ridge sur splines
+```{r}
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseridge <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)
@@ -719,7 +838,10 @@ round(mean(sseridge/nrow(ozone)),2)
 ```
 ## La qualité de la modélisation de la régression elasticnet sur splines
 ```{r}
+<<<<<<< HEAD
 set.seed(1234)
+=======
+>>>>>>> 3f4845140e57a142f45667b935b02e8376f68d0b
 sseelast <- rep(0,20)
 for (r in 1:20) {
   bloc <- sample(blocseq)

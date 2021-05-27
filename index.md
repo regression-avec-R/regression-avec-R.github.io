@@ -27,7 +27,7 @@ Nicolas Hengartner,
 
 <h2 id="boutique">Boutique en ligne</h2>
 
-[<a href="https://laboutique.edpsciences.fr/collection/60/Pratique%20R">Par ici!</a>]
+[<a href="https://laboutique.edpsciences.fr/produit/1087/9782759821839/Regression%20avec%20R%20-%202e%20edition">Par ici!</a>]
 
 <h2 id="matériel-disponible">Matériel disponible</h2>
 
