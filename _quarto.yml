@@ -14,6 +14,13 @@ project:
     - code/chap8.qmd
     - code/chap9.qmd
     - code/chap10.qmd
+    - code/chap11.qmd
+    - code/chap12.qmd
+    - code/chap13.qmd
+    - code/chap14.qmd
+    #- code/chap15.qmd
+    - code/chap16.qmd
+    - code/chap17.qmd
 
 website:
   title: "Régression avec R"
@@ -44,9 +51,15 @@ website:
           - code/chap6.qmd
           - code/chap7.qmd
           - code/chap8.qmd
-          #- code/chap7.qmd
-          #- code/chap7.qmd
-          #- code/chap7.qmd
+          - code/chap9.qmd
+          - code/chap10.qmd
+          - code/chap11.qmd
+          - code/chap12.qmd
+          - code/chap13.qmd
+          #- code/chap14.qmd
+          #- code/chap15.qmd
+          - code/chap16.qmd
+          - code/chap17.qmd
     #   - section: "Enseignements"
     #     contents:
     #       - enseignement.qmd

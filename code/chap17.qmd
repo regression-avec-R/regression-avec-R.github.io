@@ -1,0 +1,94 @@
+---
+title: "17 Estimateurs à noyau et $k$ plus proches voisins"
+toc: true
+---
+
+# Estimateurs à noyau
+
+```{r}
+ozone <- read.table("../donnees/ozone.txt",header=TRUE,sep=";")
+```
+
+```{r}
+ind <- order(ozone[,"T12"])
+T12o <- ozone[ind,"T12"]
+O3o <- ozone[ind,"O3"]
+```
+
+```{r}
+reg1 <- lm(O3o~1,weight=c(rep(1,10),rep(0,40)))
+reg2 <- lm(O3o~1,weight=c(rep(0,10),rep(1,10),rep(0,30)))
+reg3 <- lm(O3o~1,weight=c(rep(0,20),rep(1,10),rep(0,20)))
+reg4 <- lm(O3o~1,weight=c(rep(0,30),rep(1,10),rep(0,10)))
+reg5 <- lm(O3o~1,weight=c(rep(0,40),rep(1,10)))
+```
+
+```{r}
+plot(T12o,O3o,pch=20,xlab="T12",ylab="O3")
+abline(v=c(14,18),col="red",lwd=2)
+abline(v=c(16),col="blue",lty=2)
+points(16,mean(O3o[T12o>=14 & T12o<=18]),col="blue",pch=17,cex=1.5)
+
+```
+```{r message=FALSE, warning=FALSE}
+library(ibr)
+x <- seq(7,30,by=0.01)
+par(mfrow=c(1,3))
+h <- c(20,3,0.05)
+for (i in h){
+  plot(T12o,O3o,pch=20,xlab="T12",ylab="O3")
+  tmp <- npregress(T12o,O3o,bandwidth = i)
+  prev <- predict(tmp,newdata=x)
+  lines(x,prev,col="blue",lwd=2)
+}
+```
+
+# Les $k$ plus proches voisins
+
+
+```{r message=FALSE, warning=FALSE}
+par(mfrow=c(1,3))
+library(FNN)
+k <- c(50,10,1)
+for (i in k){
+  mod <- knn.reg(train=T12o,test=as.matrix(x),y=O3o,k=i)
+  plot(T12o,O3o,pch=20,xlab="T12",ylab="O3")
+  lines(x,mod$pred,col="blue",lwd=2)
+}
+```
+
+# Sélection des paramètres
+
+
+```{r}
+hcv <- npregress(T12o,O3o)$bandwidth
+hcv
+```
+
+```{r}
+knn.reg(train=T12o,y=O3o,k=10)$PRESS/length(T12o)
+```
+
+
+```{r}
+K_cand <- 1:49
+loo <- rep(0,length(K_cand))
+for (i in 1:length(K_cand)){
+  loo[i] <- knn.reg(train=T12o,y=O3o,k=K_cand[i])$PRESS/length(T12o)
+}
+K_cand[which.min(loo)]
+```
+
+```{r}
+mod.kppv <- knn.reg(train=T12o,test=as.matrix(x),y=O3o,k=8)
+mod.noyau <- npregress(T12o,O3o,bandwidth = hcv)
+prev.noyau <- predict(mod.noyau,newdata=x)
+plot(T12o,O3o,pch=20,xlab="T12",ylab="O3")
+lines(x,mod.kppv$pred,col="blue",lwd=2)
+lines(x,prev.noyau,col="red",lty=2,lwd=2)
+```
+
+```{r}
+mod.noyau$df
+```
+
