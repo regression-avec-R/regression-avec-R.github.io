@@ -21,6 +21,7 @@ project:
     #- code/chap15.qmd
     - code/chap16.qmd
     - code/chap17.qmd
+    - correction/chap11.qmd
 
 website:
   title: "Régression avec R"
@@ -60,8 +61,10 @@ website:
           #- code/chap15.qmd
           - code/chap16.qmd
           - code/chap17.qmd
-    #   - section: "Enseignements"
-    #     contents:
+          - correction/chap11.qmd
+      - section: "Correction des exercices"
+        contents:
+          - correction/chap11.qmd
     #       - enseignement.qmd
     #       - section: "Supports de cours"
     #         contents: 
