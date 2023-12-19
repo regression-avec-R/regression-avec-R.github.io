@@ -38,7 +38,7 @@ website:
     style: "floating"
     search: true
     #background: "#D9E3E4" #rgb(118, 215, 196)
-    #collapse-level: 2
+    collapse-level: 1
 #    foreground: red
     contents:
       - index.qmd
@@ -61,7 +61,6 @@ website:
           #- code/chap15.qmd
           - code/chap16.qmd
           - code/chap17.qmd
-          - correction/chap11.qmd
       - section: "Correction des exercices"
         contents:
           - correction/chap11.qmd
@@ -82,7 +81,7 @@ lang: fr
 
 format:
   html:
-    backgroundcolor: White #LightYellow
+    backgroundcolor: "#D9E3E4" #White #LightYellow
     theme: 
       - united
 #      - darkly

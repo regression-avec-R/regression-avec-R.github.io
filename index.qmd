@@ -2,9 +2,13 @@
 title: "3ème édition"
 ---
 
+
+
+
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="50%" }
+
 #### Les auteurs
 
 -   [Pierre-André Cornillon](https://perso.univ-rennes2.fr/pierre-andre.cornillon)
@@ -21,10 +25,12 @@ title: "3ème édition"
 #### Boutique en ligne
 
 [Par ici](https://laboutique.edpsciences.fr/produit/1335/9782759831463/regression-avec-r)
+
 :::
 
 ::: {.column width="50%"}
-![](couverture_v3.jpg){width=40%}
+![](couverture_v3.jpg){width=50%}
 :::
+
 
 ::::
