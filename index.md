@@ -22,7 +22,7 @@ title: Régression avec R
 <a href="https://perso.univ-rennes2.fr/pierre-andre.cornillon">Pierre-André Cornillon</a>, 
 Nicolas Hengartner,
 <a href="https://www.researchgate.net/profile/E_Matzner-Lober">Eric Matzner-Løber</a>, 
-<a href="https://perso.univ-rennes2.fr/laurent.rouviere">Laurent Rouvière</a>
+<a href="https://lrouviere.github.io/page_perso/">Laurent Rouvière</a>
 
 
 <h2 id="boutique">Boutique en ligne</h2>
