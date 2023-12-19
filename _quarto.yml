@@ -6,6 +6,14 @@ project:
     - donnees.qmd
     - code/chap1.qmd
     - code/chap2.qmd
+    - code/chap3.qmd
+    - code/chap4.qmd
+    - code/chap5.qmd
+    - code/chap6.qmd
+    - code/chap7.qmd
+    - code/chap8.qmd
+    - code/chap9.qmd
+    - code/chap10.qmd
 
 website:
   title: "Régression avec R"
@@ -19,10 +27,10 @@ website:
 #  site-path: "/page_perso/" #important pour la page 404.html
   page-navigation: true
   sidebar: 
-    style: "docked"
+    style: "floating"
     search: true
-    background: "#D9E3E4" #rgb(118, 215, 196)
-    collapse-level: 2
+    #background: "#D9E3E4" #rgb(118, 215, 196)
+    #collapse-level: 2
 #    foreground: red
     contents:
       - index.qmd
@@ -31,6 +39,14 @@ website:
         contents:
           - code/chap1.qmd
           - code/chap2.qmd
+          - code/chap3.qmd
+          - code/chap5.qmd
+          - code/chap6.qmd
+          - code/chap7.qmd
+          - code/chap8.qmd
+          #- code/chap7.qmd
+          #- code/chap7.qmd
+          #- code/chap7.qmd
     #   - section: "Enseignements"
     #     contents:
     #       - enseignement.qmd
@@ -65,5 +81,10 @@ format:
     biblio-title: "Arti"
 #    page-layout: full
 #    max-width: 18em
+execute:
+  warning: false
+  echo: true
+#  cache: false
+  freeze: auto
 
 editor: source

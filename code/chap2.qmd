@@ -1,5 +1,5 @@
 ---
-title: "Chapitre 2 : La régression linéaire multiple"
+title: "2 La régression linéaire multiple"
 toc: true
 ---
 

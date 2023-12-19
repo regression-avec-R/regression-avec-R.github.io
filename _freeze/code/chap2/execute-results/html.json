@@ -1,0 +1,16 @@
+{
+  "hash": "649ed5980efc9efec0a596a64b33287a",
+  "result": {
+    "markdown": "---\ntitle: \"2 La régression linéaire multiple\"\ntoc: true\n---\n\n\n\n# La concentration en ozone\n\n\n::: {.cell}\n\n```{.r .cell-code}\nozone <- read.table(\"../donnees/ozone.txt\", header = T, sep = \";\")\nlibrary(\"scatterplot3d\")\nscatterplot3d(ozone[,\"T12\"],ozone[,\"Vx\"],ozone[,\"O3\"],\n              type=\"h\",pch=16, box=FALSE, xlab=\"T12\", ylab=\"Vx\", zlab=\"O3\")\n```\n\n::: {.cell-output-display}\n![](chap2_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nregmulti <- lm(O3~T12+Vx, data = ozone)\nsummary(regmulti)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\nCall:\nlm(formula = O3 ~ T12 + Vx, data = ozone)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-42.984 -10.152  -2.407  11.710  34.494 \n\nCoefficients:\n            Estimate Std. Error t value Pr(>|t|)    \n(Intercept)  35.4530    10.7446   3.300  0.00185 ** \nT12           2.5380     0.5151   4.927 1.08e-05 ***\nVx            0.8736     0.1772   4.931 1.06e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 16.82 on 47 degrees of freedom\nMultiple R-squared:  0.5249,\tAdjusted R-squared:  0.5047 \nF-statistic: 25.96 on 2 and 47 DF,  p-value: 2.541e-08\n```\n:::\n:::\n\n\n# La hauteur des eucalyptus\n\n\n::: {.cell}\n\n```{.r .cell-code}\neucalypt <- read.table(\"../donnees/eucalyptus.txt\", header = T, sep = \";\")\nplot(ht~circ, data = eucalypt, xlab = \"circ\", ylab = \"ht\")\n```\n\n::: {.cell-output-display}\n![](chap2_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nregmult <- lm(ht ~ circ + I(sqrt(circ)), data = eucalypt)\nresume.mult <- summary(regmult)\nresume.mult\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\nCall:\nlm(formula = ht ~ circ + I(sqrt(circ)), data = eucalypt)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-4.1881 -0.6881  0.0427  0.7927  3.7481 \n\nCoefficients:\n               Estimate Std. Error t value Pr(>|t|)    \n(Intercept)   -24.35200    2.61444  -9.314   <2e-16 ***\ncirc           -0.48295    0.05793  -8.336   <2e-16 ***\nI(sqrt(circ))   9.98689    0.78033  12.798   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 1.136 on 1426 degrees of freedom\nMultiple R-squared:  0.7922,\tAdjusted R-squared:  0.7919 \nF-statistic:  2718 on 2 and 1426 DF,  p-value: < 2.2e-16\n```\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nplot(ht ~ circ, data = eucalypt, pch = \"+\", col = \"grey60\")\ngrille <- data.frame(circ = seq(min(eucalypt[,\"circ\"]),max(eucalypt[,\"circ\"]), length = 100))\nlines(grille[,\"circ\"], predict(regmult, grille))\n```\n\n::: {.cell-output-display}\n![](chap2_files/figure-html/unnamed-chunk-5-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "chap2_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

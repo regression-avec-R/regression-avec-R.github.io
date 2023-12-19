@@ -1,7 +1,8 @@
 ---
-title: "Chapitre 1 : Régression simple"
+title: "1 Régression simple"
 toc: true
 ---
+
 
 # La concentration en ozone
 

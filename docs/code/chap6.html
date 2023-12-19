@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Régression avec R - 6 Variables qualitatives : ANCOVA et ANOVA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../code/chap7.html" rel="next">
+<link href="../code/chap5.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../code/chap1.html">Codes R</a></li><li class="breadcrumb-item"><a href="../code/chap6.html">6 Variables qualitatives : ANCOVA et ANOVA</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Régression avec R</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Basculer en mode lecteur">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3ème édition</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../donnees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Jeux de données</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Codes R</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1 Régression simple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2 La régression linéaire multiple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3 Validation du modèle</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5 Inférence dans le modèle Gaussien</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap6.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">6 Variables qualitatives : ANCOVA et ANOVA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7 Choix de variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8 Régression sous contraintes de norme : ridge, lasso, elastic net</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Sur cette page</h2>
+   
+  <ul>
+  <li><a href="#la-concentration-en-ozone" id="toc-la-concentration-en-ozone" class="nav-link active" data-scroll-target="#la-concentration-en-ozone">La concentration en ozone</a></li>
+  <li><a href="#la-hauteur-des-eucalyptus" id="toc-la-hauteur-des-eucalyptus" class="nav-link" data-scroll-target="#la-hauteur-des-eucalyptus">La hauteur des eucalyptus</a></li>
+  <li><a href="#anova" id="toc-anova" class="nav-link" data-scroll-target="#anova">ANOVA</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">6 Variables qualitatives : ANCOVA et ANOVA</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="la-concentration-en-ozone" class="level1">
+<h1>La concentration en ozone</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone.txt"</span>, <span class="at">header =</span> T, <span class="at">sep =</span> <span class="st">";"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ozone[,<span class="st">"T12"</span>], ozone[,<span class="st">"O3"</span>],<span class="at">pch=</span><span class="fu">as.numeric</span>(ozone[,<span class="st">"vent"</span>]),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">as.numeric</span>(ozone[,<span class="st">"vent"</span>]))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>a1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12, <span class="at">data =</span> ozone[ozone[,<span class="st">"vent"</span>]<span class="sc">==</span><span class="st">"EST"</span>,])</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>a2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12, <span class="at">data =</span> ozone[ozone[,<span class="st">"vent"</span>]<span class="sc">==</span><span class="st">"NORD"</span>,])</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>a3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12, <span class="at">data =</span> ozone[ozone[,<span class="st">"vent"</span>]<span class="sc">==</span><span class="st">"OUEST"</span>,])</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>a4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12, <span class="at">data =</span> ozone[ozone[,<span class="st">"vent"</span>]<span class="sc">==</span><span class="st">"SUD"</span>,])</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(a1, <span class="at">col=</span><span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(a2, <span class="at">col=</span><span class="dv">2</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(a3, <span class="at">col=</span><span class="dv">3</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(a4, <span class="at">col=</span><span class="dv">4</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mod1b <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> vent <span class="sc">+</span> T12<span class="sc">:</span>vent, <span class="at">data =</span> ozone)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1b)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ -1 + vent + T12:vent, data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-29.903  -9.163   1.153  10.319  32.638 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+ventEST        45.6090    13.9343   3.273 0.002133 ** 
+ventNORD      106.6345    28.0341   3.804 0.000456 ***
+ventOUEST      64.6840    24.6208   2.627 0.011967 *  
+ventSUD       -27.0602    26.5389  -1.020 0.313737    
+ventEST:T12     2.7480     0.6342   4.333 8.96e-05 ***
+ventNORD:T12   -1.6491     1.6058  -1.027 0.310327    
+ventOUEST:T12   0.3407     1.2047   0.283 0.778709    
+ventSUD:T12     5.3786     1.1497   4.678 3.00e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 14.71 on 42 degrees of freedom
+Multiple R-squared:  0.9773,    Adjusted R-squared:  0.973 
+F-statistic: 226.1 on 8 and 42 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> vent <span class="sc">+</span> T12<span class="sc">:</span>vent, <span class="at">data =</span> ozone)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ vent + T12:vent, data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-29.903  -9.163   1.153  10.319  32.638 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    45.6090    13.9343   3.273  0.00213 ** 
+ventNORD       61.0255    31.3061   1.949  0.05796 .  
+ventOUEST      19.0751    28.2905   0.674  0.50384    
+ventSUD       -72.6691    29.9746  -2.424  0.01972 *  
+ventEST:T12     2.7480     0.6342   4.333 8.96e-05 ***
+ventNORD:T12   -1.6491     1.6058  -1.027  0.31033    
+ventOUEST:T12   0.3407     1.2047   0.283  0.77871    
+ventSUD:T12     5.3786     1.1497   4.678 3.00e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 14.71 on 42 degrees of freedom
+Multiple R-squared:  0.6753,    Adjusted R-squared:  0.6212 
+F-statistic: 12.48 on 7 and 42 DF,  p-value: 1.614e-08</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> vent <span class="sc">+</span> T12, <span class="at">data =</span> ozone)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mod2b <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> vent <span class="sc">+</span> T12, <span class="at">data =</span> ozone)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> vent<span class="sc">:</span>T12, <span class="at">data =</span> ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod2,mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: O3 ~ vent + T12
+Model 2: O3 ~ vent + T12:vent
+  Res.Df     RSS Df Sum of Sq      F   Pr(&gt;F)   
+1     45 12612.0                                
+2     42  9087.4  3    3524.5 5.4298 0.003011 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod3,mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: O3 ~ vent:T12
+Model 2: O3 ~ vent + T12:vent
+  Res.Df     RSS Df Sum of Sq      F  Pr(&gt;F)  
+1     45 11864.1                              
+2     42  9087.4  3    2776.6 4.2776 0.01008 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">rstudent</span>(mod2) <span class="sc">~</span> <span class="fu">fitted</span>(mod2),<span class="at">xlab=</span><span class="st">"ychap"</span>,<span class="at">ylab=</span><span class="st">"residus"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lattice)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">xyplot</span>(<span class="fu">rstudent</span>(mod2)<span class="sc">~</span><span class="fu">fitted</span>(mod2)<span class="sc">|</span>vent,<span class="at">data =</span> ozone, <span class="at">ylab=</span><span class="st">"residus"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> vent <span class="sc">+</span> T12 <span class="sc">+</span> T12<span class="sc">:</span>vent, <span class="at">data =</span> ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mod0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> O3 <span class="sc">~</span> vent <span class="sc">+</span>T12 <span class="sc">+</span> T12<span class="sc">:</span>vent, <span class="at">data =</span> ozone)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod0)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ vent + T12 + T12:vent, data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-29.903  -9.163   1.153  10.319  32.638 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    45.6090    13.9343   3.273  0.00213 ** 
+ventNORD       61.0255    31.3061   1.949  0.05796 .  
+ventOUEST      19.0751    28.2905   0.674  0.50384    
+ventSUD       -72.6691    29.9746  -2.424  0.01972 *  
+T12             2.7480     0.6342   4.333 8.96e-05 ***
+ventNORD:T12   -4.3971     1.7265  -2.547  0.01462 *  
+ventOUEST:T12  -2.4073     1.3614  -1.768  0.08429 .  
+ventSUD:T12     2.6306     1.3130   2.004  0.05160 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 14.71 on 42 degrees of freedom
+Multiple R-squared:  0.6753,    Adjusted R-squared:  0.6212 
+F-statistic: 12.48 on 7 and 42 DF,  p-value: 1.614e-08</code></pre>
+</div>
+</div>
+</section>
+<section id="la-hauteur-des-eucalyptus" class="level1">
+<h1>La hauteur des eucalyptus</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>eucalypt <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/eucalyptus.txt"</span>, <span class="at">header =</span> T, <span class="at">sep =</span> <span class="st">";"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>eucalypt[,<span class="st">"bloc"</span>] <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(eucalypt[,<span class="st">"bloc"</span>])</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>m.complet <span class="ot">&lt;-</span> <span class="fu">lm</span>(ht <span class="sc">~</span> bloc <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> bloc<span class="sc">:</span>circ, <span class="at">data =</span> eucalypt)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>m.pente <span class="ot">&lt;-</span> <span class="fu">lm</span>(ht <span class="sc">~</span> bloc <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> circ, <span class="at">data =</span> eucalypt)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>m.ordonne <span class="ot">&lt;-</span> <span class="fu">lm</span>(ht <span class="sc">~</span> bloc<span class="sc">:</span>circ, <span class="at">data =</span> eucalypt)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m.pente, m.complet)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: ht ~ bloc - 1 + circ
+Model 2: ht ~ bloc - 1 + bloc:circ
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1   1425 2005.9                           
+2   1423 2005.0  2   0.84752 0.3007 0.7403</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m.ordonne, m.complet)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: ht ~ bloc:circ
+Model 2: ht ~ bloc - 1 + bloc:circ
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1   1425 2009.2                           
+2   1423 2005.0  2    4.1649 1.4779 0.2285</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>m.simple <span class="ot">&lt;-</span> <span class="fu">lm</span>(ht <span class="sc">~</span> circ, <span class="at">data =</span> eucalypt)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m.simple, m.pente)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: ht ~ circ
+Model 2: ht ~ bloc - 1 + circ
+  Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+1   1427 2052.1                                  
+2   1425 2005.9  2    46.188 16.406 9.031e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="anova" class="level1">
+<h1>ANOVA</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3<span class="sc">~</span>vent<span class="dv">-1</span>,<span class="at">data=</span>ozone)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ vent - 1, data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-40.250 -13.950  -2.233  14.972  39.857 
+
+Coefficients:
+          Estimate Std. Error t value Pr(&gt;|t|)    
+ventEST    103.850      4.963   20.92  &lt; 2e-16 ***
+ventNORD    78.289      6.618   11.83 1.49e-15 ***
+ventOUEST   71.578      4.680   15.30  &lt; 2e-16 ***
+ventSUD     94.343      7.504   12.57  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 19.85 on 46 degrees of freedom
+Multiple R-squared:  0.9547,    Adjusted R-squared:  0.9508 
+F-statistic: 242.4 on 4 and 46 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: O3
+          Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+vent       4 382244   95561  242.44 &lt; 2.2e-16 ***
+Residuals 46  18131     394                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> vent, <span class="at">data =</span> ozone)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: O3
+          Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+vent       3  9859.8  3286.6  8.3383 0.0001556 ***
+Residuals 46 18131.4   394.2                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ vent, data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-40.250 -13.950  -2.233  14.972  39.857 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  103.850      4.963  20.923  &lt; 2e-16 ***
+ventNORD     -25.561      8.272  -3.090  0.00339 ** 
+ventOUEST    -32.272      6.821  -4.731 2.16e-05 ***
+ventSUD       -9.507      8.997  -1.057  0.29616    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 19.85 on 46 degrees of freedom
+Multiple R-squared:  0.3522,    Adjusted R-squared:   0.31 
+F-statistic: 8.338 on 3 and 46 DF,  p-value: 0.0001556</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(O3 <span class="sc">~</span> <span class="fu">C</span>(vent,treatment), <span class="at">data =</span> ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ C(vent, treatment), data = ozone)
+
+Coefficients:
+            (Intercept)   C(vent, treatment)NORD  C(vent, treatment)OUEST  
+                103.850                  -25.561                  -32.272  
+  C(vent, treatment)SUD  
+                 -9.507  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(O3 <span class="sc">~</span> <span class="fu">C</span>(vent,<span class="at">base=</span><span class="dv">2</span>), <span class="at">data =</span> ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ C(vent, base = 2), data = ozone)
+
+Coefficients:
+           (Intercept)    C(vent, base = 2)EST  C(vent, base = 2)OUEST  
+                78.289                  25.561                  -6.711  
+  C(vent, base = 2)SUD  
+                16.054  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>II <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(<span class="fu">as.factor</span>(ozone<span class="sc">$</span>vent)))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>nI <span class="ot">&lt;-</span> <span class="fu">table</span>(ozone<span class="sc">$</span>vent)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>contraste<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rbind</span>(<span class="fu">diag</span>(II<span class="dv">-1</span>),<span class="sc">-</span>nI[<span class="sc">-</span>II]<span class="sc">/</span>nI[II]),II,II<span class="dv">-1</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> <span class="fu">C</span>(vent,contraste), <span class="at">data =</span> ozone)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod3)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: O3
+                   Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+C(vent, contraste)  3  9859.8  3286.6  8.3383 0.0001556 ***
+Residuals          46 18131.4   394.2                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod3)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ C(vent, contraste), data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-40.250 -13.950  -2.233  14.972  39.857 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)           86.300      2.808  30.737  &lt; 2e-16 ***
+C(vent, contraste)1   17.550      4.093   4.288 9.15e-05 ***
+C(vent, contraste)2   -8.011      5.993  -1.337 0.187858    
+C(vent, contraste)3  -14.722      3.744  -3.933 0.000281 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 19.85 on 46 degrees of freedom
+Multiple R-squared:  0.3522,    Adjusted R-squared:   0.31 
+F-statistic: 8.338 on 3 and 46 DF,  p-value: 0.0001556</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> <span class="fu">C</span>(vent,sum), <span class="at">data =</span> ozone) </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod4)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: O3
+             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+C(vent, sum)  3  9859.8  3286.6  8.3383 0.0001556 ***
+Residuals    46 18131.4   394.2                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = O3 ~ C(vent, sum), data = ozone)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-40.250 -13.950  -2.233  14.972  39.857 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     87.015      3.027  28.743  &lt; 2e-16 ***
+C(vent, sum)1   16.835      4.635   3.632 0.000705 ***
+C(vent, sum)2   -8.726      5.573  -1.566 0.124284    
+C(vent, sum)3  -15.437      4.485  -3.442 0.001240 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 19.85 on 46 degrees of freedom
+Multiple R-squared:  0.3522,    Adjusted R-squared:   0.31 
+F-statistic: 8.338 on 3 and 46 DF,  p-value: 0.0001556</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>resid2 <span class="ot">&lt;-</span> <span class="fu">resid</span>(mod2)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>ozone<span class="sc">$</span>vent <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ozone<span class="sc">$</span>vent)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(resid2<span class="sc">~</span>vent,<span class="at">data=</span>ozone, <span class="at">ylab=</span><span class="st">"residus"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(resid2 <span class="sc">~</span> <span class="fu">jitter</span>(<span class="fu">fitted</span>(mod2)),<span class="at">xlab=</span><span class="st">"ychap"</span>,<span class="at">ylab=</span><span class="st">"residus"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xyplot</span>(resid2 <span class="sc">~</span> <span class="fu">I</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)<span class="sc">|</span>vent, <span class="at">data=</span>ozone,</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab=</span><span class="st">"index"</span>, <span class="at">ylab=</span><span class="st">"residus"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-20-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(ozone, <span class="fu">interaction.plot</span>(vent, nebulosite, O3, <span class="at">col=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>))</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(ozone, <span class="fu">interaction.plot</span>(nebulosite, vent, O3, <span class="at">col=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap6_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> vent <span class="sc">+</span> nebulosite <span class="sc">+</span> vent<span class="sc">:</span>nebulosite, <span class="at">data =</span> ozone)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> vent <span class="sc">+</span> nebulosite, <span class="at">data =</span> ozone)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod2, mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: O3 ~ vent + nebulosite
+Model 2: O3 ~ vent + nebulosite + vent:nebulosite
+  Res.Df   RSS Df Sum of Sq     F Pr(&gt;F)
+1     45 11730                          
+2     42 11246  3    483.62 0.602 0.6173</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> vent, <span class="at">data =</span> ozone)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod3, mod2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: O3 ~ vent
+Model 2: O3 ~ vent + nebulosite
+  Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+1     46 18131                                  
+2     45 11730  1    6401.5 24.558 1.066e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod3, mod2, mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: O3 ~ vent
+Model 2: O3 ~ vent + nebulosite
+Model 3: O3 ~ vent + nebulosite + vent:nebulosite
+  Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+1     46 18131                                  
+2     45 11730  1    6401.5 23.907 1.523e-05 ***
+3     42 11246  3     483.6  0.602    0.6173    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: O3
+                Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+vent             3  9859.8  3286.6  12.274 6.689e-06 ***
+nebulosite       1  6401.5  6401.5  23.907 1.523e-05 ***
+vent:nebulosite  3   483.6   161.2   0.602    0.6173    
+Residuals       42 11246.2   267.8                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copié");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copié");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="../code/chap5.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">5 Inférence dans le modèle Gaussien</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../code/chap7.html" class="pagination-link">
+        <span class="nav-page-text">7 Choix de variables</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

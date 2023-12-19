@@ -1,0 +1,161 @@
+---
+title: "6 Variables qualitatives : ANCOVA et ANOVA"
+toc: true
+---
+
+# La concentration en ozone
+
+```{r}
+ozone <- read.table("../donnees/ozone.txt", header = T, sep = ";")
+plot(ozone[,"T12"], ozone[,"O3"],pch=as.numeric(ozone[,"vent"]),
+     col = as.numeric(ozone[,"vent"]))
+a1 <- lm(O3 ~ T12, data = ozone[ozone[,"vent"]=="EST",])
+a2 <- lm(O3 ~ T12, data = ozone[ozone[,"vent"]=="NORD",])
+a3 <- lm(O3 ~ T12, data = ozone[ozone[,"vent"]=="OUEST",])
+a4 <- lm(O3 ~ T12, data = ozone[ozone[,"vent"]=="SUD",])
+abline(a1, col=1)
+abline(a2, col=2)
+abline(a3, col=3)
+abline(a4, col=4)
+```
+
+```{r}
+mod1b <- lm(formula = O3 ~ -1 + vent + T12:vent, data = ozone)
+summary(mod1b)
+```
+
+```{r}
+mod1 <- lm(formula = O3 ~ vent + T12:vent, data = ozone)
+summary(mod1)
+```
+
+```{r}
+mod2 <- lm(formula = O3 ~ vent + T12, data = ozone)
+mod2b <- lm(formula = O3 ~ -1 + vent + T12, data = ozone)
+mod3 <- lm(formula = O3 ~ vent:T12, data = ozone)
+```
+
+```{r}
+anova(mod2,mod1)
+anova(mod3,mod1)
+```
+
+```{r}
+plot(rstudent(mod2) ~ fitted(mod2),xlab="ychap",ylab="residus")
+```
+
+```{r}
+library(lattice)
+xyplot(rstudent(mod2)~fitted(mod2)|vent,data = ozone, ylab="residus")
+```
+
+```{r}
+mod <- lm(formula = O3 ~ vent + T12 + T12:vent, data = ozone)
+```
+
+```{r}
+mod0 <- lm(formula = O3 ~ vent +T12 + T12:vent, data = ozone)
+summary(mod0)
+```
+
+
+# La hauteur des eucalyptus
+
+```{r}
+eucalypt <- read.table("../donnees/eucalyptus.txt", header = T, sep = ";")
+eucalypt[,"bloc"] <- as.factor(eucalypt[,"bloc"])
+m.complet <- lm(ht ~ bloc - 1 + bloc:circ, data = eucalypt)
+m.pente <- lm(ht ~ bloc - 1 + circ, data = eucalypt)
+m.ordonne <- lm(ht ~ bloc:circ, data = eucalypt)
+anova(m.pente, m.complet)
+```
+
+
+```{r}
+anova(m.ordonne, m.complet)
+```
+
+
+
+```{r}
+m.simple <- lm(ht ~ circ, data = eucalypt)
+anova(m.simple, m.pente)
+```
+
+# ANOVA
+
+```{r}
+mod1 <- lm(O3~vent-1,data=ozone)
+summary(mod1)
+```
+
+```{r}
+anova(mod1)
+```
+
+```{r}
+mod2 <- lm(O3 ~ vent, data = ozone)
+anova(mod2)
+summary(mod2)
+```
+
+```{r}
+lm(O3 ~ C(vent,treatment), data = ozone)
+```
+
+```{r}
+lm(O3 ~ C(vent,base=2), data = ozone)
+```
+
+```{r}
+II <- length(levels(as.factor(ozone$vent)))
+nI <- table(ozone$vent)
+contraste<-matrix(rbind(diag(II-1),-nI[-II]/nI[II]),II,II-1)
+mod3 <- lm(O3 ~ C(vent,contraste), data = ozone)
+anova(mod3)
+summary(mod3)
+```
+
+
+
+```{r}
+mod4 <- lm(O3 ~ C(vent,sum), data = ozone) 
+anova(mod4)
+summary(mod4)
+```
+
+```{r}
+resid2 <- resid(mod2)
+ozone$vent <- as.factor(ozone$vent)
+plot(resid2~vent,data=ozone, ylab="residus")
+plot(resid2 ~ jitter(fitted(mod2)),xlab="ychap",ylab="residus")
+xyplot(resid2 ~ I(1:50)|vent, data=ozone,
+       xlab="index", ylab="residus")
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+with(ozone, interaction.plot(vent, nebulosite, O3, col=1:2))
+with(ozone, interaction.plot(nebulosite, vent, O3, col=1:4))
+```
+```{r}
+mod1 <- lm(O3 ~ vent + nebulosite + vent:nebulosite, data = ozone)
+mod2 <- lm(O3 ~ vent + nebulosite, data = ozone)
+anova(mod2, mod1)
+```
+
+
+```{r}
+mod3 <- lm(O3 ~ vent, data = ozone)
+anova(mod3, mod2)
+```
+
+```{r}
+anova(mod3, mod2, mod1)
+```
+
+```{r}
+anova(mod1)
+```
+

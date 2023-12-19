@@ -1,0 +1,16 @@
+{
+  "hash": "77ac1c09f880952b75df2aef4643e613",
+  "result": {
+    "markdown": "---\ntitle: \"7 Choix de variables\"\ntoc: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nozone <- read.table(\"../donnees/ozone.txt\", header = T, sep = \";\")\nlibrary(leaps)\nrecherche <- regsubsets(O3 ~ T12 + T15 + Ne12 + N12 + S12 + E12 + W12 + Vx + O3v, int = T,nbest = 1, nvmax = 10, method = \"exhaustive\", data = ozone)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nplot(recherche, scale = \"bic\")\n```\n\n::: {.cell-output-display}\n![](chap7_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n\n```{.r .cell-code}\nplot(recherche, scale = \"Cp\")\n```\n\n::: {.cell-output-display}\n![](chap7_files/figure-html/unnamed-chunk-2-2.png){width=672}\n:::\n\n```{.r .cell-code}\nplot(recherche, scale = \"adjr2\")\n```\n\n::: {.cell-output-display}\n![](chap7_files/figure-html/unnamed-chunk-2-3.png){width=672}\n:::\n\n```{.r .cell-code}\nplot(recherche, scale = \"r2\")\n```\n\n::: {.cell-output-display}\n![](chap7_files/figure-html/unnamed-chunk-2-4.png){width=672}\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nresume <- summary(recherche)\nnomselec <- colnames(resume$which)[resume$which[which.min(resume$bic),]][-1]\nformule <- formula(paste(\"O3~\",paste(nomselec,collapse=\"+\")))\nmodeleslectionne <- lm(formule, data = ozone)\nmodeleslectionne\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\nCall:\nlm(formula = formule, data = ozone)\n\nCoefficients:\n(Intercept)          T15         Ne12           Vx          O3v  \n    61.8252       1.0577      -3.9935       0.3146       0.2629  \n```\n:::\n:::\n",
+    "supporting": [
+      "chap7_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
