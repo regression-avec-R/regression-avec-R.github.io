@@ -1,0 +1,69 @@
+project:
+  type: website
+  output-dir: docs
+  render: 
+    - index.qmd
+    - donnees.qmd
+    - code/chap1.qmd
+    - code/chap2.qmd
+
+website:
+  title: "Régression avec R"
+#  navbar:
+#    background: primary
+#    left:
+#      - href: index.qmd
+#        text: Home
+#      - about.qmd
+  reader-mode: true
+#  site-path: "/page_perso/" #important pour la page 404.html
+  page-navigation: true
+  sidebar: 
+    style: "docked"
+    search: true
+    background: "#D9E3E4" #rgb(118, 215, 196)
+    collapse-level: 2
+#    foreground: red
+    contents:
+      - index.qmd
+      - donnees.qmd
+      - section: "Codes R"
+        contents:
+          - code/chap1.qmd
+          - code/chap2.qmd
+    #   - section: "Enseignements"
+    #     contents:
+    #       - enseignement.qmd
+    #       - section: "Supports de cours"
+    #         contents: 
+    #           - apprentissage_sup.qmd
+    #           - visualisationR.qmd
+    #           - grande_dim.qmd
+    #           - graphes.qmd
+    #           - autres_cours.qmd
+    #   - section: "Recherche"
+    #     contents:
+    #       - livres.qmd
+    #       - articles.qmd
+
+lang: fr
+
+format:
+  html:
+    backgroundcolor: White #LightYellow
+    theme: 
+      - united
+#      - darkly
+#      - custom.scss
+    css: styles.css
+    page-layout: full
+    linkcolor: red
+    link-external-newwindow: true
+    fontsize: 12pt
+    cite-method: citeproc
+    biblio-style: apalike
+    biblio-title: "Arti"
+#    page-layout: full
+#    max-width: 18em
+
+editor: source

@@ -3,3 +3,8 @@ index.html
 # fichier R
 *.Rhistory
 *.RData
+.Rproj.user
+
+/.quarto/
+
+*.md

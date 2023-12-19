@@ -1,0 +1,30 @@
+---
+title: "3ème édition"
+---
+
+:::: {.columns}
+
+::: {.column width="60%"}
+#### Les auteurs
+
+-   [Pierre-André Cornillon](https://perso.univ-rennes2.fr/pierre-andre.cornillon)
+-   Nicolas Hengartner
+-   [Éric Matzner-Løber](https://www.researchgate.net/profile/E-Matzner-Lober)
+-   [Laurent Rouvière](https://www.researchgate.net/profile/E-Matzner-Lober)
+
+#### Descriptif
+
+-   [4e de couverture](quatriemeV3.pdf)
+-   [Avant-propos]()
+-   [Sommaire détaillé]()
+
+#### Boutique en ligne
+
+[Par ici](https://laboutique.edpsciences.fr/produit/1335/9782759831463/regression-avec-r)
+:::
+
+::: {.column width="40%"}
+![](couverture_v3.jpg){width=60%}
+:::
+
+::::

@@ -1,0 +1,293 @@
+---
+title: "Chapitre 13 : régularisation de la vraisemblance"
+layout: default
+output: 
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    layout: default
+---
+
+
+
+## Exercice 1
+
+  1. A, B
+  2. C
+  3. A
+  4. C, D
+
+## Exercice 2
+
+
+
+```{r message=FALSE, warning=FALSE}
+library(bestglm)
+data(SAheart)
+SAheart.X <- model.matrix(chd~.,data=SAheart)[,-1]
+SAheart.Y <- SAheart$chd 
+library(glmnet)
+mod.lasso <- glmnet(SAheart.X,SAheart.Y,family="binomial",alpha=1)
+```
+
+
+
+
+1.
+
+
+```{r}
+lam.lasso <- mod.lasso$lambda
+```
+
+```{r}
+lam <- lam.lasso[50]
+coef(mod.lasso,s=lam)
+```
+
+
+
+2.
+
+
+
+```{r}
+mu <- apply(SAheart.X,2,mean)
+sig <- apply(SAheart.X,2,sd)
+mu.mat <- matrix(rep(mu,nrow(SAheart.X)),nrow=nrow(SAheart.X),byrow=T)
+sig.mat <- matrix(rep(sig,nrow(SAheart.X)),nrow=nrow(SAheart.X),byrow=T)
+SAheart.X.cr <- (SAheart.X-mu.mat)/sig.mat
+mod.lasso1 <- glmnet(SAheart.X.cr,SAheart.Y,family="binomial",alpha=1)
+```
+
+
+
+3. 
+
+
+```{r}
+lam1 <- mod.lasso1$lambda[50]
+coef(mod.lasso1,s=lam1)[-1]/sig
+```
+
+
+
+## Exercice 3
+
+
+
+```{r,echo=FALSE,eval=FALSE}
+n <- 500
+p <- 100
+set.seed(1234)
+X <- matrix(rnorm(n*p),ncol=p)
+beta <- c(1,3,2,1,2)
+cl <- beta[1]*X[,1]+beta[2]*X[,2]+beta[3]*X[,3]+beta[4]*X[,4]+beta[5]*X[,5]
+Y <- rbinom(n,1,exp(cl)/(1+exp(cl)))
+df <- data.frame(X,Y)
+write.csv(df,file="~/Dropbox/LIVRE_REGRESSION/GITHUB/regression-avec-R.github.io/correction_exo/logit_ridge_lasso.csv",row.names = FALSE)
+```
+
+
+
+1. On importe les données et on les sépare en un échantillon d'apprentissage et de test.
+
+
+
+```{r}
+df <- read.csv("logit_ridge_lasso.csv")
+set.seed(1254)
+perm <- sample(nrow(df))
+dapp <- df[perm[1:300],]
+dtest <- df[perm[301:500],]
+```
+
+
+
+2. On construit les modèles demandés sur les données d'apprentissage uniquement.
+
+
+
+
+```{r message=TRUE, warning=FALSE}
+logit <- glm(Y~.,data=dapp,family="binomial")
+logit.step <- step(logit,direction="backward",trace=0)
+```
+
+```{r}
+Xapp <- model.matrix(Y~.,data=dapp)[,-1]
+Xtest <- model.matrix(Y~.,data=dtest)[,-1]
+Yapp <- dapp$Y
+Ytest <- dtest$Y
+```
+
+```{r}
+lasso1 <- cv.glmnet(Xapp,Yapp,family="binomial",alpha=1)
+ridge1 <- cv.glmnet(Xapp,Yapp,family="binomial",alpha=0,lambda=exp(seq(-6,-1,length=100)))
+lasso2 <- cv.glmnet(Xapp,Yapp,family="binomial",alpha=1,type.measure = "auc")
+ridge2 <- cv.glmnet(Xapp,Yapp,family="binomial",alpha=0,type.measure = "auc",lambda=exp(seq(-3,2,length=100)))
+```
+
+
+
+
+
+3. 
+
+
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+score <- data.frame(logit=predict(logit,newdata=dtest,type="response"),
+                    step=predict(logit.step,newdata=dtest,type="response"),
+                    lasso1=as.vector(predict(lasso1,type="response",newx=Xtest)),
+                    ridge1=as.vector(predict(ridge1,type="response",newx=Xtest)),
+                    lasso2=as.vector(predict(lasso2,type="response",newx=Xtest)),
+                    ridge2=as.vector(predict(ridge2,type="response",newx=Xtest))) %>% 
+  mutate(obs=Ytest) %>% gather(key="Methode",value="score",-obs)
+
+```
+
+```{r message=FALSE, warning=FALSE}
+library(plotROC)
+ggplot(score)+aes(m=score,d=obs,color=Methode)+geom_roc()+theme_classic()
+```
+
+
+
+
+3. 
+
+
+
+```{r message=FALSE, warning=FALSE}
+score %>% group_by(Methode) %>% summarise(AUC=pROC::auc(obs,score)) %>% arrange(desc(AUC))
+```
+
+
+
+
+## Exercice 4
+
+1.
+
+
+```{r}
+score.app <- data.frame(logit=predict(logit,newdata=dapp,type="response"),
+                    step=predict(logit.step,newdata=dapp,type="response"),
+                    lasso1=as.vector(predict(lasso1,type="response",newx=Xapp)),
+                    ridge1=as.vector(predict(ridge1,type="response",newx=Xapp)),
+                    lasso2=as.vector(predict(lasso2,type="response",newx=Xapp)),
+                    ridge2=as.vector(predict(ridge2,type="response",newx=Xapp))) %>% 
+  mutate(obs=Yapp) %>% gather(key="Methode",value="score",-obs) 
+```
+
+
+
+2. On prédit 1 si la probabilité que **Y** soit égale à 1 est supérieure ou égale à 0.5 :
+
+
+```{r}
+prev.app <- score.app %>% mutate(prev=round(score))
+prev.app %>% group_by(Methode) %>% summarise(Err=mean(prev!=obs)) %>% arrange(Err)
+```
+
+
+
+3. On fait de même avec l'échantillon test.
+
+
+
+```{r}
+prev.test <- score %>% mutate(prev=round(score))
+prev.test %>% group_by(Methode) %>% summarise(Err=mean(prev!=obs)) %>% arrange(Err)
+```
+
+
+
+
+
+Sur les données d'apprentissage ce sont les modèles logistiques complets et construits avec **step** qui ont les plus petites erreurs. Ces modèles souffrent de sur-apprentissage : ils ajustent très bien les données d'apprentissage mais ont du mal à bien prédire de nouveaux individus.
+
+## Exercice 5
+
+1. 
+
+
+```{r}
+ad.data <- read.table("ad_data.txt",header=FALSE,sep=",",dec=".",na.strings = "?",strip.white = TRUE)
+names(ad.data)[ncol(ad.data)] <- "Y"
+ad.data$Y <- as.factor(ad.data$Y)
+
+ad.data1 <- na.omit(ad.data)
+dim(ad.data1)
+```
+
+```{r}
+X.ad <- model.matrix(Y~.,data=ad.data1)[,-1]
+Y.ad <- ad.data1$Y
+```
+
+```{r}
+set.seed(1234)
+bloc <- sample(1:10,nrow(ad.data1),replace=TRUE)
+table(bloc)
+```
+
+
+2. On effectue la validation croisée 10 blocs (elle peut être longue...)
+
+
+```{r message=FALSE, warning=FALSE}
+score <- data.frame(matrix(0,nrow=nrow(ad.data1),ncol=4))
+names(score) <- c("logit","ridge","lasso","en")
+for (k in 1:10){
+  ind.test <- bloc==k
+  dapp <- ad.data1[!ind.test,]
+  dtest <- ad.data1[ind.test,]
+  X.app <- X.ad[!ind.test,]
+  X.test <- X.ad[ind.test,]
+  Y.app <- Y.ad[!ind.test]
+  Y.test <- Y.ad[ind.test]
+  logit.k <- glm(Y~.,data=dapp,family="binomial")
+  lasso.k <- cv.glmnet(X.app,Y.app,family="binomial")
+  ridge.k <- cv.glmnet(X.app,Y.app,family="binomial",alpha=0)
+  en.k <- cv.glmnet(X.app,Y.app,family="binomial",alpha=0.5)
+  score[ind.test,] <- data.frame(logit=predict(logit.k,newdata=dtest,type="response"),
+                                lasso=as.vector(predict(lasso.k,newx = X.test,type="response")),
+                                ridge=as.vector(predict(ridge.k,newx = X.test,type="response")),
+                                en=as.vector(predict(en.k,newx = X.test,type="response")))
+}
+```
+
+
+
+3.  On en déduit les indicateurs demandés
+
+
+
+```{r message=FALSE, warning=FALSE}
+score$obs <- ad.data1$Y
+```
+
+```{r message=FALSE, warning=FALSE}
+library(pROC)
+roc.ad <- roc(obs~logit+lasso+ridge+en,data=score)
+
+couleur <- c("black","red","blue","green")
+mapply(plot,roc.ad,col=couleur,lty=1:4,add=c(F,T,T,T),lwd=2,legacy.axes=TRUE)
+legend("bottomright",legend=c("logit","lasso","ridge","elastic net"),col=couleur,lty=1:4,lwd=2,cex=0.65)
+
+```
+
+```{r}
+sort(round(unlist(lapply(roc.ad,auc)),3),decreasing=TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+prev1 <- data.frame(apply(round(score[,-5]),2,factor,labels=c("ad.","nonad.")))
+err <- apply(sweep(prev1,1,dtest$Y,FUN="!="),2,mean)
+sort(round(err,3))
+```
+
