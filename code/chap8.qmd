@@ -1,5 +1,5 @@
 ---
-title: "8 Régression sous contraintes de norme : ridge, lasso, elastic net"
+title: "8 Régularisation des moindres carrés : Ridge, Lasso et elastic net"
 toc: true
 ---
 

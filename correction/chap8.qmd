@@ -1,0 +1,328 @@
+---
+title: "8 Régularisation des moindre carrés : Ridge, Lasso et elastic net"
+toc: true
+---
+
+```{r,child='../_preamble.qmd'}
+```
+
+::: {#exr-8-1 name="Questions de cours"}
+A, B, B, B, A (pour un bon choix de $\lambda$) et B, A, C et D.
+:::
+
+::: {#exr-8-2 name="Projection et régression ridge"}
+
+:::
+
+::: {#exr-8-3 name="Variance des valeurs ajustées avec une régression ridge"}
+
+:::
+
+::: {#exr-8-4 name="Nombre effectif de paramètres de la régression ridge"}
+1.  Rappelons que pour une valeur $\kappa$ donnée, le vecteur de coefficients de la régression ridge s'écrit
+$$
+\hat \beta_{\mathrm{ridge}}(\kappa) = (X'X + \kappa I)^{-1}X'Y.
+$$
+et donc l'ajustement par la régression ridge est
+$$
+\hat Y_{\mathrm{ridge}}(\kappa)=X(X'X + \kappa I)^{-1}X'Y=H^*(\kappa)Y
+$$
+
+2.  Soit $U_i$ le vecteur propre de $A$ associé à la valeur propre $d^2_i$. Nous avons donc par définition que
+$$
+\begin{eqnarray*}
+AU_i&=&d^2_iU_i\\
+AU_i+\lambda U_i&=&d^2_iU_i+\lambda U_i=(d^2_i+\lambda) U_i\\
+(A+\lambda I_p)U_i&=&(d^2_i+\lambda) U_i,
+\end{eqnarray*}
+$$
+c'est-à-dire que $U_i$ est aussi vecteur propre de $A+\lambda I_p$ associé à la valeur propre $\lambda+d^2_i$.
+
+3.  Nous savons que $X=QD P'$ avec $Q$ et $P$ matrices orthogonales et $D=\diag(d_1,\dotsc,d_p)$. Puisque $Q$ est orthogonale, nous avons, par définition, $Q'Q=I$. Nous avons donc que $X'X=(QD P')'QD P'=PDQ'QDP'=PD^2P'$. Puisque $P$ est orthogonale $P'P=I_p$ et $P^{-1}=P$.
+$$
+\begin{eqnarray*}
+\tr(X(X'X+\lambda I_p)^{-1}X')&=&\tr((X'X+\lambda I_p)^{-1}X'X)\\
+&=&\tr((PD^2P'+\lambda PP')^{-1}PD^2P')\\
+&=&\tr((P(D+\lambda I_p )P')^{-1}PD^2P').
+\end{eqnarray*}
+$$
+Nous avons donc
+$$
+\begin{eqnarray*}
+\tr(X(X'X+\lambda I_p)^{-1}X')&=&\tr( (P')^{-1}(D+\lambda I_p )^{-1} P^{-1} PD^2P')\\
+&=&\tr( (P')^{-1}(D+\lambda I_p )^{-1} D^2P')\\
+&=&\tr( (D+\lambda I_p )^{-1} D^2).
+\end{eqnarray*}
+$$
+Selon la définition de $H^*(\kappa)$, nous savons que sa trace vaut donc
+$$
+\begin{eqnarray*}
+\tr( (D+\kappa I_p )^{-1} D^2).
+\end{eqnarray*}
+$$
+Comme $D$ et $I_p$ sont des matrices diagonales, leur somme et produit sont simplement leur somme et produit terme à terme des éléments de la
+diagonale, et donc cette trace (somme des éléments de la diagonale) vaut
+$$
+\sum_{i=1}^{p}{\frac{d_j^2}{d_j^2+\kappa}}.
+$$
+:::
+
+::: {#exr-8-5 name="Estimateurs à rétrecissement - shrinkage"}
+1.  Soit le modèle de régression
+$$
+Y=X\beta+\varepsilon.
+$$
+En le pré-multipliant par $P$, nous avons
+$$
+Z=PY=PX\beta+P\varepsilon=DQ\beta+\eta=D\gamma+\eta.
+$$
+Puisque $\varepsilon\sim\mathcal{N}(0,\sigma^2 I_n)$ et $P$ fixé, nous avons que $\eta=P\varepsilon$ suit une loi normale de moyenne $\E(\eta)=P\E(\varepsilon)=0$ et de variance $\V(\eta)=P\V(\varepsilon)P'=\sigma^2PP'=\sigma^2I_n$.
+    
+    Par définition, $Z$ vaut $PY$ et nous savons que $Y\sim\mathcal{N}(X\beta,\sigma^2 I_n)$, donc $Z\sim\mathcal{N}(PX\beta,\sigma^2 PP')$, c'est-à-dire $Z\sim\mathcal{N}(DQ\beta,\sigma^2 I_n)$ ou encore $Z\sim\mathcal{N}(D\gamma,\sigma^2 I_n)$. En utilisant la valeur de $D$ nous avons
+$$    
+\begin{eqnarray*}
+D\gamma&=&
+\begin{pmatrix}
+  \Delta \gamma\\
+0
+\end{pmatrix}.
+\end{eqnarray*}
+$$
+Donc $Z_{1:p}\sim\mathcal{N}(\Delta\gamma,\sigma^2I_p)$.
+
+2.  Soit un estimateur de $\beta$ linéaire en $Y$~: $\hat \beta=AY$. Soit l'estimateur de $\gamma=Q\beta$ linéaire en $Y$~: $\hat\gamma=Q AY$. Pour calculer leur matrice de l'EQM, nous devons calculer leur biais et leur variance. Le biais de $\hat \beta$ est
+$$
+B(\hat \beta)=\E(\hat \beta)-\beta=\E(AY)-\beta=A\E(Y)-\beta=AX\beta-\beta.
+$$
+Le biais de $\hat\gamma$ s'écrit
+$$
+B(\hat\gamma)=\E(\hat \gamma)-\gamma=\E(Q\hat \beta)-\gamma=Q\E(\hat \beta)-\gamma=QAX\beta-\gamma.
+$$
+Comme $\gamma=Q\beta$ et $Q'Q=I_p$ nous avons
+$$
+B(\hat\gamma)=QAXQ'\gamma-\gamma.
+$$
+La variance de $\hat \beta$ s'écrit
+$$
+\V(\hat \beta)=\V(AY)=A\V(Y)A'=\sigma^2 AA',
+$$
+et celle de $\hat \gamma$ est
+$$
+\V(\hat\gamma)=\V(Q\hat \beta)=Q\V(\hat \beta)Q'=\sigma^2 QAA'Q'.
+$$
+Nous en déduisons que les matrices des EQM sont respectivement
+$$
+\begin{eqnarray*}
+\EQM(\hat \beta)&=&(AX\beta-\beta)(AX\beta-\beta)'+\sigma^2 AA',\\
+\EQM(\hat \gamma)&=&(QAXQ'\gamma-\gamma)(QAXQ'\gamma-\gamma)' + \sigma^2 QAA'Q',
+\end{eqnarray*}
+$$
+et enfin les traces de ces matrices s'écrivent
+$$
+\begin{eqnarray*}
+\tr(\EQM(\hat \beta))&=&(AX\beta-\beta)'(AX\beta-\beta)+\sigma^2\tr(AA'),\\
+\tr(\EQM(\hat \gamma))&=&(QAXQ'\gamma-\gamma)'(QAXQ'\gamma-\gamma)+ \sigma^2\tr(AA').\\
+\end{eqnarray*}
+$$
+Rappelons que $\gamma=Q\beta$ et que $Q'Q=I_p$, nous avons donc
+$$
+\begin{eqnarray*}
+\tr(\EQM(\hat \gamma))&=&\gamma'(QAXQ'-I_p)'(QAXQ'-I_p)\gamma+ \sigma^2\tr(AA')\\
+&=&\beta'(QAX - Q)'(QAX - Q)\beta+ \sigma^2\tr(AA')\\
+&=&\beta'(AX-I_p)Q'Q(AX-I_p)\beta+ \sigma^2\tr(AA')\\
+&=&\beta'(AX-I_p)(AX-I_p)\beta+ \sigma^2\tr(AA')=\tr(\EQM(\hat \beta)).
+\end{eqnarray*}
+$$
+En conclusion, que l'on s'intéresse à un estimateur linéaire de $\beta$ ou à un estimateur linéaire de $\gamma$, dès que l'on passe de
+l'un à l'autre en multipliant par $Q$ ou $Q'$, matrice orthogonale, la trace de l'EQM est identique, c'est-à-dire que les performances globales des 2 estimateurs sont identiques.
+
+3.  Nous avons le modèle de régression suivant~:
+$$
+Z_{1:p}=\Delta\gamma+\eta_{1:p},
+$$
+et donc, par définition de l'estimateur des MC, nous avons
+$$
+\hat \gamma_{\mathrm{MC}}=(\Delta'\Delta)^{-1}\Delta'Z_{1:p}.
+$$
+Comme $\Delta$ est une matrice diagonale, nous avons
+$$
+\hat \gamma_{\mathrm{MC}}=\Delta^{-2}\Delta'Z_{1:p}=\Delta^{-1}Z_{1:p}.
+$$
+Cet estimateur est d'expression très simple et il est toujours défini de manière unique, ce qui n'est pas forcément le cas de $\hat \beta_{\mathrm{MC}}$.
+
+
+    Comme $Z_{1:p}\sim\mathcal{N}(\Delta\gamma,\sigma^2 I_p)$ nous avons que $\hat \gamma_{\mathrm{MC}}=\Delta^{-1}Z_{1:p}$ suit une loi normale d'espérance $\E(\Delta^{-1}Z_{1:p})=\Delta^{-1}\E(Z_{1:p})=\gamma$ et de variance $\V(\hat \gamma_{\mathrm{MC}})=\sigma^2\Delta^{-2}$. Puisque $\hat \gamma_{\mathrm{MC}}$ est un estimateur des MC, il est sans biais, ce qui est habituel.
+
+4.  L'EQM de $\hat \gamma_{\mathrm{MC}}$, estimateur sans biais, est simplement sa variance. Pour la $i^e$ coordonnée de
+$\hat \gamma_{\mathrm{MC}}$, l'EQM est égal à l'élément $i,i$ de la matrice de variance $\V(\hat \gamma_{\mathrm{MC}})$, c'est-à-dire
+$\sigma^2/\delta_i^2$. La trace de l'EQM est alors simplement la somme, sur toutes les coordonnées $i$, de cet EQM obtenu.
+
+5.  Par définition $\hat \gamma(c)=\diag(c_i)Z_{1:p}$ et nous savons que $Z_{1:p}\sim\mathcal{N}(\Delta\gamma,\sigma^2 I_p).$ Nous obtenons que $\hat \gamma(c)$ suit une loi normale d'espérance $\E(\diag(c_i)Z_{1:p})=\diag(c_i)\Delta\gamma$ et de variance
+$$
+\V(\hat \gamma(c))= \diag(c_i)\V(Z_{1:p})\diag(c_i)'= \sigma^2\diag(c_i^2).
+$$
+La loi de $\hat \gamma(c)$ étant une loi normale de matrice de variance diagonale, nous en déduisons que les coordonnées
+  de $\hat \gamma(c)$ sont indépendantes entre elles.
+  
+6.  Calculons l'EQM de la $i^e$ coordonnée de $\hat \gamma(c)$
+$$
+\EQM(\hat \gamma(c)_i)=\E(\hat \gamma(c)_i -\gamma)^2=\E(\hat \gamma(c)_i^2)+
+\E(\gamma_i^2)-2\E(\hat \gamma(c)_i \gamma_i).
+$$
+Comme $\gamma_i$ et que $\E(\hat \gamma(c)_i^2)=\V(\hat \gamma(c)_i^2)+\{\E(\hat \gamma(c)_i^2)\}^2$, nous avons
+$$
+\begin{align*}
+\EQM(\hat \gamma(c)_i)&=\sigma^2 c_i^2+(c_i\delta_i\gamma_i)^2+\gamma_i^2-2\gamma_i\E(\hat \gamma(c)_i)\\
+&=\sigma^2 c_i^2+(c_i\delta_i\gamma_i)^2+\gamma_i^2-2\sigma^2 c_i\delta_i\gamma_i= \sigma^2c_i^2+\gamma_i^2(c_i\delta_i -1)^2.
+\end{align*}
+$$
+7.  De manière évidente si $\gamma_i^2$ diminue, alors l'EQM de $\hat \gamma(c)_i$ diminue aussi. Calculons la valeur de l'EQM quand
+$\gamma_i^2=\frac{\sigma^2}{\delta_i^2}\frac{(1/\delta_i)+c_i}{(1/\delta_i)-c_i}$. Nous avons, grâce à la question précédente,
+$$
+\begin{eqnarray*}
+\EQM(\hat \gamma(c)_i)&=&\sigma^2 c_i^2+(c_i\delta_i -1)^2\frac{\sigma^2}{\delta_i^2}\frac{(1/\delta_i)+c_i}{(1/\delta_i)-c_i}\\
+&=&\sigma^2 c_i^2+\frac{\sigma^2}{\delta_i^2}(1 - c_i\delta_i)^2\frac{1+\delta_ic_i}{1-\delta_ic_i}\\
+&=&\sigma^2 c_i^2+\frac{\sigma^2}{\delta_i^2}(1 - c_i\delta_i)(1+\delta_ic_i)\\
+&=&\sigma^2 c_i^2+\frac{\sigma^2}{\delta_i^2}(1-\delta_i^2c_i^2)\\
+&=&\sigma^2 c_i^2+\frac{\sigma^2}{\delta_i^2}-\sigma^2c_i^2=\frac{\sigma^2}{\delta_i^2}\\
+&=&\EQM(\hat \gamma_{\mathrm{MC}}),
+\end{eqnarray*}
+$$
+d'où la conclusion demandée.
+
+8.  Par définition de $\hat \gamma(c)$, nous avons
+$$
+\begin{eqnarray*}
+\hat \gamma(c)&=&\diag(c_i)Z_{1:p}=\diag(\frac{\delta_i}{\delta_i^2+\kappa})Z_{1:p}\\
+&=&(\Delta'\Delta + \kappa I_p)^{-1}\Delta'Z_{1:p},
+\end{eqnarray*}
+$$
+puisque $\Delta$ est diagonale. De plus nous avons
+$$
+D =
+\bigl( \begin{smallmatrix}
+  \Delta\\
+0
+\end{smallmatrix}\bigr),
+$$
+ce qui entraîne que $D'D=\Delta'\Delta$ et $D'Z=\Delta' Z_{1:p}$.
+Nous obtenons donc
+$$
+\hat \gamma(c)=(D'D+\kappa I_p)^{-1}D'Z.
+$$
+Rappelons que $D=PXQ'$ avec $P$ et $Q$ matrices orthogonales, nous avons
+alors
+$$
+\begin{eqnarray*}
+\hat \gamma(c)&=&(QX'P'PXQ' + \kappa I_p)^{-1} D'Z=(QX'XQ' + \kappa QQ')^{-1}D'Z\\
+&=&(Q(X'X  + \kappa I_p)Q')^{-1}D'Z=(Q')^{-1}(X'X  + \kappa I_p)^{-1}(Q)^{-1}D'Z\\
+&=&Q(X'X  + \kappa I_p)^{-1}Q'D'Z.
+\end{eqnarray*}
+$$
+Comme $Z=PY$ et $D=PXQ'$, nous avons
+$$
+\hat \gamma(c)=Q(X'X  + \kappa I_p)^{-1}Q' QX'P' PY=Q(X'X  + \kappa I_p)^{-1}XY.
+$$
+Enfin, nous savons que $Q\hat\gamma=\hat \beta$, nous en déduisons que $\hat\gamma=Q'\hat \beta$ et donc que dans le cas particulier où $c_i=\frac{\delta_i}{\delta_i^2+\kappa}$ nous obtenons
+$$
+\hat \beta=Q\hat \gamma(c)=(X'X  + \kappa I_p)^{-1}XY,
+$$
+c'est-à-dire l'estimateur de la régression ridge.
+:::
+
+::: {#exr-8-6 name="Coefficient constant et régression sous contraintes"}
+
+:::
+
+::: {#exr-8-7 name="Unicité pour la régression lasso, Giraud (2014)"}
+
+:::
+
+::: {#exr-8-8}
+1.  
+
+    ```{r}
+    library(tidyverse)
+    signal <- read_csv("../donnees/courbe_lasso.csv")
+    donnees <- read_csv("../donnees/echan_lasso.csv")
+    ggplot(signal)+aes(x=x,y=y)+geom_line()+
+      geom_point(data=donnees,aes(x=X,y=Y))
+    ```
+
+2.  Nous cherchons à reconstruire le signal à partir de l'échantillon. Bien entendu, vu la forme du signal, un modèle linéaire de la forme 
+$$
+y_i=\beta_0+\beta_1x_i+\varepsilon_i
+$$ 
+n'est pas approprié. De nombreuses approches en **traitement du signal** proposent d'utiliser une `base` ou `dictionnaire` représentée par une collection de fonctions $\{\psi_j(x)\}_{j=1,\dots,K}$ et de décomposer le signal dans cette base :
+$$
+m(x)\approx \sum_{j=1}^K \beta_j\psi_j(x).
+$$
+Pour un dictionnaire donné, on peut alors considérer un **modèle linéaire**
+$$
+  y_i=\sum_{j=1}^K \beta_j\psi_j(x_i)+\varepsilon_i.
+$$ {#eq-mod-lin-signal}
+Le problème est toujours d'estimer les paramètres $\beta_j$ mais les variables sont maintenant définies par les éléments du dictionnaire. Il existe différents types de dictionnaire, dans cet exercice nous proposons de considérer la base de Fourier définie par
+$$
+\psi_0(x)=1,\quad \psi_{2j-1}(x)=\cos(2j\pi x)\quad\text{et}\quad \psi_{2j}(x)=\sin(2j\pi x),\quad j=1,\dots,K.
+$$
+
+3.  
+    ```{r}
+    mat.dict <- function(K,x){
+    	res <- matrix(0,nrow=length(x),ncol=2*K) |> as_tibble()
+    	for (j in 1:K){
+    	  res[,2*j-1] <- cos(2*j*pi*x)
+    	  res[,2*j] <- sin(2*j*pi*x)
+    	}
+    	return(res)
+    }
+    ```
+
+4.  Il suffit d'ajuster le modèle linéaire où les variables explicatives sont données par le dictionnaire :
+
+    ```{r}
+    D25 <- mat.dict(25,donnees$X) |> mutate(Y=donnees$Y)
+    mod.lin <- lm(Y~.,data=D25)
+    S25 <- mat.dict(25,signal$x)
+    prev.MCO <- predict(mod.lin,newdata = S25)
+    signal1 <- signal |> mutate(MCO=prev.MCO) |> rename(signal=y)
+    signal2 <- signal1 |> pivot_longer(-x,names_to="meth",values_to="y")
+    ggplot(signal2)+aes(x=x,y=y)+geom_line(aes(color=meth))+
+      scale_y_continuous(limits = c(-2,2))+geom_point(data=donnees,aes(x=X,y=Y))
+    ```
+    Le signal estimé a tendance à surajuster les données. Cela vient du fait qu'on estime 51 paramètres avec seulement 60 observations.
+
+5.  On regarde tout d'abord le `chemin de régularisation` des estimateurs **lasso**
+
+    ```{r}
+    library(glmnet)
+    X.25 <- model.matrix(Y~.,data=D25)[,-1]
+    lasso1 <- glmnet(X.25,D25$Y,alpha=1)
+    plot(lasso1)
+    ```
+    Il semble que quelques coefficients quittent la valeur 0 bien avant les autres. On effectue maintenant la validation croisée pour sélectionner le paramètre $\lambda$.
+
+    ```{r}
+    set.seed(1234)
+    lasso.cv <- cv.glmnet(X.25,D25$Y,alpha=1)
+    plot(lasso.cv)
+    ```
+    On calcule les prévisions et on trace le signal.
+
+    ```{r}
+    prev.lasso <- as.vector(predict(lasso.cv,newx=as.matrix(S25)))
+    signal1$lasso <- prev.lasso
+    signal2 <- signal1 |> pivot_longer(-x,names_to="meth",values_to="y")
+    ggplot(signal2)+aes(x=x,y=y)+geom_line(aes(color=meth))+
+      scale_y_continuous(limits = c(-2,2))+geom_point(data=donnees,aes(x=X,y=Y))
+    ```
+    L'algorithme **lasso** a permis de corriger le problème de sur-apprentissage. Les coefficients lasso non nuls sont les suivants
+
+    ```{r}
+    v.sel <- which(coef(lasso.cv)!=0)
+    v.sel
+    ```
+
+
+
+:::

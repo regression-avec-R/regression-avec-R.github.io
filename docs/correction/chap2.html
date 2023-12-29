@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Régression avec R - 2 La régression linéaire multiple</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../correction/chap3.html" rel="next">
+<link href="../correction/chap1.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap1.html">I Introduction au modèle linéaire</a></li><li class="breadcrumb-item"><a href="../correction/chap2.html">2 La régression linéaire multiple</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Régression avec R</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Basculer en mode lecteur">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3ème édition</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../donnees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Jeux de données</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+ <span class="menu-text">Codes R</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+ <span class="menu-text">I Introduction au modèle linéaire</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1 Régression simple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2 La régression linéaire multiple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3 Validation du modèle</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+ <span class="menu-text">II Inférence</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5 Inférence dans le modèle Gaussien</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6 Variables qualitatives : ANCOVA et ANOVA</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+ <span class="menu-text">III Réduction de dimension</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7 Choix de variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8 Régularisation des moindres carrés : Ridge, Lasso et elastic net</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11 Régression logistique</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12 Régression de Poisson</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13 Régularisation de la vraisemblance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15 Données déséquilibrées</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false">
+ <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">16 Introduction à la régression spline</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/chap17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17 Estimateurs à noyau et <span class="math inline">\(k\)</span> plus proches voisins</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Correction des exercices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">I Introduction au modèle linéaire</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1 La régression linéaire simple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">2 La régression linéaire multiple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3 Validation du modèle</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4 Extensions : non-inversibilité et (ou) erreurs corrélées</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="false">
+ <span class="menu-text">II Inférence</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5 Inférence dans le modèle gaussien</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6 Variables qualitatives : ANCOVA et ANOVA</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false">
+ <span class="menu-text">III Réduction de dimension</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7 Choix de variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8 Régularisation des moindre carrés : Ridge, Lasso et elastic net</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false">
+ <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11 Régression logistique</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12 Régression de Poisson</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13 Régularisation de la vraisemblance</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false">
+ <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false" aria-label="Basculer la section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17 Estimateurs à noyau et <span class="math inline">\(k\)</span> plus proches voisins</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content column-page-right" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">2 La régression linéaire multiple</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<div id="exr-2-1" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours) </strong></span>A, A, B, B, B, C.</p>
+</div>
+<div id="exr-2-2" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 2 (Covariance de <span class="math inline">\(\hat\varepsilon\)</span> et <span class="math inline">\(\hat Y\)</span>) </strong></span>Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta}) \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{V}}(\tilde{\beta})  = \mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta+\hat \beta)
+=\mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta)+\mathop{\mathrm{V}}(\hat \beta) -
+2 \mathop{\mathrm{Cov}}(\tilde{\beta} - \hat \beta,\hat \beta).
+\end{eqnarray*}\]</span> Les variances étant définies positives, si nous montrons que <span class="math inline">\(\mathop{\mathrm{Cov}}(\tilde{\beta}- \hat \beta,\hat \beta)=0\)</span>, nous aurons fini la démonstration.\ Puisque <span class="math inline">\(\tilde{\beta}\)</span> est linéaire, <span class="math inline">\(\tilde{\beta} = A Y\)</span>. De plus, nous savons qu’il est sans biais, c’est-à-dire <span class="math inline">\(\mathbf E(\tilde{\beta}) = \beta\)</span> pour tout <span class="math inline">\(\beta\)</span>, donc <span class="math inline">\(A X = I\)</span>. La covariance devient : <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{Cov}}(\tilde{\beta} - \hat \beta,\hat \beta) &amp;=&amp;
+\mathop{\mathrm{Cov}}(A Y,(X'X)^{-1}X'Y) - \mathop{\mathrm{V}}(\hat \beta)\\
+&amp;=&amp; \sigma^2 A X (X'X)^{-1} - \sigma^2 (X'X)^{-1}=0.
+\end{eqnarray*}\]</span></p>
+</div>
+<div id="exr-2-3" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 3 (Théorème de Gauss Markov) </strong></span>Nous devons montrer que, parmi tous les estimateurs linéaires sans biais, l’estimateur de MC est celui qui a la plus petite variance. La linéarité de <span class="math inline">\(\hat \beta\)</span> est évidente. Calculons sa variance : <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{V}}(\hat \beta) = \mathop{\mathrm{V}}((X'X)^{-1}X'Y) =
+(X'X)^{-1}X'\mathop{\mathrm{V}}(Y)X(X'X)^{-1}=\sigma^2 (X'X)^{-1}.
+\end{eqnarray*}\]</span> Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta}) \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{V}}(\tilde{\beta})  = \mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta+\hat \beta)
+=\mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta)+\mathop{\mathrm{V}}(\hat \beta) -
+2 \mathop{\mathrm{Cov}}(\tilde{\beta} - \hat \beta,\hat \beta).
+\end{eqnarray*}\]</span> Les variances étant définies positives, si nous montrons que <span class="math inline">\(\mathop{\mathrm{Cov}}(\tilde{\beta}- \hat \beta,\hat \beta)=0\)</span>, nous aurons fini la démonstration.\ Puisque <span class="math inline">\(\tilde{\beta}\)</span> est linéaire, <span class="math inline">\(\tilde{\beta} = A Y\)</span>. De plus, nous savons qu’il est sans biais, c’est-à-dire <span class="math inline">\(\mathbf E(\tilde{\beta}) = \beta\)</span> pour tout <span class="math inline">\(\beta\)</span>, donc <span class="math inline">\(A X = I\)</span>. La covariance devient : <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{Cov}}(\tilde{\beta} - \hat \beta,\hat \beta) &amp;=&amp;
+\mathop{\mathrm{Cov}}(A Y,(X'X)^{-1}X'Y) - \mathop{\mathrm{V}}(\hat \beta)\\
+&amp;=&amp; \sigma^2 A X (X'X)^{-1} - \sigma^2 (X'X)^{-1}=0.
+\end{eqnarray*}\]</span></p>
+</div>
+<div id="exr-2-4" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 4 (Représentation des variables) </strong></span>Nous représentons les données dans <span class="math inline">\(\mathbb R^2\)</span> pour le premier jeu et dans <span class="math inline">\(\mathbb R^3\)</span> pour le second.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="FIGURES/exo2-4.png" class="img-fluid figure-img" style="width:75.0%"></p>
+</figure>
+</div>
+<p>Dans le premier modèle, nous projetons <span class="math inline">\(Y\)</span> sur l’espace engendré par <span class="math inline">\(X\)</span>, soit la droite de vecteur directeur <span class="math inline">\(\overrightarrow{OX}\)</span>. Nous trouvons par le calcul <span class="math inline">\(\hat \beta = 1.47\)</span>, résultat que nous aurions pu trouver graphiquement car <span class="math inline">\(\overrightarrow{O \hat Y}= \hat \beta . \overrightarrow{OX}\)</span>.</p>
+<p>Considérons <span class="math inline">\(\mathbb R^3\)</span> muni de la base orthonormée <span class="math inline">\((\vec{i},\vec{j},\vec{k})\)</span>. Les vecteurs <span class="math inline">\(\overrightarrow{OX}\)</span> et <span class="math inline">\(\overrightarrow{OZ}\)</span> engendrent le même plan que celui engendré par <span class="math inline">\((\vec{i},\vec{j})\)</span>. La projection de <span class="math inline">\(Y\)</span> sur ce plan donne <span class="math inline">\(\overrightarrow{O \hat Y}\)</span>. Il est quasiment impossible de trouver <span class="math inline">\(\hat \beta\)</span> et <span class="math inline">\(\hat \gamma\)</span> graphiquement mais nous trouvons par le calcul <span class="math inline">\(\hat \beta = -3.33\)</span> et <span class="math inline">\(\hat \gamma =5\)</span>.</p>
+</div>
+<div id="exr-2-5" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 5 (Modèles emboîtés) </strong></span>Nous obtenons <span class="math display">\[\begin{eqnarray*}
+\hat Y_p = X \hat \beta \quad  \hbox{et} \quad \hat Y_q= X_q \hat \gamma.
+\end{eqnarray*}\]</span> Par définition du <span class="math inline">\(\mathop{\mathrm{R^2}}\)</span>, il faut comparer la norme au carré des vecteurs <span class="math inline">\(\hat Y_p\)</span> et <span class="math inline">\(\hat Y_q\)</span>. Notons les espaces engendrés par les colonnes de <span class="math inline">\(X_q\)</span> et <span class="math inline">\(X\)</span>, <span class="math inline">\(\mathcal M_{X_q}\)</span> et <span class="math inline">\(\mathcal M_{X}\)</span>, nous avons <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>. Nous obtenons alors <span class="math display">\[\begin{eqnarray*}
+\hat Y_p = P_{X_p}Y
+= (P_{X_q} + P_{X^{\perp}_q})P_{X_p}Y &amp;=&amp; P_{X_q}P_{X_p}Y + P_{X^{\perp}_q}P_{X_p}Y\\
+&amp;=&amp; P_{X_q}Y + P_{X^{\perp}_q \cap X_p} Y\\
+&amp;=&amp; \hat Y_q + P_{X^{\perp}_q \cap X_p} Y.
+\end{eqnarray*}\]</span> En utilisant le théorème de Pythagore, nous avons <span class="math display">\[\begin{eqnarray*}
+\| \hat Y_p \|^2 &amp;=&amp; \|\hat Y_q \|^2 + \| P_{X^{\perp}_q \cap X_p} Y \|^2
+\geq \|\hat Y_q \|^2,
+\end{eqnarray*}\]</span> d’où <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{R^2}}(p)=\frac{\| \hat Y_p \|^2}{\| Y \|^2} \geq
+\frac{\| \hat Y_q \|^2}{\| Y \|^2} =\mathop{\mathrm{R^2}}(q).
+\end{eqnarray*}\]</span></p>
+<p>En conclusion, lorsque les modèles sont emboîtés <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>, le <span class="math inline">\(\mathop{\mathrm{R^2}}\)</span> du modèle le plus grand (ayant le plus de variables) sera toujours plus grand que le <span class="math inline">\(\mathop{\mathrm{R^2}}\)</span> du modèle le plus petit.</p>
+</div>
+<div id="exr-2-6" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 6 </strong></span>La matrice <span class="math inline">\(X'X\)</span> est symétrique, <span class="math inline">\(n\)</span> vaut 30 et <span class="math inline">\(\bar x= \bar z=0\)</span>. Le coefficient de corrélation <span class="math display">\[\begin{equation*}
+\rho_{x,z} = \frac{\sum_{i=1}^{30} (x_i -\bar x)(z_i - \bar z)}
+{\sqrt{\sum_{i=1}^{30} (x_i -\bar x)^2\sum_{i=1}^{30} (z_i - \bar z)^2}}
+=\frac{\sum_{i=1}^{30} x_i z_i}
+{\sqrt{\sum_{i=1}^{30} x_i^2 \sum_{i=1}^{30} z_i^2}}
+=\frac{7}{\sqrt{150}}=0.57.
+\end{equation*}\]</span> Nous avons <span class="math display">\[\begin{eqnarray*}
+y_i &amp;=&amp; -2 +x_i+z_i+\hat \varepsilon_i
+\end{eqnarray*}\]</span> et la moyenne vaut alors <span class="math display">\[\begin{eqnarray*}
+\bar y &amp;=&amp; -2 + \bar x +\bar z + \frac{1}{n}\sum_i \hat \varepsilon_i.
+\end{eqnarray*}\]</span> La constante étant dans le modèle, la somme des résidus est nulle car le vecteur <span class="math inline">\(\hat \varepsilon\)</span> est orthogonal au vecteur <span class="math inline">\(\mathbf{1}\)</span>. Nous obtenons donc que la moyenne de <span class="math inline">\(Y\)</span> vaut 2 car <span class="math inline">\(\bar x=0\)</span> et <span class="math inline">\(\bar z=0\)</span>. Nous obtenons en développant <span class="math display">\[\begin{eqnarray*}
+\|\hat Y \|^2 &amp;=&amp; \sum_{i=1}^{30}(-2+x_i+2z_i)^2\\
+&amp;=&amp; 4+10+60+14=88.
+\end{eqnarray*}\]</span> Par le théorème de Pythagore, nous concluons que <span class="math display">\[\begin{eqnarray*}
+\mathop{\mathrm{SCT}}=\mathop{\mathrm{SCE}}+\mathop{\mathrm{SCR}}=88+12=100.
+\end{eqnarray*}\]</span></p>
+</div>
+<div id="exr-2-7" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 7 (Changement d’échelle des variables explicatives) </strong></span>Nous avons l’estimation sur le modèle avec les variables originales qui minimise <span class="math display">\[\begin{align*}
+\mathop{\mathrm{MCO}}(\beta)&amp;=\|Y - \sum_{j=1}^{p} X_j \beta_j \|^{2}
+\end{align*}\]</span> Cette solution est notée <span class="math inline">\(\hat \beta\)</span>.</p>
+<p>Nous avons l’estimation sur le modèle avec les variables prémultipliées par <span class="math inline">\(a_{j}\)</span> (changement d’échelle) qui minimise</p>
+<p><span class="math display">\[   
+\begin{align*}
+\tilde{\mathop{\mathrm{MCO}}}(\beta)&amp;=\|Y - \sum_{j=1}^{p} \tilde X_j \beta_j \|^{2} = \|Y - \sum_{j=1}^{p} a_{j} X_j \beta_j \|^{2}\\
+&amp;= \|Y - \sum_{j=1}^{p} X_j \gamma_j \|^{2}=\mathop{\mathrm{MCO}}(\gamma),
+\end{align*}
+\]</span></p>
+<p>en posant en dernière ligne <span class="math inline">\(\gamma_{j}=a_{j} \beta_j\)</span>. La solution de de <span class="math inline">\(\mathop{\mathrm{MCO}}(\gamma)\)</span> (ou encore <span class="math inline">\(\mathop{\mathrm{MCO}}(\beta)\)</span>) est <span class="math inline">\(\hat \beta\)</span>. La solution de <span class="math inline">\(\tilde{\mathop{\mathrm{MCO}}}(\beta)\)</span> est alors donnée par <span class="math inline">\(\hat \beta_{j}=a_{j} \tilde \beta_j\)</span>.</p>
+</div>
+<div id="exr-2-8" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 8 (Différence entre régression multiple et régressions simples) </strong></span>&nbsp;</p>
+<ol type="1">
+<li><p>Calculons l’estimateur des MCO noté traditionnellement <span class="math inline">\((X'X)^{-1}X'Y\)</span> avec la matrice <span class="math inline">\(X\)</span> qui possède ici deux colonnes (notées ici <span class="math inline">\(X\)</span> et <span class="math inline">\(Z\)</span>) et <span class="math inline">\(n\)</span> lignes. On a donc <span class="math display">\[\begin{align*}
+  (X'X)&amp;=
+         \begin{pmatrix}
+           \|X\|^{2} &amp; &lt;X,Z&gt;\\
+           &lt;X,Z&gt; &amp; \|Z\|^{2} \\
+         \end{pmatrix}
+\end{align*}\]</span> Son déterminant est <span class="math inline">\(\Delta= \|X\|^{2}\|Z\|^{2} - 2 &lt;X,Z&gt;\)</span> et son inverse est <span class="math display">\[\begin{align*}
+  \frac{1}{\Delta}
+  \begin{pmatrix}
+           \|Z\|^{2} &amp; -&lt;X,Z&gt;\\
+           -&lt;X,Z&gt; &amp; \|X\|^{2} \\
+  \end{pmatrix}
+\end{align*}\]</span> Ensuite <span class="math inline">\(X'Y\)</span> est simplement le vecteur colonne de coordonnées <span class="math inline">\(&lt;X,Y&gt;\)</span> et <span class="math inline">\(&lt;Z,Y&gt;\)</span>. En rassemblant le tout nous avons <span class="math display">\[\begin{align*}
+  \hat \beta_{1}&amp;=\frac{1}{\Delta}(\|Z\|^{2} &lt;X,Y&gt; - &lt;X,Z&gt;&lt;Z,Y&gt;),\\
+  \hat \beta_{2}&amp;=\frac{1}{\Delta}(\|X\|^{2} &lt;Z,Y&gt; - &lt;X,Z&gt;&lt;X,Y&gt;).
+\end{align*}\]</span> Si <span class="math inline">\(&lt;X,Z&gt;=0\)</span> (les deux vecteurs sont orthogonaux) alors cette écriture se simplifie en <span class="math display">\[
+  \hat \beta_{1}=\frac{&lt;X,Y&gt;}{\|X\|^{2}},\quad
+  \hat \beta_{2}=\frac{&lt;Z,Y&gt;}{\|Z\|^{2}}.
+\]</span></p></li>
+<li><p>Calculons l’estimateur des MCO noté traditionnellement <span class="math inline">\((X'X)^{-1}X'Y\)</span> avec la matrice <span class="math inline">\(X\)</span> qui possède ici une colonne (notée ici <span class="math inline">\(X\)</span>) et <span class="math inline">\(n\)</span> lignes. On a donc <span class="math display">\[\begin{align*}
+  \hat \beta_{X} = \frac{&lt;X,Y&gt;}{\|X\|^{2}}.
+\end{align*}\]</span> Passons maintenant à la matrice qui possède ici une colonne (notée ici <span class="math inline">\(Z\)</span>) et <span class="math inline">\(n\)</span> lignes. On a donc <span class="math display">\[\begin{align*}
+  \hat \beta_{Z} = \frac{&lt;Z,Y&gt;}{\|Z\|^{2}}.
+\end{align*}\]</span></p></li>
+<li><p>En général les coefficients des régressions simples ne sont pas ceux obtenus par régression multiple sauf si les variables sont orthogonales.</p></li>
+<li><p>Nous avons ici les résidus de la première régression qui sont <span class="math display">\[\begin{align}
+  \hat \varepsilon = Y - \hat \beta_{X} X.
+\end{align}\]</span> La deuxième régression (sur les résidus) donne le coefficient <span class="math display">\[\begin{align*}
+  \hat \beta_{Z} = \frac{&lt;Z,\hat \varepsilon&gt;}{\|Z\|^{2}} = \hat \beta_{Z} - \hat \beta_{X}\frac{&lt;Z,X&gt;}{\|Z\|^{2}}
+\end{align*}\]</span> La régression séquentielle donne des coefficients différents des régressions univariées ou bivariées sauf si les variables sont orthogonales. \end{enumerate}</p></li>
+</ol>
+</div>
+<div id="exr-2-9" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 9 (TP : différence entre régression multiple et régressions simples) </strong></span>&nbsp;</p>
+<ol type="1">
+<li><p>Simulons 2 variables explicatives avec GNU-R pour <span class="math inline">\(n=100\)</span> individus selon selon deux loi uniforme <span class="math inline">\([0,1]\)</span> :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4321</span>) <span class="co"># pour fixer les simulations</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ensuite simulons <span class="math inline">\(Y\)</span> selon le modèle avec <span class="math inline">\(\sigma=0.5\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>) <span class="co"># pour fixer les simulations</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">-</span><span class="dv">3</span><span class="sc">*</span>X1 <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>X2  <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span>sigma)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>don <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(Y,X1,X2)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(don)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Y         X1        X2
+1 4.213477 0.33477802 0.5913398
+2 1.602748 0.90913948 0.6715464
+3 2.958646 0.41152969 0.5830570
+4 3.215113 0.04384097 0.3516151
+5 3.367004 0.76350011 0.9298713
+6 3.555247 0.75043889 0.9181180</code></pre>
+</div>
+</div></li>
+<li><p>Le graphique est obtenu avec</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rgl<span class="sc">::</span><span class="fu">plot3d</span>(X1,X2,Y)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>On observe grâce au code ci-dessus que les points sont répartis autour d’un plan (d’équation <span class="math inline">\(z=2-3x + 4y\)</span>).</p></li>
+<li><p>Effectuons la régression multiple et stockons <span class="math inline">\(\hat Y\)</span> dans <code>Yhat</code> :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(regmult <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X1<span class="sc">+</span>X2, <span class="at">data=</span>don))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ 1 + X1 + X2, data = don)
+
+Coefficients:
+(Intercept)           X1           X2  
+      2.080       -2.972        3.827  </code></pre>
+</div>
+</div>
+<p>Nous sommes assez proches des coefficients recherchés (2, -3 et 4)</p></li>
+<li><p>Effectuons les régression simples</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(regX1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X1, <span class="at">data=</span>don))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ 1 + X1, data = don)
+
+Coefficients:
+(Intercept)           X1  
+      3.803       -2.441  </code></pre>
+</div>
+</div>
+<p>Nous voyons que le paramètre ne correspond pas à celui de <span class="math inline">\(X_{1}\)</span> dans la régression multiple.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(regX2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X2, <span class="at">data=</span>don))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ 1 + X2, data = don)
+
+Coefficients:
+(Intercept)           X2  
+     0.7221       3.4424  </code></pre>
+</div>
+</div>
+<p>Nous voyons que le paramètre ne correspond pas à celui de <span class="math inline">\(X_{2}\)</span> dans la régression multiple.</p></li>
+<li><p>Enchainons après la régression simple sur <span class="math inline">\(X_{1}\)</span> la régression des résidus (ce que <span class="math inline">\(X_{1}\)</span> n’a pas réussi à modéliser) sur <span class="math inline">\(X_{2}\)</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>residX1 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(regX1)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>don <span class="ot">&lt;-</span> <span class="fu">cbind</span>(don, residX1)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>regX2residX1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(residX1<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X2, <span class="at">data=</span>don)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>regX2residX1</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = residX1 ~ 1 + X2, data = don)
+
+Coefficients:
+(Intercept)           X2  
+     -1.965        3.758  </code></pre>
+</div>
+</div>
+<p>Là encore le coefficient sur <span class="math inline">\(X_{2}\)</span> ne correspond pas à celui de <span class="math inline">\(X_{2}\)</span> dans la régression multiple. :La prévision est différente</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">predict</span>(regX2residX1) <span class="sc">+</span> <span class="fu">predict</span>(regX1))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1        2        3        4        5 
+3.242781 2.142450 3.024335 3.051894 3.468733 </code></pre>
+</div>
+</div></li>
+<li><p>Changeons l’ordre</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>residX2 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(regX2)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>don <span class="ot">&lt;-</span> <span class="fu">cbind</span>(don, residX2)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>regX1residX2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(residX2<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X1, <span class="at">data=</span>don)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>regX1residX2</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = residX2 ~ 1 + X1, data = don)
+
+Coefficients:
+(Intercept)           X1  
+      1.531       -2.918  </code></pre>
+</div>
+</div>
+<p>On a là encore des différences</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">predict</span>(regX1residX2) <span class="sc">+</span> <span class="fu">predict</span>(regX2))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1        2        3        4        5 
+3.311895 1.911850 3.059400 3.335703 3.226125 </code></pre>
+</div>
+</div></li>
+<li><p>Envisageons la covariance empirique</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cov</span>(X1,X2)    </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01050429</code></pre>
+</div>
+</div>
+<p>et leur produit scalaire</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(X1<span class="sc">*</span>X2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 28.47696</code></pre>
+</div>
+</div>
+<p>Les deux variables sont loin d’être orthogonales. Centrons les</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>X1c <span class="ot">&lt;-</span> X1 <span class="sc">-</span> <span class="fu">mean</span>(X1)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>X2c <span class="ot">&lt;-</span> X2 <span class="sc">-</span> <span class="fu">mean</span>(X2)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(X1c<span class="sc">*</span>X2c) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.039925</code></pre>
+</div>
+</div>
+<p>Refaisons les régressions: la multiple</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>donc <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(Y,X1c,X2c)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>(regmultc <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X1c<span class="sc">+</span>X2c, <span class="at">data=</span>donc))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ 1 + X1c + X2c, data = donc)
+
+Coefficients:
+(Intercept)          X1c          X2c  
+      2.522       -2.972        3.827  </code></pre>
+</div>
+</div>
+<p>Nous retrouvons que seul la constante change puis l’enchainement</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>(regX1c <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X1c, <span class="at">data=</span>donc))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ 1 + X1c, data = donc)
+
+Coefficients:
+(Intercept)          X1c  
+      2.522       -2.441  </code></pre>
+</div>
+</div>
+<p>Ici les variables <span class="math inline">\(X_{1c}\)</span> et <span class="math inline">\(X_{2c}\)</span> étant centrées elles sont orthogonales à la constante. Nous avons donc <span class="math display">\[\begin{align}
+      \Im(\mathbf{1}, X_{1c}, X_{2c}) = \Im(\mathbf{1}) \stackrel{\perp}{\oplus} \Im(X_{1c}, X_{2c})
+    \end{align}\]</span> Le modèle précédent nous donne grâce à l’orthogonalité ci-dessus <span class="math inline">\(\hat Y_{1c} = P_{\mathbf{1}, X_{1c}}Y=P_{\mathbf{1}}Y + P_{X_{1c}}Y\)</span>. Le modèle complet donne de son côté <span class="math inline">\(\hat Y = P_{\mathbf{1}, X_{1c},X_{2c}}Y=P_{\mathbf{1}}Y + P_{X_{1c},X_{2c}}Y\)</span>. Nous retrouvons donc le coefficient constant qui est la coordonnée sur <span class="math inline">\(\mathbf{1}\)</span> de <span class="math inline">\(P_{\mathbf{1}}Y\)</span> dans les deux cas.</p>
+<p>Enchainons sur la régression sur résidus</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>residX1c <span class="ot">&lt;-</span> <span class="fu">residuals</span>(regX1c)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>donc <span class="ot">&lt;-</span> <span class="fu">cbind</span>(donc, residX1c)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>(regX2residX1c <span class="ot">&lt;-</span> <span class="fu">lm</span>(residX1c<span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>X2c, <span class="at">data=</span>don))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = residX1c ~ 1 + X2c, data = don)
+
+Coefficients:
+(Intercept)          X2c  
+  1.669e-16    3.758e+00  </code></pre>
+</div>
+</div>
+<p>Puisque le vecteur est <span class="math inline">\(Y- \hat Y_{1}=Y-P_{\mathbf{1}}Y-P_{X_{1c}}Y\)</span> et que <span class="math inline">\(X_{2c}\perp\mathbf{1}\)</span> on a la projection des résidus sur <span class="math inline">\(\Im(\mathbf{1}, X_{2c})\)</span> qui vaut <span class="math display">\[\begin{align*}
+  P_{\mathbf{1}, X_{2c}}(Y- \hat Y_{1c})&amp;= P_{\mathbf{1}}(Y- \hat Y_{1c}) + P_{X_{2c}}(Y- \hat Y_{1c})\\
+  &amp;=P_{\mathbf{1}}Y - P_{\mathbf{1}}P_{\mathbf{1}, X_{1c}}Y + P_{X_{2c}}Y -  P_{X_{2c}}P_{\mathbf{1}, X_{1c}}Y\\
+  &amp;= P_{\mathbf{1}}Y - P_{\mathbf{1}}Y - 0 + P_{X_{2c}}Y - 0 - P_{X_{2c}}P_{X_{1c}}Y\\
+  &amp;= P_{X_{2c}} Y - P_{X_{2c}}P_{X_{1c}}Y
+\end{align*}\]</span> Cette dernière somme de projection est dans <span class="math inline">\(\Im(X_{1c}, X_{2c})\)</span> qui est un sous-espace orthogonal à <span class="math inline">\(\Im(\mathbf{1})\)</span>, d’où le coefficient 0 pour la constante.</p>
+<p>Pour les prévisions rien ne change :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(regmultc)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1        2        3        4        5 
+3.348336 1.948483 3.088559 3.295485 3.369866 </code></pre>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-2-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 10 (TP : régression multiple et code R) </strong></span>&nbsp;</p>
+<ol type="1">
+<li><div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone_complet.txt"</span>,<span class="at">sep=</span><span class="st">";"</span>,<span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>nomvar <span class="ot">&lt;-</span> <span class="fu">names</span>(ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>(ch <span class="ot">&lt;-</span> <span class="fu">paste</span>(nomvar[<span class="sc">-</span><span class="dv">1</span>],<span class="at">collapse =</span> <span class="st">"+"</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "T6+T9+T12+T15+T18+Ne6+Ne9+Ne12+Ne15+Ne18+Vdir6+Vvit6+Vdir9+Vvit9+Vdir12+Vvit12+Vdir15+Vvit15+Vdir18+Vvit18+Vx+maxO3v"</code></pre>
+</div>
+</div></li>
+<li><div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>(ch2 <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"maxO3~"</span>,ch,<span class="at">sep=</span><span class="st">""</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "maxO3~T6+T9+T12+T15+T18+Ne6+Ne9+Ne12+Ne15+Ne18+Vdir6+Vvit6+Vdir9+Vvit9+Vdir12+Vvit12+Vdir15+Vvit15+Vdir18+Vvit18+Vx+maxO3v"</code></pre>
+</div>
+</div></li>
+<li><div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>form <span class="ot">&lt;-</span> <span class="fu">formula</span>(ch2)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(form,<span class="at">data=</span>ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = form, data = ozone)
+
+Coefficients:
+(Intercept)           T6           T9          T12          T15          T18  
+  31.628418    -1.937194     0.121834     1.522143     0.609047     0.091871  
+        Ne6          Ne9         Ne12         Ne15         Ne18        Vdir6  
+   0.091969    -0.692891    -0.941925    -0.033847    -0.107068    -0.001344  
+      Vvit6        Vdir9        Vvit9       Vdir12       Vvit12       Vdir15  
+   1.586427    -0.009728    -1.163728    -0.007144     0.182232    -0.003468  
+     Vvit15       Vdir18       Vvit18           Vx       maxO3v  
+   0.246885     0.006251     0.560660     0.255474     0.465541  </code></pre>
+</div>
+</div></li>
+</ol>
+</div>
+<div id="exr-2-11" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 11 (Régression orthogonale) </strong></span>Les vecteurs étant orthogonaux, nous avons <span class="math inline">\(\mathcal M_X = \mathcal M_U \stackrel{\perp}{\oplus} \mathcal M_V\)</span>. Nous pouvons alors écrire <span class="math display">\[\begin{eqnarray*}
+\hat Y_X = P_X Y &amp;=&amp; (P_U + P_{U^{\perp}})P_X Y \\
+&amp;=&amp; P_U P_X Y + P_{U^{\perp}}P_X Y =  P_U Y + P_{U^{\perp}\cap X} Y \\
+&amp;=&amp; \hat Y_U + \hat Y_V.
+\end{eqnarray*}\]</span> La suite de l’exercice est identique. En conclusion, effectuer une régression multiple sur des variables orthogonales revient à effectuer <span class="math inline">\(p\)</span> régressions simples.</p>
+</div>
+<div id="exr-2-12" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 12 (Centrage, centrage-réduction et coefficient constant) </strong></span>&nbsp;</p>
+<ol type="1">
+<li><p>Comme la dernière colonne de <span class="math inline">\(X\)</span>, notée <span class="math inline">\(X_p\)</span> vaut <span class="math inline">\(\mathbf{1}_n\)</span> sa moyenne empirique vaut <span class="math inline">\(1\)</span> et la variable centrée issue de <span class="math inline">\(X_p\)</span> est donc <span class="math inline">\(X_p -1\times\mathbf{1}_n=\boldsymbol{0}_n\)</span>.</p></li>
+<li><p>Nous avons le modèle sur variable centrée <span class="math display">\[\begin{eqnarray*}
+\tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
+Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{(X_j -\bar X_j\mathbf{1}_n)\tilde\beta_j}+\varepsilon\\
+Y&amp;=&amp;\sum_{j=1}^{p-1}{\tilde\beta_j X_j}+ \Bigl(\bar Y -\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}\Bigr)\mathbf{1}_n+\varepsilon.
+\end{eqnarray*}\]</span> En identifiant cela donne <span id="eq-coefct"><span class="math display">\[
+\begin{eqnarray}
+\beta_j&amp;=&amp;\tilde\beta_j,\ \forall j\in\{1,\dotsc,p-1\},\nonumber\\
+\beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}.
+\end{eqnarray}
+\tag{1}\]</span></span> Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<a href="#eq-coefct">équation&nbsp;1</a>}).</p></li>
+<li><p>Maintenant les variables explicatives sont centrées et réduites~: <span class="math display">\[\begin{eqnarray*}
+\tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
+Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{\frac{(X_j -\bar X_j\mathbf{1}_n)}{\hat\sigma_{X_j}}\tilde\beta_j}+\varepsilon\\
+Y&amp;=&amp;\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X_j}+ \Bigl(\bar Y-\sum_{j=1}^{p-1}{\bar X_j\frac{\tilde\beta_j}{\hat\sigma_{X_j}}}\Bigr)\mathbf{1}_n+\varepsilon.
+\end{eqnarray*}\]</span> En identifiant cela donne <span class="math display">\[\begin{eqnarray*}
+\beta_j&amp;=&amp;\frac{\tilde\beta_j}{\hat\sigma_{X_j}},\ \forall j\in\{1,\dotsc,p-1\},\\
+\beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\sum_{j=1}^{p-1}{\bar X_j\frac{\tilde\beta_j}{\hat\sigma_{X_j}}}.
+\end{eqnarray*}\]</span> Nous obtenons ici que les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées-réduites divisés par l’écart-type empirique des variables explicatives. Plus la variable explicative <span class="math inline">\(X_j\)</span> est dispersée, plus son coefficient <span class="math inline">\(\beta_j\)</span> sera réduit par rapport à <span class="math inline">\(\tilde\beta_j\)</span>. Le coefficient constant est donné par la formule ci-dessus.</p></li>
+<li><p>La variable à expliquer <span class="math inline">\(Y\)</span> est elle aussi centrée-réduite~: <span class="math display">\[\begin{eqnarray*}
+\tilde Y&amp;=&amp;\tilde X\tilde \beta+ \tilde\varepsilon\\
+\frac{Y-\bar Y\mathbf{1}_n}{\hat\sigma_Y}&amp;=&amp;\sum_{j=1}^{p-1}{\frac{(X_j -\bar X_j\mathbf{1}_n)}{\hat\sigma_{X_j}}\tilde\beta_j}+\tilde\varepsilon\\
+Y&amp;=&amp;\hat\sigma_Y\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X_j}+ \Bigl(\bar Y-\hat\sigma_Y\sum_{j=1}^{p-1}{\bar X_j\frac{\tilde\beta_j}{\hat\sigma_{X_j}}}\Bigr)\mathbf{1}_n+\hat\sigma_Y\tilde\varepsilon.
+\end{eqnarray*}\]</span> En identifiant cela donne <span class="math display">\[\begin{eqnarray*}
+\beta_j&amp;=&amp;\hat\sigma_Y\frac{\tilde\beta_j}{\hat\sigma_{X_j}},\ \forall j\in\{1,\dotsc,p-1\},\\
+\beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\hat\sigma_Y\sum_{j=1}^{p-1}{\bar X_j\frac{\tilde\beta_j}{\hat\sigma_{X_j}}},\\
+\varepsilon&amp;=&amp;\hat\sigma_Y\tilde\varepsilon.
+\end{eqnarray*}\]</span> L’écart-type empirique de <span class="math inline">\(Y\)</span> entre en jeu et nous constatons que les résidus du modèle centré-réduit~ sont égaux à ceux initiaux divisés par l’écart-type empirique de <span class="math inline">\(Y\)</span>.</p></li>
+</ol>
+</div>
+<div id="exr-2-13" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 13 (Moindres carrés contraints) </strong></span>&nbsp;</p>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copié");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copié");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation column-page-right">
+  <div class="nav-page nav-page-previous">
+      <a href="../correction/chap1.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">1 La régression linéaire simple</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../correction/chap3.html" class="pagination-link">
+        <span class="nav-page-text">3 Validation du modèle</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,58 @@
+---
+title: "15 Données déséquilibrées"
+toc: true
+---
+
+# Données déséquilibrées et modèle logistique
+
+```{r}
+df <- data.frame(MALADE=c(208,42),
+                 NON_MALADE=c(48,202),
+                 FUMEUR=c("OUI","NON"))
+model <- glm(cbind(MALADE,NON_MALADE)~FUMEUR,data=df,family=binomial)
+coef(model)
+```
+
+```{r}
+newX <- data.frame(FUMEUR=c("OUI","NON"))
+rownames(newX) <- c("OUI","NON")
+predict(model,newdata = newX,type="response")
+```
+
+```{r}
+beta1_cor <- coef(model)[1]-log(0.995/0.005)
+beta2 <- coef(model)[2]
+```
+
+```{r}
+exp(beta1_cor+beta2)/(1+exp(beta1_cor+beta2))
+exp(beta1_cor)/(1+exp(beta1_cor))
+```
+
+```{r,eval=FALSE}
+tau <- c(0.05,0.95)
+ind0 <- which(df$Y==0)
+ind1 <- which(df$Y==1)
+choix0 <- sample(ind0, size=length(ind0)*tau[1], replace = F)
+choix1 <- sample(ind1, size=length(ind1)*tau[2], replace = F)
+dff <- rbind(df[choix0,], df[choix1,])
+```
+
+```{r,eval=FALSE}
+mod <- glm(Y~., data=dff, family="binomial")
+```
+
+
+```{r,eval=FALSE}
+gamma <- coef(mod)
+gamma[1] - log(tau[2]/tau[1])
+```
+
+```{r,eval=FALSE}
+glm(Y~. + offset(rep(log(tau[2]/tau[1]), nrow(dff))),
+    data=dff, family="binomial")
+```
+
+
+
+

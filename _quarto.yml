@@ -18,10 +18,22 @@ project:
     - code/chap12.qmd
     - code/chap13.qmd
     - code/chap14.qmd
-    #- code/chap15.qmd
+    - code/chap15.qmd
     - code/chap16.qmd
     - code/chap17.qmd
+    - correction/chap1.qmd
+    - correction/chap2.qmd
+    - correction/chap3.qmd
+    - correction/chap4.qmd
+    - correction/chap5.qmd
+    - correction/chap6.qmd
+    - correction/chap7.qmd
+    - correction/chap8.qmd
+    - correction/chap9.qmd
     - correction/chap11.qmd
+    - correction/chap12.qmd
+    - correction/chap13.qmd
+    - correction/chap17.qmd
 
 website:
   title: "Régression avec R"
@@ -66,34 +78,47 @@ website:
               - code/chap12.qmd
               - code/chap13.qmd
               #- code/chap14.qmd
-              #- code/chap15.qmd
+              - code/chap15.qmd
           - section: V Introduction à la régression non paramétrique
             contents:
               - code/chap16.qmd
               - code/chap17.qmd
       - section: "Correction des exercices"
         contents:
-          - section: Partie I
+          - section: I Introduction au modèle linéaire
+            contents:
+              - correction/chap1.qmd
+              - correction/chap2.qmd
+              - correction/chap3.qmd
+              - correction/chap4.qmd
+          - section: II Inférence
+            contents:
+              - correction/chap5.qmd
+              - correction/chap6.qmd
+          - section: III Réduction de dimension
+            contents:
+              - correction/chap7.qmd
+              - correction/chap8.qmd
+              - correction/chap9.qmd
+          - section: IV Le modèle linéairé généralisé
             contents:
               - correction/chap11.qmd
-    #       - enseignement.qmd
-    #       - section: "Supports de cours"
-    #         contents: 
-    #           - apprentissage_sup.qmd
-    #           - visualisationR.qmd
-    #           - grande_dim.qmd
-    #           - graphes.qmd
-    #           - autres_cours.qmd
-    #   - section: "Recherche"
-    #     contents:
-    #       - livres.qmd
-    #       - articles.qmd
+              - correction/chap12.qmd
+              - correction/chap13.qmd
+          - section: V Introduction à la régression non paramétrique
+            contents:
+              - correction/chap17.qmd
 
 lang: fr
 
 format:
   html:
     backgroundcolor: "#D9E3E4" #White #LightYellow
+    #include-before-body:
+    #  - file: _preamble.html
+    crossref: 
+      exr-prefix: exercice
+      eq-prefix: équation
     theme: 
       - united
 #      - darkly

@@ -1,0 +1,14 @@
+{
+  "hash": "7534382a921130dd2d1f38a3e111e877",
+  "result": {
+    "markdown": "---\ntitle: \"15 Données déséquilibrées\"\ntoc: true\n---\n\n\n# Données déséquilibrées et modèle logistique\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndf <- data.frame(MALADE=c(208,42),\n                 NON_MALADE=c(48,202),\n                 FUMEUR=c(\"OUI\",\"NON\"))\nmodel <- glm(cbind(MALADE,NON_MALADE)~FUMEUR,data=df,family=binomial)\ncoef(model)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n(Intercept)   FUMEUROUI \n  -1.570598    3.036935 \n```\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nnewX <- data.frame(FUMEUR=c(\"OUI\",\"NON\"))\nrownames(newX) <- c(\"OUI\",\"NON\")\npredict(model,newdata = newX,type=\"response\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n      OUI       NON \n0.8125000 0.1721311 \n```\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nbeta1_cor <- coef(model)[1]-log(0.995/0.005)\nbeta2 <- coef(model)[2]\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nexp(beta1_cor+beta2)/(1+exp(beta1_cor+beta2))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n(Intercept) \n 0.02131148 \n```\n:::\n\n```{.r .cell-code}\nexp(beta1_cor)/(1+exp(beta1_cor))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n(Intercept) \n0.001043738 \n```\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\ntau <- c(0.05,0.95)\nind0 <- which(df$Y==0)\nind1 <- which(df$Y==1)\nchoix0 <- sample(ind0, size=length(ind0)*tau[1], replace = F)\nchoix1 <- sample(ind1, size=length(ind1)*tau[2], replace = F)\ndff <- rbind(df[choix0,], df[choix1,])\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nmod <- glm(Y~., data=dff, family=\"binomial\")\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\ngamma <- coef(mod)\ngamma[1] - log(tau[2]/tau[1])\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nglm(Y~. + offset(rep(log(tau[2]/tau[1]), nrow(dff))),\n    data=dff, family=\"binomial\")\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

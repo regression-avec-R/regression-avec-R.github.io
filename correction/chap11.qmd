@@ -3,7 +3,7 @@ title: "11 Régression logistique"
 toc: true
 ---
 
-::: {#exr-11-1 name="Question de cours"}
+::: {#exr-11-1 name="Questions de cours"}
 1.  A
 2.  A
 3.  B
@@ -129,7 +129,7 @@ On peut donc calculer la drivée par rapport à $\beta_\ell$ : \begin{align*}
 On importe les données
 
 ```{r}
-panne <- read.table("panne.txt",header=T)
+panne <- read.table("../donnees/panne.txt",header=T)
 head(panne)
 ```
 

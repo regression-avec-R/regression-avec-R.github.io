@@ -5,7 +5,9 @@ title: "Jeux de données"
 ## Liste des jeux de données (par ordre alphabétique)
 
 * [ad_data.txt](donnees/ad_data.txt)  
-* [artere.txt](donnees/artere.txt)  
+* [artere.txt](donnees/artere.txt)
+* [courbe_lasso.csv](donnees/courbe_lasso.csv)
+* [echan_lasso.csv](donnees/echan_lasso.csv)
 * [eucalyptus.txt](donnees/eucalyptus.txt)  
 * [logit_ex6.csv](donnees/logit_ex6.csv)
 * [logit_ridge_lasso.csv](donnees/logit_ridge_lasso.csv)
