@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Régression avec R - 9 Régression sur composantes : PCR et PLS</title>
+<title>Régression avec R - 14 Comparaison en classification supervisée</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -64,8 +30,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../code/chap10.html" rel="next">
-<link href="../code/chap8.html" rel="prev">
+<link href="../code/chap15.html" rel="next">
+<link href="../code/chap13.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -110,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Codes R</li><li class="breadcrumb-item"><a href="../code/chap7.html">III Réduction de dimension</a></li><li class="breadcrumb-item"><a href="../code/chap9.html">9 Régression sur composantes : PCR et PLS</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Codes R</li><li class="breadcrumb-item"><a href="../code/chap11.html">IV Le modèle linéairé généralisé</a></li><li class="breadcrumb-item"><a href="../code/chap14.html">14 Comparaison en classification supervisée</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
@@ -217,13 +183,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../code/chap7.html" class="sidebar-item-text sidebar-link">
@@ -238,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../code/chap9.html" class="sidebar-item-text sidebar-link active">
+  <a href="../code/chap9.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
@@ -252,13 +218,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../code/chap11.html" class="sidebar-item-text sidebar-link">
@@ -279,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../code/chap14.html" class="sidebar-item-text sidebar-link">
+  <a href="../code/chap14.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">14 Comparaison en classification supervisée</span></a>
   </div>
 </li>
@@ -483,24 +449,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Sur cette page</h2>
-   
-  <ul>
-  <li><a href="#régression-mco-et-choix-de-variables" id="toc-régression-mco-et-choix-de-variables" class="nav-link active" data-scroll-target="#régression-mco-et-choix-de-variables">Régression MCO et choix de variables</a></li>
-  <li><a href="#mise-en-place-des-données-centrées-réduites" id="toc-mise-en-place-des-données-centrées-réduites" class="nav-link" data-scroll-target="#mise-en-place-des-données-centrées-réduites">Mise en place des données centrées réduites</a></li>
-  <li><a href="#pcr" id="toc-pcr" class="nav-link" data-scroll-target="#pcr">PCR</a></li>
-  <li><a href="#pls" id="toc-pls" class="nav-link" data-scroll-target="#pls">PLS</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">9 Régression sur composantes : PCR et PLS</h1>
+<h1 class="title">14 Comparaison en classification supervisée</h1>
 </div>
 
 
@@ -515,133 +472,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="régression-mco-et-choix-de-variables" class="level1">
-<h1>Régression MCO et choix de variables</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone.txt"</span>,<span class="at">header=</span><span class="cn">TRUE</span>,<span class="at">sep=</span><span class="st">";"</span>,<span class="at">row.names=</span><span class="dv">1</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>modeleinit <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> ., <span class="at">data =</span> ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coefficients</span>(modeleinit),<span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)         T12         T15        Ne12         N12         S12 
-      54.73       -0.35        1.50       -4.19        1.28        3.17 
-        E12         W12          Vx         O3v 
-       0.53        2.47        0.61        0.25 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(modeleinit)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 431.8923</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>choix <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(O3 <span class="sc">~</span> .,<span class="at">nbest=</span><span class="dv">1</span>,<span class="at">nvmax=</span><span class="dv">10</span>,<span class="at">data=</span>ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>resume <span class="ot">&lt;-</span> <span class="fu">summary</span>(choix)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>indmin <span class="ot">&lt;-</span> <span class="fu">which.min</span>(resume<span class="sc">$</span>bic)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>nomselec <span class="ot">&lt;-</span> <span class="fu">colnames</span>(resume<span class="sc">$</span>which)[resume<span class="sc">$</span>which[indmin,]][<span class="sc">-</span><span class="dv">1</span>]</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste</span>(<span class="st">"O3~"</span>,<span class="fu">paste</span>(nomselec,<span class="at">collapse=</span><span class="st">"+"</span>)))</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>modeleBIC <span class="ot">&lt;-</span> <span class="fu">lm</span>(formule,<span class="at">data=</span>ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coefficients</span>(modeleBIC),<span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)         T15        Ne12          Vx         O3v 
-      61.83        1.06       -3.99        0.31        0.26 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(modeleBIC)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 415.8866</code></pre>
-</div>
-</div>
-</section>
-<section id="mise-en-place-des-données-centrées-réduites" class="level1">
-<h1>Mise en place des données centrées réduites</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> ozone[,<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>]</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Xbar  <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, mean)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>stdX <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">apply</span>(X, <span class="dv">2</span>, var))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>Xcr <span class="ot">&lt;-</span> <span class="fu">scale</span>(X, <span class="at">center =</span> Xbar, <span class="at">scale =</span> stdX)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="pcr" class="level1">
-<h1>PCR</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pls)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">87</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cvseg <span class="ot">&lt;-</span> <span class="fu">cvsegments</span>(<span class="fu">nrow</span>(ozone), <span class="at">k =</span> <span class="dv">4</span>, <span class="at">type =</span> <span class="st">"random"</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>n.app <span class="ot">&lt;-</span> <span class="fu">nrow</span>(ozone)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>modele.pcr <span class="ot">&lt;-</span> <span class="fu">pcr</span>(O3 <span class="sc">~</span> ., <span class="at">ncomp=</span><span class="dv">9</span>, <span class="at">data=</span>ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>], <span class="at">scale=</span>T,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">validation =</span> <span class="st">"CV"</span>, <span class="at">segments =</span> cvseg)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>msepcv.pcr <span class="ot">&lt;-</span> <span class="fu">MSEP</span>(modele.pcr ,<span class="at">estimate=</span><span class="fu">c</span>(<span class="st">"train"</span>,<span class="st">"CV"</span>)) </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>msepcv.pcr</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       (Intercept)  1 comps  2 comps  3 comps  4 comps  5 comps  6 comps
-train        559.8    188.7    186.5    185.2    179.8    158.8    152.0
-CV           582.9    260.4    260.6    278.2    271.3    239.3    248.1
-       7 comps  8 comps  9 comps
-train    143.9    142.5    139.7
-CV       242.1    244.0    239.4</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>npcr <span class="ot">&lt;-</span> <span class="fu">which.min</span>(msepcv.pcr<span class="sc">$</span>val[<span class="st">"CV"</span>,,])<span class="sc">-</span><span class="dv">1</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>modele.pcr.fin <span class="ot">&lt;-</span> <span class="fu">pcr</span>(O3 <span class="sc">~</span> ., <span class="at">ncomp =</span> npcr, <span class="at">scale =</span> <span class="cn">TRUE</span>,<span class="at">data =</span> ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> ozone[,<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> ozone[,<span class="dv">1</span>]</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>Xbar  <span class="ot">&lt;-</span> <span class="fu">apply</span>(X,<span class="dv">2</span>,mean)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>stdX <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">apply</span>(X,<span class="dv">2</span>,var)<span class="sc">*</span>(n<span class="dv">-1</span>)<span class="sc">/</span>n)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>Ybar <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>modele.pcr.fin <span class="ot">&lt;-</span> <span class="fu">pcr</span>(O3<span class="sc">~</span>.,<span class="at">ncomp=</span><span class="dv">1</span>,<span class="at">scale=</span><span class="cn">TRUE</span>,<span class="at">data =</span>ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>betafinpcr <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">coefficients</span>(modele.pcr.fin),<span class="at">ncol=</span><span class="dv">1</span>)<span class="sc">/</span>stdX</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y)<span class="sc">-</span>Xbar<span class="sc">%*%</span>betafinpcr</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mu,betafinpcr)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] 48.3373569  0.7884931  0.8236705 -1.7618991 -0.6760911  0.2126764
- [7]  1.6099503 -1.4694047  0.3118176  0.1662505</code></pre>
-</div>
-</div>
-</section>
-<section id="pls" class="level1">
-<h1>PLS</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">87</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cvseg <span class="ot">&lt;-</span> <span class="fu">cvsegments</span>(<span class="fu">nrow</span>(ozone), <span class="at">k =</span> <span class="dv">4</span>, <span class="at">type =</span> <span class="st">"random"</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>n.app <span class="ot">&lt;-</span> <span class="fu">nrow</span>(ozone)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>modele.pls <span class="ot">&lt;-</span> <span class="fu">plsr</span>(O3 <span class="sc">~</span> ., <span class="at">ncomp=</span><span class="dv">9</span>, <span class="at">data =</span> ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>], <span class="at">scale=</span>T,<span class="at">validation =</span> <span class="st">"CV"</span>, <span class="at">segments =</span> cvseg)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>msepcv.pls <span class="ot">&lt;-</span> <span class="fu">MSEP</span>(modele.pls ,<span class="at">estimate=</span><span class="fu">c</span>(<span class="st">"train"</span>,<span class="st">"CV"</span>)) </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>msepcv.pls</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       (Intercept)  1 comps  2 comps  3 comps  4 comps  5 comps  6 comps
-train        559.8    173.9    150.9    146.9    144.2    142.1    141.4
-CV           582.9    251.9    248.4    245.3    234.6    241.7    243.6
-       7 comps  8 comps  9 comps
-train    140.9    139.8    139.7
-CV       234.7    239.6    239.4</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>npls <span class="ot">&lt;-</span> <span class="fu">which.min</span>(msepcv.pls<span class="sc">$</span>val[<span class="st">"CV"</span>,,])<span class="sc">-</span><span class="dv">1</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>modele.pls.fin <span class="ot">&lt;-</span> <span class="fu">plsr</span>(O3<span class="sc">~</span> . , <span class="at">ncomp  =</span>npls, <span class="at">scale =</span> <span class="cn">TRUE</span>,<span class="at">data =</span> ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> ozone[,<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>]</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> ozone[,<span class="dv">1</span>]</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>Xbar  <span class="ot">&lt;-</span> <span class="fu">apply</span>(X,<span class="dv">2</span>,mean)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>stdX <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">apply</span>(X,<span class="dv">2</span>,var)<span class="sc">*</span>(n<span class="dv">-1</span>)<span class="sc">/</span>n)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>Ybar <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>modele.pls.fin <span class="ot">&lt;-</span> <span class="fu">plsr</span>(O3<span class="sc">~</span>.,<span class="at">ncomp=</span><span class="dv">1</span>,<span class="at">scale=</span><span class="cn">TRUE</span>,<span class="at">data =</span>ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>betafinpls <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">coefficients</span>(modele.pls.fin),<span class="at">ncol=</span><span class="dv">1</span>)<span class="sc">/</span>stdX</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y)<span class="sc">-</span>Xbar<span class="sc">%*%</span>betafinpls</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mu,betafinpls)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] 47.1060475  0.8151834  0.8471154 -2.1910455 -0.5175855  0.3563688
- [7]  1.3005636 -1.2552108  0.2805513  0.1920499</code></pre>
-</div>
-</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -891,15 +723,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
 });
 </script>
-<nav class="page-navigation column-body">
+<nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="../code/chap8.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">8 Régularisation des moindres carrés : Ridge, Lasso et elastic net</span>
+      <a href="../code/chap13.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">13 Régularisation de la vraisemblance</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../code/chap10.html" class="pagination-link">
-        <span class="nav-page-text">10 Comparaison des différentes méthodes, étude de cas réels</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../code/chap15.html" class="pagination-link">
+        <span class="nav-page-text">15 Données déséquilibrées</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

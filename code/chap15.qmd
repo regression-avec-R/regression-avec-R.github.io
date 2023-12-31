@@ -54,5 +54,283 @@ glm(Y~. + offset(rep(log(tau[2]/tau[1]), nrow(dff))),
 ```
 
 
+#  Stratégies pour données déséquilibrées
+
+## Quelques méthodes de rééquilibrage
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+set.seed(123458)
+n1 <- 10
+X11 <- runif(n1,0,0.25)
+X21 <- runif(n1,0,1)
+X12 <- runif(n1,0,1)
+X22 <- runif(n1,0.75,1)
+n2 <- 80
+X13 <- runif(n2,0.25,1)
+X23 <- runif(n2,0,0.75)
+X1 <- c(X11,X12,X13)
+X2 <- c(X21,X22,X23)
+Y <- c(rep(1,2*n1),rep(0,n2)) %>% as.factor()
+df <- data.frame(X1,X2,Y,id=as.character(1:100))
+df$Y[c(1,16)] <- 0
+#df$Y[c(41,48,59)] <- 1
+df$Y[c(41,48)] <- 1
+df <- df[,1:3]
+ggplot(df)+aes(x=X1,y=X2)+geom_point(aes(color=Y))
+```
+
+```{r}
+library(UBL)
+over1 <- RandOverClassif(Y~., dat=df)
+over2 <- RandOverClassif(Y~., dat=df, C.perc=list("0"=1,"1"=2))
+summary(over1$Y)
+summary(over2$Y)
+```
+
+```{r}
+set.seed(1234)
+smote1 <- SmoteClassif(Y~.,dat=df,k=4)
+smote2 <- SmoteClassif(Y~.,dat=df,k=4,C.perc=list("0"=1,"1"=2))
+summary(smote1$Y)
+summary(smote2$Y)
+```
+
+```{r}
+newsm1 <- anti_join(smote1,df)
+newsm2 <- anti_join(smote2,df)
+newsm <- bind_rows("smote1"=newsm1,"smote2"=newsm2,.id="algo")
+```
+
+
+```{r}
+df3 <- bind_rows("smote1"=smote1,"smote2"=smote2,.id="algo")
+ggplot(df3)+aes(x=X1,y=X2,color=Y)+geom_point(aes(shape=Y),size=1.5)+facet_wrap(~algo)+
+  geom_point(data=newsm,shape=1,size=4) + theme(legend.position='none')
+```
+
+```{r}
+under1 <- RandUnderClassif(Y~.,dat=df)
+under2 <- RandUnderClassif(Y~.,dat=df,C.perc=list("0"=0.5,"1"=1))
+summary(under1$Y)
+summary(under2$Y)
+```
+
+```{r}
+tomek1 <- TomekClassif(Y~.,dat=df)
+tomek2 <- TomekClassif(Y~.,dat=df,rem="maj")
+tomek1[[2]]
+tomek2[[2]]
+```
+
+
+```{r}
+ind1 <- tomek1[[2]]
+ind2 <- tomek2[[2]]
+XS1 <- df[ind1,]
+XS2 <- df[ind2,]
+XS <- bind_rows("tomek1"=XS1,"tomek2"=XS2,.id="algo")
+df5 <- bind_rows("tomek1"=df,"tomek2"=df,.id="algo")
+ggplot(df5)+aes(x=X1,y=X2,color=Y)+geom_point(aes(color=Y,shape=Y),size=1.5)+facet_wrap(~algo)+
+  geom_point(data=XS,shape=1,size=4) + theme(legend.position='none')
+```
+
+
+## Critères pour données déséquilibrées
+
+```{r,echo=FALSE}
+set.seed(1234)
+n <- 500
+Y <- rbinom(n,1,0.05) %>% as.factor()
+Y[1:2]  <- c(0,1)
+P1 <- c(0,1,rep(0,n-2)) %>% factor(levels=c("0","1"))
+P2 <- rep(1,n)
+P2[Y==1] <- rbinom(sum(Y==1),1,0.85) 
+P2[Y==0] <- rbinom(sum(Y==0),1,0.1)  
+P2 <- as.factor(P2)
+table(Y,P1)
+table(Y,P2)
+```
+
+```{r}
+library(yardstick)
+df <- data.frame(Y,P2)
+multi_metric <- metric_set(accuracy,bal_accuracy,f_meas,kap)
+multi_metric(df,truth=Y,estimate=P2,event_level = "second")
+```
+
+# Choisir un algorithme de rééquilibrage
+
+## Application aux données d'images publicitaires
+
+```{r,echo=FALSE}
+ad.data <- read.table("../donnees/ad_data.txt",header=FALSE,sep=",",dec=".",na.strings = "?",strip.white = TRUE)
+names(ad.data)[ncol(ad.data)] <- "Y"
+ad.data$Y <- as.factor(ad.data$Y)
+var.na <- apply(is.na(ad.data),2,any)
+ind.na <- apply(is.na(ad.data),1,any)
+ad.data1 <- ad.data[,var.na==FALSE]
+```
+
+
+```{r}
+summary(ad.data1$Y)
+ad.data1 <- ad.data1 %>% 
+  transform(Y=fct_recode(Y,"0"="nonad.","1"="ad.")) %>% 
+  transform(Y=fct_inseq(Y))
+```
+
+
+```{r}
+set.seed(1234)
+bloc <- sample(1:10,nrow(ad.data1),replace=TRUE)
+table(bloc)
+```
+
+
+```{r,eval=FALSE}
+score <- data.frame(matrix(0,nrow=nrow(ad.data1),ncol=3))
+names(score) <- c("logit","lasso","ridge")
+SCORE <- list(brute=score,over=score,smote=score,under=score,tomek=score)
+```
+
+
+```{r eval=FALSE,echo=TRUE}
+set.seed(4321)
+library(glmnet)
+score <- data.frame(matrix(0,nrow=nrow(ad.data1),ncol=3))
+names(score) <- c("logit","lasso","ridge")
+SCORE <- list(brute=score,over=score,smote=score,under=score,tomek=score)
+
+for (k in 1:10){
+  print(k)
+  ind.test <- bloc==k
+  dapp <- ad.data1[!ind.test,]
+  dtest <- ad.data1[ind.test,]
+  X.test <- model.matrix(Y~.,data=dtest)[,-1]
+  
+  ech.app <- list(norm=dapp,
+                  over=RandOverClassif(Y~.,dat=dapp),
+                  smote=SmoteClassif(Y~.,dat=dapp),
+                  under=RandUnderClassif(Y~.,dat=dapp),
+                  tomek=TomekClassif(Y~.,dat=dapp)[[1]])
+
+  mod.mat.list <- function(df){model.matrix(Y~.,data=df)[,-1]}
+  Y.list <- function(df) df$Y 
+  
+  X.app <- lapply(ech.app,mod.mat.list)
+  Y.app <- lapply(ech.app,Y.list)
+  
+  for (j in 1:5){
+    print(j)
+    lasso <- cv.glmnet(X.app[[j]],Y.app[[j]],family="binomial")
+    ridge <- cv.glmnet(X.app[[j]],Y.app[[j]],family="binomial",alpha=0)
+    logit <- glm(Y~.,data=ech.app[[j]],family="binomial")
+    SCORE[[j]][ind.test,] <- data.frame(
+      logit=predict.glm(logit,newdata=dtest,type="response"),
+      lasso=as.vector(predict(lasso,newx=X.test,type="response")),
+      ridge=as.vector(predict(ridge,newx=X.test,type="response"))
+    )
+  }
+}
+```
+
+```{r,echo=FALSE}
+load("../data_aux/mat_SCORE_CV_DD.Rdata")
+```
+
+```{r}
+mat.score <- bind_rows(brutes=SCORE[[1]],
+                       over=SCORE[[2]],
+                       smote=SCORE[[3]],
+                       under=SCORE[[4]],
+                       tomek=SCORE[[5]],.id="meth") %>% 
+  mutate(obs=rep(ad.data1$Y,5))  %>% 
+  pivot_longer(c(logit,lasso,ridge),
+               names_to = "algo",values_to = "score")
+
+```
+
+```{r}
+mat.score %>% group_by(meth,algo) %>% 
+  roc_auc(truth = obs,score,event_level = "second") %>%
+  pivot_wider(-c(.metric,.estimator),
+              names_from = algo,values_from = .estimate)
+```
+
+```{r}
+mat.score <- mat.score %>% mutate(prev=as.factor(round(score)))
+```
+
+-   **Accuracy** :
+
+    ```{r}
+    mat.score %>% 
+      group_by(meth,algo) %>% 
+      accuracy(truth = obs,prev) %>%
+      pivot_wider(names_from = algo,values_from = .estimate) %>%
+      select(-(2:3))
+    ```
+
+-   **Balanced accuracy** :
+
+    ```{r}
+    mat.score %>% 
+      group_by(meth,algo) %>% 
+      bal_accuracy(truth = obs,prev) %>%
+      pivot_wider(names_from = algo,values_from = .estimate) %>%
+      select(-(2:3))
+    ```
+-   **F1 score** :
+
+    ```{r}
+    mat.score %>% 
+      group_by(meth,algo) %>% 
+      f_meas(truth = obs,prev,event_level = "second") %>%
+      pivot_wider(names_from = algo,values_from = .estimate) %>%
+      select(-(2:3))
+    ```
+
+-   **Kappa de Cohen** :
+
+    ```{r}
+    mat.score %>% 
+      group_by(meth,algo) %>% 
+      kap(truth = obs,prev) %>%
+      pivot_wider(names_from = algo,values_from = .estimate) %>%
+      select(-(2:3))
+    ```
+
+
+```{r,echo=FALSE}
+multi_metric <- metric_set(sens,spec,accuracy,bal_accuracy,f_meas,kap)
+grille.score <- function(score,nom_algo="ridge",meth="norm",grille.seuil=seq(0,1,by=0.1)){
+  S <- score %>% filter(nom_algo==algo & meth==meth)
+  S1 <- S
+  pp <- as.character(grille.seuil)
+  for (i in 1:length(grille.seuil)){
+    S1 <- S1 %>% mutate(as.numeric(score>grille.seuil[i]))
+    names(S1)[5+i] <- pp[i]
+  }
+  S2 <- S1 %>% gather(key="seuil",value="prev",-meth,-obs,-algo,-score,-prev) %>% select(-meth,-algo,-score) %>% mutate(prev=as.factor(prev))
+  mat.res <- S2 %>% group_by(seuil) %>% multi_metric(truth = obs,estimate = prev,event_level = "second") %>%
+    pivot_wider(names_from = .metric,values_from = .estimate) %>% select(-.estimator)
+    #mat.res <- S2 %>% group_by(seuil) %>% 
+    #summarize(sens=sensitivity(prev,obs),spec=specificity(prev,obs),Acc=mean(obs==prev),
+    #          bal.acc=monba(prev,obs),F1=monF1(prev,obs),kappa=monkappa(prev,obs))
+  mat.res[,2:7] <- round(mat.res[,2:7],3)
+  return(mat.res)
+}
+```
+
+
+```{r}
+grille.score(mat.score,nom_algo="ridge",meth="norm")
+grille.score(mat.score,nom_algo="ridge",meth="over")
+grille.score(mat.score,nom_algo="ridge",meth="smote")
+```
 
 
