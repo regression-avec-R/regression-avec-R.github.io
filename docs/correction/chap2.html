@@ -886,15 +886,19 @@ Coefficients:
 <p><span class="theorem-title"><strong>Exercice 12 (Centrage, centrage-réduction et coefficient constant) </strong></span>&nbsp;</p>
 <ol type="1">
 <li><p>Comme la dernière colonne de <span class="math inline">\(X\)</span>, notée <span class="math inline">\(X_p\)</span> vaut <span class="math inline">\(\mathbf{1}_n\)</span> sa moyenne empirique vaut <span class="math inline">\(1\)</span> et la variable centrée issue de <span class="math inline">\(X_p\)</span> est donc <span class="math inline">\(X_p -1\times\mathbf{1}_n=\boldsymbol{0}_n\)</span>.</p></li>
-<li><p>Nous avons le modèle sur variable centrée <span class="math display">\[\begin{eqnarray*}
+<li><p>Nous avons le modèle sur variable centrée <span class="math display">\[
+\begin{eqnarray*}
 \tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
 Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{(X_j -\bar X_j\mathbf{1}_n)\tilde\beta_j}+\varepsilon\\
 Y&amp;=&amp;\sum_{j=1}^{p-1}{\tilde\beta_j X_j}+ \Bigl(\bar Y -\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}\Bigr)\mathbf{1}_n+\varepsilon.
-\end{eqnarray*}\]</span> En identifiant cela donne <span class="math display">\[\begin{eqnarray}
+\end{eqnarray*}
+\]</span> En identifiant cela donne <span id="eq-coefct"><span class="math display">\[
+\begin{eqnarray}
 \beta_j&amp;=&amp;\tilde\beta_j,\ \forall j\in\{1,\dotsc,p-1\},\nonumber\\
 \beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}.
-\end{eqnarray}\]</span>{#eq-coefct} Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<strong>?@eq-coefct</strong>}).</p></li>
-<li><p>Maintenant les variables explicatives sont centrées et réduites~: <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray}
+\tag{1}\]</span></span> Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<a href="#eq-coefct">équation&nbsp;1</a>).</p></li>
+<li><p>Maintenant les variables explicatives sont centrées et réduites : <span class="math display">\[\begin{eqnarray*}
 \tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
 Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{\frac{(X_j -\bar X_j\mathbf{1}_n)}{\hat\sigma_{X_j}}\tilde\beta_j}+\varepsilon\\
 Y&amp;=&amp;\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X_j}+ \Bigl(\bar Y-\sum_{j=1}^{p-1}{\bar X_j\frac{\tilde\beta_j}{\hat\sigma_{X_j}}}\Bigr)\mathbf{1}_n+\varepsilon.
@@ -980,7 +984,7 @@ Y&amp;=&amp;\hat\sigma_Y\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X
  1.0225207  0.1030809 -4.0022782 </code></pre>
 </div>
 </div>
-<p>et que l’intercept est simplement est bien celui donné dans la formule (<strong>?@eq-coefct</strong>)</p>
+<p>et que l’intercept est simplement est bien celui donné dans la formule (<a href="#eq-coefct">équation&nbsp;1</a>)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(don<span class="sc">$</span>Y)<span class="sc">-</span> <span class="fu">sum</span>( <span class="fu">coef</span>(modtilde)<span class="sc">*</span><span class="fu">colMeans</span>(X[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1110,13 +1114,13 @@ R\beta_p = [R(X'X)^{-1}R'][R(X'X)^{-1}R']^{-1}r
 \hat \beta - (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}R\hat \beta\\\nonumber
 &amp;=\hat \beta + (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta).
 \end{align}
-\tag{1}\]</span></span></p></li>
+\tag{2}\]</span></span></p></li>
 <li><p>Calculons l’EQM de <span class="math inline">\(\hat \beta\)</span> qui vaut selon la formule classique: <span class="math display">\[\begin{align*}
       \mathop{\mathrm{EQM}}&amp;= (\mathbf E(\hat \beta) - \beta) (\mathbf E(\hat \beta) - \beta)' + \mathop{\mathrm{V}}(\hat\beta)
     \end{align*}\]</span> avec <span class="math inline">\(\mathbf E(\hat \beta)=\beta\)</span> (sous l’hypothèse que <span class="math inline">\(Y\)</span> est généré par le modèle de régression) et<span class="math inline">\(\mathop{\mathrm{V}}(\hat\beta) =\sigma^{2} (X'X)^{-1}\)</span>.</p>
 <p>Pour l’EQM de <span class="math inline">\(\hat \beta_0\)</span> qui vaut selon la formule classique: <span class="math display">\[\begin{align*}
       \mathop{\mathrm{EQM}}&amp;= (\mathbf E(\hat \beta_0) - \beta_0) (\mathbf E(\hat \beta_0) - \beta_0)' + \mathop{\mathrm{V}}(\hat\beta_0)
-    \end{align*}\]</span> calculons d’abord <span class="math inline">\(\mathbf E(\hat \beta_0)\)</span> en utilisant l’équation (<a href="#eq-betacontraint">équation&nbsp;1</a>): <span class="math display">\[\begin{align*}
+    \end{align*}\]</span> calculons d’abord <span class="math inline">\(\mathbf E(\hat \beta_0)\)</span> en utilisant l’équation (<a href="#eq-betacontraint">équation&nbsp;2</a>): <span class="math display">\[\begin{align*}
       \mathbf E(\hat \beta_0)&amp;=\mathbf E(\hat \beta) + \mathbf E[(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta)]\\
       &amp;=\beta + (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\beta)
     \end{align*}\]</span> puisque <span class="math inline">\(\hat \beta\)</span> est sans biais. Si nous supposons que le modèle satisfait la contrainte (<span class="math inline">\(R\beta=r\)</span>) alors là encore le biais est nul.</p>
