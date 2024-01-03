@@ -510,7 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 <div id="exr-2-1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours) </strong></span>A, A, B, B, B, C.</p>
+<p><span class="theorem-title"><strong>Exercice 1 (Question de cours) </strong></span>A, A, B, B, B, C.</p>
 </div>
 <div id="exr-2-2" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 2 (Covariance de <span class="math inline">\(\hat\varepsilon\)</span> et <span class="math inline">\(\hat Y\)</span>) </strong></span>Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta}) \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
@@ -550,7 +550,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="exr-2-5" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 5 (Modèles emboîtés) </strong></span>Nous obtenons <span class="math display">\[\begin{eqnarray*}
 \hat Y_p = X \hat \beta \quad  \hbox{et} \quad \hat Y_q= X_q \hat \gamma.
-\end{eqnarray*}\]</span> Par définition du <span class="math inline">\(\mathop{\mathrm{R^2}}\)</span>, il faut comparer la norme au carré des vecteurs <span class="math inline">\(\hat Y_p\)</span> et <span class="math inline">\(\hat Y_q\)</span>. Notons les espaces engendrés par les colonnes de <span class="math inline">\(X_q\)</span> et <span class="math inline">\(X\)</span>, <span class="math inline">\(\mathcal M_{X_q}\)</span> et <span class="math inline">\(\mathcal M_{X}\)</span>, nous avons <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>. Nous obtenons alors <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Par définition du <span class="math inline">\(\mathbb R2\)</span>, il faut comparer la norme au carré des vecteurs <span class="math inline">\(\hat Y_p\)</span> et <span class="math inline">\(\hat Y_q\)</span>. Notons les espaces engendrés par les colonnes de <span class="math inline">\(X_q\)</span> et <span class="math inline">\(X\)</span>, <span class="math inline">\(\mathcal M_{X_q}\)</span> et <span class="math inline">\(\mathcal M_{X}\)</span>, nous avons <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>. Nous obtenons alors <span class="math display">\[\begin{eqnarray*}
 \hat Y_p = P_{X_p}Y
 = (P_{X_q} + P_{X^{\perp}_q})P_{X_p}Y &amp;=&amp; P_{X_q}P_{X_p}Y + P_{X^{\perp}_q}P_{X_p}Y\\
 &amp;=&amp; P_{X_q}Y + P_{X^{\perp}_q \cap X_p} Y\\
@@ -559,10 +559,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \| \hat Y_p \|^2 &amp;=&amp; \|\hat Y_q \|^2 + \| P_{X^{\perp}_q \cap X_p} Y \|^2
 \geq \|\hat Y_q \|^2,
 \end{eqnarray*}\]</span> d’où <span class="math display">\[\begin{eqnarray*}
-\mathop{\mathrm{R^2}}(p)=\frac{\| \hat Y_p \|^2}{\| Y \|^2} \geq
-\frac{\| \hat Y_q \|^2}{\| Y \|^2} =\mathop{\mathrm{R^2}}(q).
+\mathbb R2(p)=\frac{\| \hat Y_p \|^2}{\| Y \|^2} \geq
+\frac{\| \hat Y_q \|^2}{\| Y \|^2} =\mathbb R2(q).
 \end{eqnarray*}\]</span></p>
-<p>En conclusion, lorsque les modèles sont emboîtés <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>, le <span class="math inline">\(\mathop{\mathrm{R^2}}\)</span> du modèle le plus grand (ayant le plus de variables) sera toujours plus grand que le <span class="math inline">\(\mathop{\mathrm{R^2}}\)</span> du modèle le plus petit.</p>
+<p>En conclusion, lorsque les modèles sont emboîtés <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>, le <span class="math inline">\(\mathbb R2\)</span> du modèle le plus grand (ayant le plus de variables) sera toujours plus grand que le <span class="math inline">\(\mathbb R2\)</span> du modèle le plus petit.</p>
 </div>
 <div id="exr-2-6" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 6 </strong></span>La matrice <span class="math inline">\(X'X\)</span> est symétrique, <span class="math inline">\(n\)</span> vaut 30 et <span class="math inline">\(\bar x= \bar z=0\)</span>. Le coefficient de corrélation <span class="math display">\[\begin{equation*}
@@ -890,12 +890,10 @@ Coefficients:
 \tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
 Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{(X_j -\bar X_j\mathbf{1}_n)\tilde\beta_j}+\varepsilon\\
 Y&amp;=&amp;\sum_{j=1}^{p-1}{\tilde\beta_j X_j}+ \Bigl(\bar Y -\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}\Bigr)\mathbf{1}_n+\varepsilon.
-\end{eqnarray*}\]</span> En identifiant cela donne <span id="eq-coefct"><span class="math display">\[
-\begin{eqnarray}
+\end{eqnarray*}\]</span> En identifiant cela donne <span class="math display">\[\begin{eqnarray}
 \beta_j&amp;=&amp;\tilde\beta_j,\ \forall j\in\{1,\dotsc,p-1\},\nonumber\\
 \beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}.
-\end{eqnarray}
-\tag{1}\]</span></span> Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<a href="#eq-coefct">équation&nbsp;1</a>}).</p></li>
+\end{eqnarray}\]</span>{#eq-coefct} Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<strong>?@eq-coefct</strong>}).</p></li>
 <li><p>Maintenant les variables explicatives sont centrées et réduites~: <span class="math display">\[\begin{eqnarray*}
 \tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
 Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{\frac{(X_j -\bar X_j\mathbf{1}_n)}{\hat\sigma_{X_j}}\tilde\beta_j}+\varepsilon\\
@@ -912,11 +910,235 @@ Y&amp;=&amp;\hat\sigma_Y\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X
 \beta_j&amp;=&amp;\hat\sigma_Y\frac{\tilde\beta_j}{\hat\sigma_{X_j}},\ \forall j\in\{1,\dotsc,p-1\},\\
 \beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\hat\sigma_Y\sum_{j=1}^{p-1}{\bar X_j\frac{\tilde\beta_j}{\hat\sigma_{X_j}}},\\
 \varepsilon&amp;=&amp;\hat\sigma_Y\tilde\varepsilon.
-\end{eqnarray*}\]</span> L’écart-type empirique de <span class="math inline">\(Y\)</span> entre en jeu et nous constatons que les résidus du modèle centré-réduit~ sont égaux à ceux initiaux divisés par l’écart-type empirique de <span class="math inline">\(Y\)</span>.</p></li>
+\end{eqnarray*}\]</span> L’écart-type empirique de <span class="math inline">\(Y\)</span> entre en jeu et nous constatons que les résidus du modèle “centré-réduit” sont égaux à ceux initiaux divisés par l’écart-type empirique de <span class="math inline">\(Y\)</span>.</p></li>
+<li><p>Simulons 3 variables explicatives avec GNU-R pour <span class="math inline">\(n=100\)</span> individus selon une loi uniforme <span class="math inline">\([0,1]\)</span> et équirépartie sur <span class="math inline">\([1;10]\)</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>) <span class="co"># pour fixer les simulations</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="at">length=</span><span class="dv">100</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>X3 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>,n)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(X1, X2, X3)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            X1       X2 X3
+[1,] 0.1137034 1.000000  1
+[2,] 0.6222994 1.090909  1
+[3,] 0.6092747 1.181818  1
+[4,] 0.6233794 1.272727  1
+[5,] 0.8609154 1.363636  1
+[6,] 0.6403106 1.454545  1</code></pre>
+</div>
+</div>
+<p>Simulons maintenant <span class="math inline">\(Y\)</span> selon le modèle en fixant par exemple <span class="math inline">\(\beta=(1, 2, 0.1, -4)'\)</span> et <span class="math inline">\(\sigma=0.1\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.1</span>, <span class="sc">-</span><span class="dv">4</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>) <span class="co"># pour fixer les simulations</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span>sigma)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>Y[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -3.727744 -3.197663 -3.283474 -3.294698 -2.942132</code></pre>
+</div>
+</div></li>
+<li><p>Centrons maintenant les variables avec </p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Ytilde <span class="ot">&lt;-</span> <span class="fu">scale</span>(Y, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>Ytilde[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.73976069 -0.20968007 -0.29549076 -0.30671453  0.04585078</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Xtilde <span class="ot">&lt;-</span> <span class="fu">scale</span>(X, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Xtilde)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             X1        X2 X3
+[1,] -0.3237939 -4.500000  0
+[2,]  0.1848021 -4.409091  0
+[3,]  0.1717775 -4.318182  0
+[4,]  0.1858822 -4.227273  0
+[5,]  0.4234181 -4.136364  0
+[6,]  0.2028133 -4.045455  0</code></pre>
+</div>
+</div>
+<p>Et éliminons la dernière colonne de <span class="math inline">\(\tilde X\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>Xtilde <span class="ot">&lt;-</span> Xtilde[, <span class="sc">-</span><span class="dv">3</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>Effectuons les deux régressions en constituant deux data-frames. Nous n’ajoutons pas la constante dans les modèles (<code>-1</code>) car elle est déjà dans la dernière colonne de <span class="math inline">\(X\)</span> pour le premier modèle et on ne la souhaite pas pour le second.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>don <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(Y,X)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>dontilde <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(Ytilde,Xtilde)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dontilde) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ytilde"</span>, <span class="st">"X1tilde"</span>, <span class="st">"X2tilde"</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~-</span><span class="dv">1</span><span class="sc">+</span>X1<span class="sc">+</span>X2<span class="sc">+</span>X3, <span class="at">data=</span>don)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>modtilde <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ytilde<span class="sc">~-</span><span class="dv">1</span><span class="sc">+</span>X1tilde<span class="sc">+</span>X2tilde, <span class="at">data=</span>dontilde)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On retrouve bien que les coefficients des variables centrées ou non sont identiques</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        X1         X2         X3 
+ 1.0225207  0.1030809 -4.0022782 </code></pre>
+</div>
+</div>
+<p>et que l’intercept est simplement est bien celui donné dans la formule (<strong>?@eq-coefct</strong>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(don<span class="sc">$</span>Y)<span class="sc">-</span> <span class="fu">sum</span>( <span class="fu">coef</span>(modtilde)<span class="sc">*</span><span class="fu">colMeans</span>(X[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -4.002278</code></pre>
+</div>
+</div></li>
+<li><p>Centrons et réduisons les variables explicatives (les 2 premières colonnes de <span class="math inline">\(X\)</span>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>Xtilde <span class="ot">&lt;-</span> <span class="fu">scale</span>(X[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Xtilde)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             X1        X2
+[1,] -1.1617874 -1.706220
+[2,]  0.6630787 -1.671751
+[3,]  0.6163456 -1.637282
+[4,]  0.6669539 -1.602813
+[5,]  1.5192439 -1.568344
+[6,]  0.7277037 -1.533875</code></pre>
+</div>
+</div>
+<p>Reconstuisons le data-frame qui a changé et le modèle correspondant</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>dontilde <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(Ytilde,Xtilde)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dontilde) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ytilde"</span>, <span class="st">"X1tilde"</span>, <span class="st">"X2tilde"</span>)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>modtilde <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ytilde<span class="sc">~-</span><span class="dv">1</span><span class="sc">+</span>X1tilde<span class="sc">+</span>X2tilde, <span class="at">data=</span>dontilde)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Retrouvons les coefficients de départ pour les variables explicatives et pour la constante</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(don<span class="sc">$</span>Y)<span class="sc">-</span> <span class="fu">sum</span>( <span class="fu">coef</span>(modtilde)<span class="sc">/</span><span class="fu">apply</span>(X[,<span class="sc">-</span><span class="dv">3</span>], <span class="dv">2</span>, sd) <span class="sc">*</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">colMeans</span>(X[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) )</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -4.002278</code></pre>
+</div>
+</div></li>
+<li><p>Centrons et réduisons les variables explicatives et la variable à expliquer</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>Ytilde <span class="ot">&lt;-</span> <span class="fu">scale</span>(Y, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>Ytilde[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1.8943177 -0.5369313 -0.7566682 -0.7854091  0.1174109</code></pre>
+</div>
+</div>
+<p>Reconstuisons le data-frame qui a changé et le modèle correspondant</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>dontilde <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(Ytilde, Xtilde)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dontilde) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ytilde"</span>, <span class="st">"X1tilde"</span>, <span class="st">"X2tilde"</span>)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>modtilde <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ytilde<span class="sc">~-</span><span class="dv">1</span><span class="sc">+</span>X1tilde<span class="sc">+</span>X2tilde, <span class="at">data=</span>dontilde)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Retrouvons les coefficients de départ pour les variables explicatives</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(modtilde)<span class="sc">/</span><span class="fu">apply</span>(X[,<span class="sc">-</span><span class="dv">3</span>],<span class="dv">2</span>,sd)<span class="sc">*</span><span class="fu">sd</span>(Y)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  X1tilde   X2tilde 
+1.0225207 0.1030809 </code></pre>
+</div>
+</div>
+<p>et pour la constante</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(don<span class="sc">$</span>Y)<span class="sc">-</span> <span class="fu">sum</span>( <span class="fu">coef</span>(modtilde)<span class="sc">/</span><span class="fu">apply</span>(X[,<span class="sc">-</span><span class="dv">3</span>], <span class="dv">2</span>, sd) <span class="sc">*</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">sd</span>(Y)<span class="sc">*</span><span class="fu">colMeans</span>(X[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) )</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -4.002278</code></pre>
+</div>
+</div></li>
 </ol>
 </div>
 <div id="exr-2-13" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 13 (Moindres carrés contraints) </strong></span>&nbsp;</p>
+<ol type="1">
+<li><p>L’estimateur des MC vaut <span class="math display">\[\begin{eqnarray*}
+\hat \beta = (X'X)^{-1}X'Y,
+\end{eqnarray*}\]</span></p></li>
+<li><p>Calculons maintenant l’estimateur contraint. Nous pouvons procéder de deux manières différentes.</p>
+<p>La première consiste à écrire le lagrangien <span class="math display">\[\begin{eqnarray*}
+\mathcal{L} = S(\beta) - \lambda'(R\beta-r).
+\end{eqnarray*}\]</span> Les conditions de Lagrange permettent d’obtenir un minimum <span class="math display">\[\begin{eqnarray*}
+\left\{
+\begin{array}{l}
+\displaystyle\frac{\partial \mathcal{L}}{\partial \beta} = -2X'Y+2X'X\hat{\beta}_c-
+R'\hat{\lambda}=0,\\
+\displaystyle\frac{\partial \mathcal{L}}{\partial \lambda} = R\hat{\beta}_c-r=0,
+\end{array}
+\right.
+\end{eqnarray*}\]</span> Multiplions à gauche la première égalité par <span class="math inline">\(R(X'X)^{-1}\)</span>, nous obtenons <span class="math display">\[\begin{eqnarray*}
+-2 R(X'X)^{-1}X'Y+2R(X'X)^{-1}X'X \hat{\beta}_c-R(X'X)^{-1}R'\hat{\lambda}&amp;=&amp;0\\
+-2 R(X'X)^{-1}X'Y+2R\hat{\beta}_c-R(X'X)^{-1}R'\hat{\lambda}&amp;=&amp;0\\
+-2 R(X'X)^{-1}X'Y+2r-R(X'X)^{-1}R'\hat{\lambda}&amp;=&amp;0.
+\end{eqnarray*}\]</span> Nous obtenons alors pour <span class="math inline">\(\hat \lambda\)</span> <span class="math display">\[\begin{eqnarray*}
+\hat \lambda = 2 \left[R(X'X)^{-1}R'\right]^{-1}\left[r-R(X'X)^{-1}X'Y\right].
+\end{eqnarray*}\]</span> Remplaçons ensuite <span class="math inline">\(\hat \lambda\)</span> <span class="math display">\[\begin{eqnarray*}
+-2X'Y+2X'X\hat{\beta}_c-R'\hat{\lambda}&amp;=&amp;0\\
+-2X'Y+2X'X\hat{\beta}_c-2R'\left[R(X'X)^{-1}R'\right]^{-1}\left[r-R(X'X)^{-1}X'Y\right]&amp;=&amp; 0,
+\end{eqnarray*}\]</span> d’où nous calculons <span class="math inline">\(\hat \beta_c\)</span> <span class="math display">\[\begin{eqnarray*}
+\hat \beta_c &amp;=&amp; (X'X)^{-1}X'Y+(X'X)^{-1}R'\left[R(X'X)^{-1}R'\right]^{-1}
+(r-R\hat \beta)\\
+&amp;=&amp; \hat \beta + (X'X)^{-1}R'\left[R(X'X)^{-1}R'\right]^{-1}(r-R\hat \beta).
+\end{eqnarray*}\]</span> La fonction <span class="math inline">\(S(\beta)\)</span> à minimiser est une fonction convexe sur un ensemble convexe (contraintes linéaires), le minimum est donc unique.</p>
+<p>Une autre façon de procéder consiste à utiliser les projecteurs. Supposons pour commencer que <span class="math inline">\(r=0\)</span>, la contrainte vaut donc <span class="math inline">\(R\beta=0\)</span>. Calculons analytiquement le projecteur orthogonal sur <span class="math inline">\(\mathcal M_0\)</span>. Rappelons que <span class="math inline">\(\dim(\mathcal M_0)=p-q\)</span>, nous avons de plus <span class="math display">\[\begin{eqnarray*}
+R \beta &amp;=&amp; 0 \quad \quad
+\Leftrightarrow \quad \beta \in Ker(R)\\
+R (X'X)^{-1}X'X \beta &amp;=&amp; 0\\
+U' X \beta &amp;=&amp; 0\quad \quad \hbox{où} \quad \quad U = X (X'X)^{-1}R'.
+\end{eqnarray*}\]</span> Nous avons donc que <span class="math inline">\(\forall \beta \in \ker(R)\)</span>, <span class="math inline">\(U' X \beta = 0\)</span>, c’est-à-dire que <span class="math inline">\(\mathcal M_U\)</span>, l’espace engendré par les colonnes de <span class="math inline">\(U\)</span>, est orthogonal à l’espace engendré par <span class="math inline">\(X\beta\)</span>, <span class="math inline">\(\forall \beta \in \ker(R)\)</span>. Nous avons donc que <span class="math inline">\(\mathcal M_U \perp \mathcal M_0\)</span>. Comme <span class="math inline">\(U=X[(X'X)^{-1}R']\)</span>, <span class="math inline">\(\mathcal M_U \subset \mathcal M_X\)</span>. En résumé, nous avons <span class="math display">\[\begin{eqnarray*}
+\mathcal M_U \subset \mathcal M_X \quad  \hbox{et}
+\quad  \mathcal M_U \perp \mathcal M_0 \quad \hbox{donc}
+\quad \mathcal M_U \subset  (\mathcal M_X \cap \mathcal M_0^{\perp}).
+\end{eqnarray*}\]</span> Afin de montrer que les colonnes de <span class="math inline">\(U\)</span> engendrent <span class="math inline">\(\mathcal M_X \cap \mathcal M_0^{\perp}\)</span>, il faut démontrer que la dimension des deux sous-espaces est égale. Or le rang de <span class="math inline">\(U\)</span> vaut <span class="math inline">\(q\)</span> (<span class="math inline">\(R'\)</span> est de rang <span class="math inline">\(q\)</span>, <span class="math inline">\((X'X)^{-1}\)</span> est de rang <span class="math inline">\(p\)</span> et <span class="math inline">\(X\)</span> est de rang <span class="math inline">\(p\)</span>) donc la dimension de <span class="math inline">\(\mathcal M_U\)</span> vaut <span class="math inline">\(q\)</span>. De plus, nous avons vu que <span class="math display">\[\begin{eqnarray*}
+\mathcal M_X = \mathcal M_0 \stackrel{\perp}{\oplus}\left(\mathcal M_0^{\perp} \cap \mathcal M_X \right)
+\end{eqnarray*}\]</span> et donc, en passant aux dimensions des sous-espaces, nous en déduisons que <span class="math inline">\(\dim(\mathcal M_0^{\perp} \cap \mathcal M_X )=q\)</span>. Nous venons de démontrer que <span class="math display">\[\begin{eqnarray*}
+\mathcal M_U = \mathcal M_X \cap \mathcal M_0^{\perp}.
+\end{eqnarray*}\]</span> Le projecteur orthogonal sur <span class="math inline">\(\mathcal M_U=\mathcal M_X \cap \mathcal M_0^{\perp}\)</span> s’écrit <span class="math display">\[\begin{eqnarray*}
+P_{U} = U (U'U)^{-1} U'= X (X'X)^{-1} R' [R(X'X)^{-1}R']^{-1}R(X'X)^{-1}X'.
+\end{eqnarray*}\]</span> Nous avons alors <span class="math display">\[\begin{eqnarray*}
+\hat Y - \hat Y_0 &amp;=&amp; P_U Y\\
+X \hat \beta - X \hat \beta_0 &amp;=&amp; X (X'X)^{-1} R' [R(X'X)^{-1}R']^{-1}R(X'X)^{-1}X'Y\\
+&amp;=&amp; X (X'X)^{-1} R [R(X'X)^{-1}R']^{-1}R \hat \beta.
+\end{eqnarray*}\]</span> Cela donne <span class="math display">\[\begin{eqnarray*}
+\hat \beta_0 = \hat \beta - (X'X)^{-1} R [R(X'X)^{-1}R']^{-1}R \hat \beta.
+\end{eqnarray*}\]</span> Si maintenant <span class="math inline">\(r\neq 0\)</span>, nous avons alors un sous-espace affine défini par <span class="math inline">\(\{\beta\in \mathbb R^p : R\beta=r\}\)</span> dans lequel nous cherchons une solution qui minimise les moindres carrés. Un sous-espace affine peut être défini de manière équivalente par un point particulier <span class="math inline">\(\beta_p \in \mathbb R^p\)</span> tel que <span class="math inline">\(R\beta_p=r\)</span> et le sous-espace vectoriel associé <span class="math inline">\(\mathcal M_0^v=\{\beta\in \mathbb R^p : R\beta=0\}\)</span>. Les points du sous-espace affine sont alors <span class="math inline">\(\{\beta_0 \in \mathbb R^p : \beta_0=\beta_p+\beta_0^v, \beta_0^v \in \mathcal M_0^v \quad et \quad \beta_p : R\beta_p=r\}\)</span>. La solution qui minimise les moindres carrés, notée <span class="math inline">\(\hat \beta_0\)</span>, est élément de ce sous-espace affine et est définie par <span class="math inline">\(\hat \beta_0=\beta_p+\hat \beta_0^v\)</span> où <span class="math display">\[\begin{eqnarray*}
+\hat \beta_0^v = \hat \beta - (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}R\hat \beta.
+\end{eqnarray*}\]</span> Nous savons que <span class="math inline">\(R\beta_p=r\)</span> donc <span class="math display">\[\begin{eqnarray*}
+R\beta_p = [R(X'X)^{-1}R'][R(X'X)^{-1}R']^{-1}r
+\end{eqnarray*}\]</span> donc une solution particulière est <span class="math inline">\(\beta_p = (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}r\)</span>. La solution <span class="math inline">\(\hat \beta_0\)</span> qui minimise les moindres carrés sous la contrainte <span class="math inline">\(R\beta=r\)</span> est alors <span id="eq-betacontraint"><span class="math display">\[
+\begin{align}
+\hat \beta_0 &amp;= \beta_p+\hat \beta_0^v\\\nonumber
+&amp;=(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}r +
+\hat \beta - (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}R\hat \beta\\\nonumber
+&amp;=\hat \beta + (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta).
+\end{align}
+\tag{1}\]</span></span></p></li>
+<li><p>Calculons l’EQM de <span class="math inline">\(\hat \beta\)</span> qui vaut selon la formule classique: <span class="math display">\[\begin{align*}
+      \mathop{\mathrm{EQM}}&amp;= (\mathbf E(\hat \beta) - \beta) (\mathbf E(\hat \beta) - \beta)' + \mathop{\mathrm{V}}(\hat\beta)
+    \end{align*}\]</span> avec <span class="math inline">\(\mathbf E(\hat \beta)=\beta\)</span> (sous l’hypothèse que <span class="math inline">\(Y\)</span> est généré par le modèle de régression) et<span class="math inline">\(\mathop{\mathrm{V}}(\hat\beta) =\sigma^{2} (X'X)^{-1}\)</span>.</p>
+<p>Pour l’EQM de <span class="math inline">\(\hat \beta_0\)</span> qui vaut selon la formule classique: <span class="math display">\[\begin{align*}
+      \mathop{\mathrm{EQM}}&amp;= (\mathbf E(\hat \beta_0) - \beta_0) (\mathbf E(\hat \beta_0) - \beta_0)' + \mathop{\mathrm{V}}(\hat\beta_0)
+    \end{align*}\]</span> calculons d’abord <span class="math inline">\(\mathbf E(\hat \beta_0)\)</span> en utilisant l’équation (<a href="#eq-betacontraint">équation&nbsp;1</a>): <span class="math display">\[\begin{align*}
+      \mathbf E(\hat \beta_0)&amp;=\mathbf E(\hat \beta) + \mathbf E[(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta)]\\
+      &amp;=\beta + (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\beta)
+    \end{align*}\]</span> puisque <span class="math inline">\(\hat \beta\)</span> est sans biais. Si nous supposons que le modèle satisfait la contrainte (<span class="math inline">\(R\beta=r\)</span>) alors là encore le biais est nul.</p>
+<p>Calculons maintemant la variance: <span class="math display">\[\begin{align*}
+      \mathop{\mathrm{V}}(\hat\beta_0) &amp;=  \mathop{\mathrm{V}}[\hat \beta + (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta)]\\
+                      &amp;=\mathop{\mathrm{V}}(\hat\beta) + \mathop{\mathrm{V}}[(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta)] +\\
+                      &amp;\quad \quad 2\mathop{\mathrm{Cov}}[\hat\beta ; (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta)]\\
+      &amp;=   \sigma^{2}V_{X}^{-1} + (\mathrm{II}) +  (\mathrm{III})
+    \end{align*}\]</span> Intéressons nous à la seconde partie <span class="math inline">\((\mathrm{II})\)</span>. Comme <span class="math inline">\(X\)</span> est déterministe ainsi que <span class="math inline">\(R\)</span> et <span class="math inline">\(r\)</span> on a en posant pour alléger <span class="math inline">\(V_{X}=(X'X)\)</span> (matrice symétrique) <span class="math display">\[\begin{align*}
+      (\mathrm{II}) &amp;= V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1} \mathop{\mathrm{V}}(r-R\hat \beta)
+                        [RV_{X}^{-1}R']^{-1} R V_{X}^{-1}\\
+                    &amp;= V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1} \mathop{\mathrm{V}}(R\hat \beta)[RV_{X}^{-1}R']^{-1} R V_{X}^{-1}\\
+                    &amp;= V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1} R\sigma^{2}V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1} R V_{X}^{-1}\\
+       &amp;= \sigma^{2}V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1} R V_{X}^{-1}
+    \end{align*}\]</span> La troisième partie est <span class="math display">\[\begin{align*}
+      (\mathrm{III}) &amp;= 2V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1}\mathop{\mathrm{Cov}}[\hat\beta ; (r-R\hat \beta)]\\
+                     &amp;=-2V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1}R\mathop{\mathrm{Cov}}[\hat\beta ;\hat\beta]\\
+      &amp;= -2V_{X}^{-1}R'[RV_{X}^{-1}R']^{-1}R\sigma^{2}V_{X}^{-1}
+    \end{align*}\]</span> Ce qui donne au final <span class="math display">\[\begin{align*}
+      \mathop{\mathrm{V}}(\hat\beta_0) &amp;=\sigma^{2}(X'X)^{-1} - \sigma^{2}(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}R(X'X)^{-1}
+    \end{align*}\]</span> L’écart entre les 2 variances est donc de <span class="math inline">\(\sigma^{2}(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}R(X'X)^{-1}\)</span> qui est une matrice de la forme <span class="math inline">\(A'A\)</span> donc semi-définie positive.</p></li>
+</ol>
 </div>
 
 
