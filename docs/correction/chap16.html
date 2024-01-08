@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -477,15 +511,85 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div id="exr-16-1" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 1 (Questions de cours) </strong></span>&nbsp;</p>
+<ol type="1">
+<li>C</li>
+<li>A</li>
+<li>A</li>
+<li>B</li>
+</ol>
 </div>
 <div id="exr-16-2" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 2 (Fonction polyreg) </strong></span>&nbsp;</p>
+<ol type="1">
+<li><p>On importe les données</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone_simple.txt"</span>,<span class="at">header=</span>T,<span class="at">sep=</span><span class="st">";"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sdT12 <span class="ot">&lt;-</span> <span class="fu">sd</span>(ozone<span class="sc">$</span>T12)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>On crée la grille</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>grillex <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(ozone<span class="sc">$</span>T12)<span class="sc">-</span>sdT12,<span class="fu">max</span>(ozone<span class="sc">$</span>T12)<span class="sc">+</span>sdT12, <span class="at">length =</span><span class="dv">100</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>On transforme en data frame</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">T12=</span>grillex)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>On effectue une regression polynomiale de degré 3</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>basepoly <span class="ot">&lt;-</span> <span class="fu">poly</span>(ozone<span class="sc">$</span>T12,<span class="at">degree=</span><span class="dv">3</span>,<span class="at">raw=</span>T)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>newval <span class="ot">&lt;-</span> <span class="fu">predict</span>(basepoly,df<span class="sc">$</span>T12)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>dfpoly <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">O3=</span>ozone<span class="sc">$</span>O3,basepoly)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>regpoly <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3<span class="sc">~</span>.,<span class="at">data=</span>dfpoly)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>On prévoit sur une grille</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dfnewval <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(newval)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>prev <span class="ot">&lt;-</span> <span class="fu">predict</span>(regpoly,dfnewval) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(O3<span class="sc">~</span>T12,<span class="at">data=</span>ozone)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(grillex,prev,<span class="at">col=</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap16_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div></li>
+<li><p>Création de la fonction</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>polyreg <span class="ot">&lt;-</span> <span class="cf">function</span>(ozone,<span class="at">degre=</span><span class="dv">3</span>){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  sdT12 <span class="ot">&lt;-</span> <span class="fu">sd</span>(ozone<span class="sc">$</span>T12)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  grillex <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(ozone<span class="sc">$</span>T12)<span class="sc">-</span>sdT12,<span class="fu">max</span>(ozone<span class="sc">$</span>T12)<span class="sc">+</span>sdT12, <span class="at">length =</span><span class="dv">100</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">T12=</span>grillex)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  basepoly <span class="ot">&lt;-</span> <span class="fu">poly</span>(ozone<span class="sc">$</span>T12,<span class="at">degree=</span><span class="dv">3</span>,<span class="at">raw=</span>T)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  newval <span class="ot">&lt;-</span> <span class="fu">predict</span>(basepoly,df<span class="sc">$</span>T12)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  dfpoly <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">O3=</span>ozone<span class="sc">$</span>O3,basepoly)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  regpoly <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3<span class="sc">~</span>.,<span class="at">data=</span>dfpoly)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  dfnewval <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(newval)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  prev <span class="ot">&lt;-</span> <span class="fu">predict</span>(regpoly,dfnewval)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(grillex,prev))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  }</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ol>
 </div>
 <div id="exr-16-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 3 </strong></span>On applique la fonction précédente</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees//ozone_simple.txt"</span>,<span class="at">header=</span>T,<span class="at">sep=</span><span class="st">";"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(O3 <span class="sc">~</span> T12, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">35</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>), <span class="at">data=</span>ozone)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(ii <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">9</span>)){</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    tmp <span class="ot">&lt;-</span> <span class="fu">polyreg</span>(ozone,<span class="at">d=</span>ii)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(tmp<span class="sc">$</span>grillex,tmp<span class="sc">$</span>grilley,<span class="at">col=</span>iter,<span class="at">lty=</span>iter)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    iter <span class="ot">&lt;-</span> iter<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="dv">15</span>,<span class="dv">150</span>,<span class="fu">c</span>(<span class="st">"d=1"</span>,<span class="st">"d=2"</span>,<span class="st">"d=3"</span>,<span class="st">"d=9"</span>),<span class="at">col=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="at">lty=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chap16_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </div>
 <div id="exr-16-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 4 </strong></span>Considérons la matrice <span class="math inline">\(X_B\)</span> du plan d’expérience obtenue à partir d’une variable réelle <span class="math inline">\(X\)</span> transformée dans <span class="math inline">\(\mathcal{S}_{\xi}^{d+1}\)</span> . Cette matrice est composée des <span class="math inline">\(d+K+1\)</span> fonction de base notée <span class="math inline">\(b_j\)</span> et où <span class="math inline">\(K\)</span> est le nombre de noeuds intérieurs et <span class="math inline">\(d\)</span> le degré.</p>
+<p>Dans le cours, il est indiqué que les fonctions de base <span class="math inline">\(b_j\)</span> et <span class="math inline">\(b_{j+d+1}\)</span> en conservant l’ordre des fonctions. Donc <span class="math inline">\(b_1\)</span> est orthogonale à toutes les fonctions <span class="math inline">\(b_j\)</span> avec <span class="math inline">\(j&gt;d+1\)</span>, idem pour <span class="math inline">\(b_2\)</span> avec <span class="math inline">\(j&gt;d+2\)</span>.</p>
+<p>En faisant donc le calcul <span class="math inline">\(X_B'X_B\)</span> on obtient une matrice bande et donc les termes <span class="math inline">\(a_{ij}\)</span> sont nuls quand <span class="math inline">\(j&gt;i+d+1\)</span>.</p>
+<p>On en déduit que les paramètres estimées <span class="math inline">\(\hat \beta_k\)</span> ne sont pas corrélés avec les <span class="math inline">\(\hat \beta_j\)</span> dès que <span class="math inline">\(j&gt;k+d+1\)</span>. XB est une matrice bande.</p>
 </div>
 
 
