@@ -610,7 +610,7 @@ P2    0   1
 </div>
 </div></li>
 <li><p>Retrouver ces indicateurs à l’aide de la fonction <strong>confusionMatrix</strong> de <strong>caret</strong> puis comparer les prévisions <strong>P1</strong> et <strong>P2</strong>.</p>
-<p>::: {.cell}</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(Y,P1,P2)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>multi_metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy,recall,precision,f_meas,kap)</span>
@@ -619,7 +619,7 @@ P2    0   1
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multi_metric</span>(<span class="at">truth=</span>Y,<span class="at">estimate =</span> prev,<span class="at">event_level =</span> <span class="st">"second"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> algo,<span class="at">values_from =</span> .estimate) <span class="sc">%&gt;%</span> </span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>::: {.cell-output .cell-output-stdout}</p>
+<div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   .metric        P1    P2
   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;
@@ -628,7 +628,8 @@ P2    0   1
 3 precision  0      0.267
 4 f_meas     0      0.381
 5 kap       -0.0108 0.335</code></pre>
-<p>::: :::</p></li>
+</div>
+</div></li>
 </ol>
 </div>
 <div id="exr-15-2" class="theorem exercise">
