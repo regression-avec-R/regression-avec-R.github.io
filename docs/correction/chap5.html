@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Régression avec R - 5 Inférence dans le modèle gaussien</title>
+<title>5 Inférence dans le modèle gaussien – Régression avec R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -56,13 +62,42 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
-    "search-submit-button-title": "Envoyer"
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -73,12 +108,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../correction/chap5.html">5 Inférence dans le modèle gaussien</a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../correction/chap5.html">5 Inférence dans le modèle gaussien</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -88,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Régression avec R</a> 
@@ -122,18 +157,18 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">Codes R</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -160,9 +195,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -183,9 +218,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -218,9 +253,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -259,9 +294,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -284,18 +319,18 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Correction des exercices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -328,9 +363,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -351,9 +386,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -380,9 +415,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -421,9 +456,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -447,7 +482,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
@@ -455,14 +490,14 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content column-page-right" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../correction/chap5.html">5 Inférence dans le modèle gaussien</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">5 Inférence dans le modèle gaussien</h1>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -470,19 +505,21 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="cell">
 
 </div>
 <div id="exr-5-1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours) </strong></span>A, C, A, B, B.</p>
+<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours)</strong></span> A, C, A, B, B.</p>
 </div>
 <div id="exr-5-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Théorème 5.1) </strong></span>L’IC (i) découle de la propriété (i) de la proposition 5.3. La propriété (ii) donnant un IC pour <span class="math inline">\(\sigma^2\)</span> découle de la loi de <span class="math inline">\(\hat \sigma^2\)</span>. Enfin, la propriété (iii) est une conséquence de la loi obtenue propriété (ii) de la proposition 5.3.</p>
+<p><span class="theorem-title"><strong>Exercice 2 (Théorème 5.1)</strong></span> L’IC (i) découle de la propriété (i) de la proposition 5.3. La propriété (ii) donnant un IC pour <span class="math inline">\(\sigma^2\)</span> découle de la loi de <span class="math inline">\(\hat \sigma^2\)</span>. Enfin, la propriété (iii) est une conséquence de la loi obtenue propriété (ii) de la proposition 5.3.</p>
 </div>
 <div id="exr-5-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Test et <span class="math inline">\(R^2\)</span>) </strong></span>En utilisant l’orthogonalité des sous-espaces (figure 5.3 page 99) et le théorème de Pythagore, nous avons <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 3 (Test et <span class="math inline">\(R^2\)</span>)</strong></span> En utilisant l’orthogonalité des sous-espaces (figure 5.3 page 99) et le théorème de Pythagore, nous avons <span class="math display">\[\begin{eqnarray*}
 \|\hat Y_0-\hat Y\|^2 &amp;=&amp; \|\hat \varepsilon_0\|^2- \| \hat \varepsilon\|^2.
 \end{eqnarray*}\]</span> Nous pouvons le démontrer de la manière suivante : <span class="math display">\[\begin{eqnarray*}
 \|\hat Y_0-\hat Y\|^2 &amp;=&amp; \|\hat Y_0-Y+Y-\hat Y\|^2\\
@@ -509,37 +546,38 @@ F&amp;=&amp;\frac{\|\hat \varepsilon_0\|^2- \| \hat \varepsilon\|^2}
 \| \hat \varepsilon\|^2/\|Y-\bar Y\|^2}
 {\| Y-\hat Y\|^2/\|Y-\bar Y\|^2}\frac{n-p}{p-p_0},
 \end{eqnarray*}\]</span> nous obtenons <span class="math display">\[\begin{eqnarray*}
-F&amp;=&amp;\frac{\mathop{\mathrm{R^2}}-\mathop{\mathrm{R^2_0}}}{1-\mathop{\mathrm{R^2}}}\frac{n-p}{p-p_0},
-\end{eqnarray*}\]</span> soit le résultat annoncé. Cette dernière quantité est toujours positive car <span class="math inline">\(\mathop{\mathrm{R^2_0}}\leq \mathop{\mathrm{R^2}}\)</span> et nous avons là un moyen de tester des modèles emboîtés <em>via</em> le coefficient de détermination.</p>
+F&amp;=&amp;\frac{\mathop{\mathrm{R^2}}-\ro}{1-\mathop{\mathrm{R^2}}}\frac{n-p}{p-p_0},
+\end{eqnarray*}\]</span> soit le résultat annoncé. Cette dernière quantité est toujours positive car <span class="math inline">\(\ro \leq \mathop{\mathrm{R^2}}\)</span> et nous avons là un moyen de tester des modèles emboîtés <em>via</em> le coefficient de détermination.</p>
 </div>
 <div id="exr-5-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 (Test et <span class="math inline">\(R^2\)</span> et constante dans le modèle) </strong></span>à corriger ;).</p>
+<p><span class="theorem-title"><strong>Exercice 4 (Test et <span class="math inline">\(R^2\)</span> et constante dans le modèle)</strong></span> à corriger ;).</p>
 </div>
 <div id="exr-5-5" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 5 (Ozone) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 5 (Ozone)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Les résultats sont dans l’ordre <span class="math display">\[\begin{eqnarray*}
 6.2, 0.8, 6.66, -1.5, -1, 50, 5, 124.
 \end{eqnarray*}\]</span></p></li>
-<li><p>La statistique de test de nullité du paramètre se trouve dans la troisième colonne, nous conservons <span class="math inline">\({\mathrm{H_0}}\)</span> pour les paramètres associés à Ne9 et Ne12, et la rejetons pour les autres.</p></li>
-<li><p>La statistique de test de nullité simultanée des paramètres autres que la constante vaut 50. Nous rejetons <span class="math inline">\({\mathrm{H_0}}\)</span>.</p></li>
+<li><p>La statistique de test de nullité du paramètre se trouve dans la troisième colonne, nous conservons <span class="math inline">\(\Hz\)</span> pour les paramètres associés à Ne9 et Ne12, et la rejetons pour les autres.</p></li>
+<li><p>La statistique de test de nullité simultanée des paramètres autres que la constante vaut 50. Nous rejetons <span class="math inline">\(\Hz\)</span>.</p></li>
 <li><p>Nous connaissons <span class="math display">\[\begin{align*}
 \hat y^{p}_{n+1} &amp;= x'_{n+1}\hat \beta,\\
 x'_{n+1}&amp;=(1, 10, 20, 0, 0, 1)\\
 \hat \beta&amp;=(62, -4, 5, -1.5, -0.5, 0.8)'
 \end{align*}\]</span> et donc la prévision est <span class="math inline">\(\hat y^{p}_{n+1} =122.8\)</span>. Pour l’intervalle de confiance il nous faut <span class="math inline">\(\hat\sigma=16\)</span> mais aussi la matrice <span class="math inline">\(X'X\)</span> (donc toutes les données) ce que nous n’avons pas ici. On ne peut donc faire d’intervalle de confiance.</p></li>
 <li><p>Nous sommes en présence de modèles emboîtés, nous pouvons appliquer la formule adaptée (voir l’exercice précédent) : <span class="math display">\[\begin{eqnarray*}
-F&amp;=&amp; \frac{\mathop{\mathrm{R^2}}2-\mathop{\mathrm{R^2_0}}2}{1-\mathop{\mathrm{R^2}}2}\frac{n-p}{p-p_0}\\
+F&amp;=&amp; \frac{\mathop{\mathrm{R^2}}2-\ro2}{1-\mathop{\mathrm{R^2}}2}\frac{n-p}{p-p_0}\\
 &amp;=&amp; \frac{0.66-0.5}{1-0.66}\frac{124}{2}= 29.
-\end{eqnarray*}\]</span> Nous conservons <span class="math inline">\({\mathrm{H_0}}\)</span>, c’est-à-dire le modèle le plus simple.</p></li>
+\end{eqnarray*}\]</span> Nous conservons <span class="math inline">\(\Hz\)</span>, c’est-à-dire le modèle le plus simple.</p></li>
 </ol>
 </div>
 <div id="exr-5-6" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 6 (Équivalence du test T et du test F) </strong></span>Récrivons la statistique de test <span class="math inline">\(F\)</span>, en se rappelant que <span class="math inline">\(X_0\)</span> est la matrice <span class="math inline">\(X\)</span> privée de sa <span class="math inline">\(j^e\)</span> colonne, celle correspondant au coefficient que l’on teste : <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 6 (Équivalence du test T et du test F)</strong></span> Récrivons la statistique de test <span class="math inline">\(F\)</span>, en se rappelant que <span class="math inline">\(X_0\)</span> est la matrice <span class="math inline">\(X\)</span> privée de sa <span class="math inline">\(j^e\)</span> colonne, celle correspondant au coefficient que l’on teste : <span class="math display">\[\begin{eqnarray*}
 F&amp;=&amp;\frac{\|X\hat \beta-P_{X_0}X\hat \beta\|^2}{\hat \sigma^2}
   =\frac{\|X_j\hat \beta_j-\hat \beta_jP_{X_0}X_j\|^2}{\hat \sigma^2}
 =\frac{\hat\beta_j^2}{\hat \sigma^2}X_j'(I-P_{X_0})X_j.
-\end{eqnarray*}\]</span> Récrivons maintenant le carré de la statistique <span class="math inline">\(T\)</span> en explicitant <span class="math inline">\(\hat  \sigma^2_{\hat \beta_j}\)</span> : <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Récrivons maintenant le carré de la statistique <span class="math inline">\(T\)</span> en explicitant <span class="math inline">\(\hat
+\sigma^2_{\hat \beta_j}\)</span> : <span class="math display">\[\begin{eqnarray*}
 T^2&amp;=&amp;\frac{\hat \beta_j^2}{\hat \sigma^2 [(X'X)^{-1}]_{jj}},
 \end{eqnarray*}\]</span> où <span class="math inline">\([(X'X)^{-1}]_{jj}\)</span> est le <span class="math inline">\(j^e\)</span> élément diagonal de la matrice <span class="math inline">\((X'X)^{-1}\)</span>. Afin de calculer ce terme, nous utilisons la formule permettant d’obtenir l’inverse d’une matrice bloc, formule donnée en annexe A.2 page 416. Pour appliquer facilement cette formule, en changeant l’ordre des variables, la matrice <span class="math inline">\(X\)</span> devient <span class="math inline">\((X_0|X_j)\)</span> et <span class="math inline">\(X'X\)</span> s’écrit alors <span class="math display">\[\begin{eqnarray*}
 X'X&amp;=&amp;\left(
@@ -550,10 +588,10 @@ X'_jX_0&amp;X'_jX_j
 \end{eqnarray*}\]</span> Son inverse, en utilisant la formule d’inverse de matrice bloc, est <span class="math display">\[\begin{eqnarray*}
 [(X'X)^{-1}]_{jj}&amp;=&amp;\left(X'_jX_j-X'_jX_0(X'_0X_0)^{-1}X'_0X_j\right)^{-1}
 =\left(X_j'(I-P_{X_0})X_j\right)^{-1}.
-\end{eqnarray*}\]</span> Nous avons donc <span class="math inline">\(T^2=F\)</span>. Au niveau des lois, l’égalité est aussi valable et nous avons que le carré d’un Student à <span class="math inline">\((n-p)\)</span> ddl est une loi de Fisher à <span class="math inline">\((1,n-p)\)</span> ddl. Bien entendu, le quantile <span class="math inline">\((1-\alpha)\)</span> d’une loi de Fisher correspond au quantile <span class="math inline">\(1-\alpha/2\)</span> d’une loi de Student. La loi <span class="math inline">\(\mathcal{T}\)</span> est symétrique autour de 0 et donc, lorsqu’elle est élevée au carré, les valeurs plus faibles que <span class="math inline">\(t_{n-p}(\alpha/2)\)</span>, qui ont une probabilité sous <span class="math inline">\({\mathrm{H_0}}\)</span> de <span class="math inline">\(\alpha/2\)</span> d’apparaître, et celles plus fortes que <span class="math inline">\(t_{n-p}(1-\alpha/2)\)</span>, qui ont une probabilité sous <span class="math inline">\({\mathrm{H_0}}\)</span> de <span class="math inline">\(\alpha/2\)</span> d’apparaître, deviennent toutes plus grandes que <span class="math inline">\(t^2_{n-p}(1-\alpha/2)\)</span>. La probabilité que ces valeurs dépassent ce seuil sous <span class="math inline">\({\mathrm{H_0}}\)</span> est de <span class="math inline">\(\alpha\)</span> et correspond donc bien par définition à <span class="math inline">\(f_{1,n-p}(1-\alpha)\)</span>.</p>
+\end{eqnarray*}\]</span> Nous avons donc <span class="math inline">\(T^2=F\)</span>. Au niveau des lois, l’égalité est aussi valable et nous avons que le carré d’un Student à <span class="math inline">\((n-p)\)</span> ddl est une loi de Fisher à <span class="math inline">\((1,n-p)\)</span> ddl. Bien entendu, le quantile <span class="math inline">\((1-\alpha)\)</span> d’une loi de Fisher correspond au quantile <span class="math inline">\(1-\alpha/2\)</span> d’une loi de Student. La loi <span class="math inline">\(\mathcal{T}\)</span> est symétrique autour de 0 et donc, lorsqu’elle est élevée au carré, les valeurs plus faibles que <span class="math inline">\(t_{n-p}(\alpha/2)\)</span>, qui ont une probabilité sous <span class="math inline">\(\Hz\)</span> de <span class="math inline">\(\alpha/2\)</span> d’apparaître, et celles plus fortes que <span class="math inline">\(t_{n-p}(1-\alpha/2)\)</span>, qui ont une probabilité sous <span class="math inline">\(\Hz\)</span> de <span class="math inline">\(\alpha/2\)</span> d’apparaître, deviennent toutes plus grandes que <span class="math inline">\(t^2_{n-p}(1-\alpha/2)\)</span>. La probabilité que ces valeurs dépassent ce seuil sous <span class="math inline">\(\Hz\)</span> est de <span class="math inline">\(\alpha\)</span> et correspond donc bien par définition à <span class="math inline">\(f_{1,n-p}(1-\alpha)\)</span>.</p>
 </div>
 <div id="exr-5-7" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 7 (Équivalence du test F et du test de VM) </strong></span>Nous avons noté la vraisemblance en début du chapitre par <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 7 (Équivalence du test F et du test de VM)</strong></span> Nous avons noté la vraisemblance en début du chapitre par <span class="math display">\[\begin{eqnarray*}
 \mathcal{L}(Y,\beta,\sigma^2) &amp;=&amp; \prod_{i=1}^n f_{Y}(y_i)
 = \left(\frac{1}{2\pi\sigma^2}\right)^{n/2}\exp{\left[-\frac{1}{2 \sigma^2}
 \sum_{i=1}^n \left(y_i- \sum_{j=1}^p\beta_jx_{ij}\right)^2\right]}\\
@@ -565,11 +603,11 @@ X'_jX_0&amp;X'_jX_j
 &amp;=&amp;\left(\frac{n}{2\pi \mathop{\mathrm{SCR}}}\right)^{n/2}\exp{\left(-\frac{n}{2}\right)}
 =\mathcal{L}(Y,\hat \beta,\hat \sigma^2),
 \end{eqnarray*}\]</span> où <span class="math inline">\(\mathop{\mathrm{SCR}}=\|Y-X\hat \beta\|^2\)</span>.</p>
-<p>Sous l’hypothèse <span class="math inline">\({\mathrm{H_0}}\)</span> nous obtenons de façon évidente le résultat suivant : <span class="math display">\[\begin{eqnarray*}
+<p>Sous l’hypothèse <span class="math inline">\(\Hz\)</span> nous obtenons de façon évidente le résultat suivant : <span class="math display">\[\begin{eqnarray*}
 \max_{\beta,\sigma^2} \mathcal{L}_0(Y,\beta_0,\sigma^2)
 =\left(\frac{n}{2\pi \mathop{\mathrm{SCR}}_0}\right)^{n/2}\exp{\left(-\frac{n}{2}\right)}
 =\mathcal{L}_0(Y,\hat \beta_0,\hat \sigma^2_0),
-\end{eqnarray*}\]</span> où <span class="math inline">\(\mathop{\mathrm{SCR}}_0\)</span> correspond à la somme des carrés résiduels sous <span class="math inline">\({\mathrm{H_0}}\)</span>, c’est-à-dire <span class="math inline">\(\mathop{\mathrm{SCR}}_0=\|Y-X_0\hat \beta_0\|^2\)</span>. On définit le test du rapport de vraisemblance maximale (VM) par la région critique suivante : <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> où <span class="math inline">\(\mathop{\mathrm{SCR}}_0\)</span> correspond à la somme des carrés résiduels sous <span class="math inline">\(\Hz\)</span>, c’est-à-dire <span class="math inline">\(\mathop{\mathrm{SCR}}_0=\|Y-X_0\hat \beta_0\|^2\)</span>. On définit le test du rapport de vraisemblance maximale (VM) par la région critique suivante : <span class="math display">\[\begin{eqnarray*}
 \mathcal{D}_\alpha = \left\{
 Y \in \mathbb R^n : \lambda=\frac{\mathcal{L}_0(Y,\hat \beta_0,\hat \sigma^2)}
 {\mathcal{L}(Y,\hat \beta,\hat \sigma^2)} &lt; \lambda_0
@@ -577,23 +615,23 @@ Y \in \mathbb R^n : \lambda=\frac{\mathcal{L}_0(Y,\hat \beta_0,\hat \sigma^2)}
 \end{eqnarray*}\]</span> La statistique du rapport de vraisemblance maximale vaut ici <span class="math display">\[\begin{eqnarray*}
 \lambda = \left(\frac{\mathop{\mathrm{SCR}}}{\mathop{\mathrm{SCR}}_0}\right)^{n/2} =
 \left(\frac{\mathop{\mathrm{SCR}}_0}{\mathop{\mathrm{SCR}}}\right)^{-n/2}.
-\end{eqnarray*}\]</span> Le test du rapport de VM rejette <span class="math inline">\({\mathrm{H_0}}\)</span> lorsque la statistique <span class="math inline">\(\lambda\)</span> est inférieure à une valeur <span class="math inline">\(\lambda_0\)</span> définie de façon à avoir le niveau du test égal à <span class="math inline">\(\alpha\)</span>. Le problème qui reste à étudier est de connaître la distribution (au moins sous <span class="math inline">\({\mathrm{H_0}}\)</span>) de <span class="math inline">\(\lambda\)</span>. Définissons, pour <span class="math inline">\(\lambda\)</span> positif, la fonction bijective <span class="math inline">\(g\)</span> suivante : <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Le test du rapport de VM rejette <span class="math inline">\(\Hz\)</span> lorsque la statistique <span class="math inline">\(\lambda\)</span> est inférieure à une valeur <span class="math inline">\(\lambda_0\)</span> définie de façon à avoir le niveau du test égal à <span class="math inline">\(\alpha\)</span>. Le problème qui reste à étudier est de connaître la distribution (au moins sous <span class="math inline">\(\Hz\)</span>) de <span class="math inline">\(\lambda\)</span>. Définissons, pour <span class="math inline">\(\lambda\)</span> positif, la fonction bijective <span class="math inline">\(g\)</span> suivante : <span class="math display">\[\begin{eqnarray*}
 g(\lambda) = \lambda^{-2/n}-1.
 \end{eqnarray*}\]</span> La fonction <span class="math inline">\(g\)</span> est décroissante (sa dérivée est toujours négative), donc <span class="math inline">\(\lambda&lt;\lambda_0\)</span> si et seulement si <span class="math inline">\(g(\lambda)&gt;g(\lambda_0)\)</span>. Cette fonction <span class="math inline">\(g\)</span> va nous permettre de nous ramener à des statistiques dont la loi est connue. Nous avons alors <span class="math display">\[\begin{eqnarray*}
 g(\lambda)&amp;&gt;&amp;g(\lambda_0)\\
 \frac{\mathop{\mathrm{SCR}}_0-\mathop{\mathrm{SCR}}}{\mathop{\mathrm{SCR}}}&amp;&gt;&amp;g(\lambda_0)\\
 \frac{n-p}{p-p_0}\frac{\mathop{\mathrm{SCR}}_0-\mathop{\mathrm{SCR}}}{\mathop{\mathrm{SCR}}}&amp;&gt;&amp;f_0
 \end{eqnarray*}\]</span> où <span class="math inline">\(f_0\)</span> est déterminée par <span class="math display">\[\begin{eqnarray*}
-P_{{\mathrm{H_0}}}\left(\frac{n-p}{p-p_0}\frac{\mathop{\mathrm{SCR}}_0-\mathop{\mathrm{SCR}}}{\mathop{\mathrm{SCR}}}&gt;f_0
+P_{\Hz}\left(\frac{n-p}{p-p_0}\frac{\mathop{\mathrm{SCR}}_0-\mathop{\mathrm{SCR}}}{\mathop{\mathrm{SCR}}}&gt;f_0
 \right)=\alpha,
-\end{eqnarray*}\]</span> avec la loi de cette statistique qui est une loi <span class="math inline">\(\mathcal{F}_{p-p_0,n-p}\)</span> (cf.~section précédente). Le test du rapport de VM est donc équivalent au test qui rejette <span class="math inline">\({\mathrm{H_0}}\)</span> lorsque la statistique <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> avec la loi de cette statistique qui est une loi <span class="math inline">\(\mathcal{F}_{p-p_0,n-p}\)</span> (cf.~section précédente). Le test du rapport de VM est donc équivalent au test qui rejette <span class="math inline">\(\Hz\)</span> lorsque la statistique <span class="math display">\[\begin{eqnarray*}
 F=\frac{n-p}{p-p_0}\frac{\mathop{\mathrm{SCR}}_0-\mathop{\mathrm{SCR}}}{\mathop{\mathrm{SCR}}}
 \end{eqnarray*}\]</span> est supérieure à <span class="math inline">\(f_0\)</span>, où <span class="math inline">\(f_0\)</span> est la valeur du fractile <span class="math inline">\(\alpha\)</span> de la loi de Fisher à <span class="math inline">\((p-p_0,n-p)\)</span> degrés de liberté.</p>
 </div>
 <div id="exr-5-8" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 8 (Test de Fisher pour une hypothèse linéaire quelconque) </strong></span>Nous pouvons toujours traduire l’hypothèse <span class="math inline">\({\mathrm{H_0}}\)</span> : <span class="math inline">\(R\beta=r\)</span> en terme de sous-espace de <span class="math inline">\(\mathcal M_X\)</span>. Lorsque <span class="math inline">\(r=0\)</span>, nous avons un sous-espace vectoriel de <span class="math inline">\(\mathcal M_X\)</span> et lorsque <span class="math inline">\(r\neq 0\)</span> nous avons un sous-espace affine de <span class="math inline">\(\mathcal M_X\)</span>. Dans les deux cas, nous noterons ce sous-espace <span class="math inline">\(\mathcal M_0\)</span> et <span class="math inline">\(\mathcal M_0 \subset \mathcal M_X\)</span>. Cependant nous ne pourrons plus le visualiser facilement comme nous l’avons fait précédemment avec <span class="math inline">\(\mathcal M_{X_0}\)</span> où nous avions enlevé des colonnes à la matrice <span class="math inline">\(X\)</span>. Nous allons décomposer l’espace <span class="math inline">\(\mathcal M_X\)</span> en deux sous-espaces orthogonaux <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 8 (Test de Fisher pour une hypothèse linéaire quelconque)</strong></span> Nous pouvons toujours traduire l’hypothèse <span class="math inline">\(\Hz\)</span> : <span class="math inline">\(R\beta=r\)</span> en terme de sous-espace de <span class="math inline">\(\mathcal M_X\)</span>. Lorsque <span class="math inline">\(r=0\)</span>, nous avons un sous-espace vectoriel de <span class="math inline">\(\mathcal M_X\)</span> et lorsque <span class="math inline">\(r\neq 0\)</span> nous avons un sous-espace affine de <span class="math inline">\(\mathcal M_X\)</span>. Dans les deux cas, nous noterons ce sous-espace <span class="math inline">\(\mathcal M_0\)</span> et <span class="math inline">\(\mathcal M_0 \subset \mathcal M_X\)</span>. Cependant nous ne pourrons plus le visualiser facilement comme nous l’avons fait précédemment avec <span class="math inline">\(\mathcal M_{X_0}\)</span> où nous avions enlevé des colonnes à la matrice <span class="math inline">\(X\)</span>. Nous allons décomposer l’espace <span class="math inline">\(\mathcal M_X\)</span> en deux sous-espaces orthogonaux <span class="math display">\[\begin{eqnarray*}
 \mathcal M_X = \mathcal M_0 \stackrel{\perp}{\oplus} ( \mathcal M_0^\perp \cap \mathcal M_X ).
-\end{eqnarray*}\]</span> Sous <span class="math inline">\({\mathrm{H_0}}\)</span>, l’estimation des moindres carrés donne <span class="math inline">\(\hat Y_0\)</span> projection orthogonale de <span class="math inline">\(Y\)</span> sur <span class="math inline">\(\mathcal M_0\)</span> et nous appliquons la même démarche pour construire la statistique de test. La démonstration est donc la même que celle du théorème 5.2. C’est-à-dire que nous regardons si <span class="math inline">\(\hat Y_0\)</span> est proche de <span class="math inline">\(\hat Y\)</span> et nous avons donc <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Sous <span class="math inline">\(\Hz\)</span>, l’estimation des moindres carrés donne <span class="math inline">\(\hat Y_0\)</span> projection orthogonale de <span class="math inline">\(Y\)</span> sur <span class="math inline">\(\mathcal M_0\)</span> et nous appliquons la même démarche pour construire la statistique de test. La démonstration est donc la même que celle du théorème 5.2. C’est-à-dire que nous regardons si <span class="math inline">\(\hat Y_0\)</span> est proche de <span class="math inline">\(\hat Y\)</span> et nous avons donc <span class="math display">\[\begin{eqnarray*}
 F&amp;=&amp;\frac{\|\hat Y -\hat Y_0\|^2/\dim(\mathcal M_0^{\perp}  \cap \mathcal M_X)}{\|Y - \hat Y\|^2/
 \dim(\mathcal M_{X^{\perp}})}\\
 &amp;=&amp;\frac{n-p}{q} \frac{\|Y-\hat Y_0\|^2-\|Y-\hat Y\|^2}{ \|Y-\hat Y\|^2}\\
@@ -603,7 +641,7 @@ F&amp;=&amp;\frac{\|\hat Y -\hat Y_0\|^2/\dim(\mathcal M_0^{\perp}  \cap \mathca
 \end{eqnarray*}\]</span></p>
 </div>
 <div id="exr-5-9" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 9 (Généralisation de la régression ridge) </strong></span>Soit la fonction à minimiser <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Exercice 9 (Généralisation de la régression ridge)</strong></span> Soit la fonction à minimiser <span class="math display">\[\begin{align*}
     R(\beta)&amp;=\|Y-X\beta\|^2 -\sum_{j=1}^{p}\delta_j(\beta_j^2) \\
     &amp;= (Y-X\beta)'(Y-X\beta) - \beta' \Delta \beta
   \end{align*}\]</span> avec <span class="math inline">\(\delta_{1}, \dotsc, \delta_{p}\)</span> des réels positifs ou nuls.</p>
@@ -614,15 +652,15 @@ F&amp;=&amp;\frac{\|\hat Y -\hat Y_0\|^2/\dim(\mathcal M_0^{\perp}  \cap \mathca
          (X'X + \Delta) \hat\beta_{\mathrm{RG}} &amp;=  X'Y
   \end{align*}\]</span> donc en prémultipliant par <span class="math inline">\((X'X-\Delta)^{-1}\)</span> nous obtenons <span class="math display">\[\begin{align*}
     \hat\beta_{\mathrm{RG}}=(X'X-\Delta)^{-1}X'Y.
-  \end{align*}\]</span> En régression multiple le nombre de paramètres est <span class="math inline">\(p=\mathop{\mathrm{tr}}(P_{X})\)</span> avec <span class="math inline">\(P_{X}\)</span> la matrice de l’endomorphisme qui permet d’obtenir <span class="math inline">\(\hat Y\)</span> à partir de <span class="math inline">\(Y\)</span>. Dans cette régression ridge, nous avons que <span class="math display">\[\begin{align*}
+  \end{align*}\]</span> En régression multiple le nombre de paramètres est <span class="math inline">\(p=\tr(P_{X})\)</span> avec <span class="math inline">\(P_{X}\)</span> la matrice de l’endomorphisme qui permet d’obtenir <span class="math inline">\(\hat Y\)</span> à partir de <span class="math inline">\(Y\)</span>. Dans cette régression ridge, nous avons que <span class="math display">\[\begin{align*}
     \hat Y_{\mathrm{RG}}&amp;=X\hat\beta_{\mathrm{RG}}=X(X'X-\Delta)^{-1}X'Y
-  \end{align*}\]</span> donc la matrice de l’endomorphisme est ici <span class="math inline">\(X(X'X-\Delta)^{-1}X'\)</span> et le nombre équivalent de paramètres est <span class="math inline">\(\mathop{\mathrm{tr}}(X(X'X-\Delta)^{-1}X')\)</span>.</p>
+  \end{align*}\]</span> donc la matrice de l’endomorphisme est ici <span class="math inline">\(X(X'X-\Delta)^{-1}X'\)</span> et le nombre équivalent de paramètres est <span class="math inline">\(\tr(X(X'X-\Delta)^{-1}X')\)</span>.</p>
 </div>
 <div id="exr-5-10" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 10 (IC pour la régression ridge) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 10 (IC pour la régression ridge)</strong></span> &nbsp;</p>
 <ol type="1">
-<li><p>Loi de <span class="math inline">\(\hat \beta\)</span> : <span class="math inline">\({\mathcal{N}}(\beta, \sigma^{2}(X'X)^{-1})\)</span> grâce au modèle et à <span class="math inline">\({\mathcal{H}}_3\)</span>.</p></li>
-<li><p>Loi de $_{}() $. Comme <span class="math inline">\(\hat \beta_{\mathrm{ridge}}(\tilde\kappa)= (X'X-\tilde\kappa I)^{-1}X'Y\)</span> avec <span class="math inline">\(A=(X'X-\tilde\kappa I)^{-1}X'\)</span> qui est une matrice fixe. Avec <span class="math inline">\({\mathcal{H}}_{3}\)</span> et le modèle de régression multiple on a que <span class="math inline">\(Y\sim{\mathcal{N}}(X\beta, \sigma^{2}I)\)</span>.</p>
+<li><p>Loi de <span class="math inline">\(\hat \beta\)</span> : <span class="math inline">\(\NO(\beta, \sigma^{2}(X'X)^{-1})\)</span> grâce au modèle et à <span class="math inline">\(\HH_3\)</span>.</p></li>
+<li><p>Loi de $_{}() $. Comme <span class="math inline">\(\hat \beta_{\mathrm{ridge}}(\tilde\kappa)= (X'X-\tilde\kappa I)^{-1}X'Y\)</span> avec <span class="math inline">\(A=(X'X-\tilde\kappa I)^{-1}X'\)</span> qui est une matrice fixe. Avec <span class="math inline">\(\HH_{3}\)</span> et le modèle de régression multiple on a que <span class="math inline">\(Y\sim\NO(X\beta, \sigma^{2}I)\)</span>.</p>
 <p>Puisque <span class="math inline">\(Y\)</span> est un vecteur gaussien, il en est de même de <span class="math inline">\(\hat \beta_{\mathrm{ridge}}(\tilde\kappa)=AY\)</span>. Calculons son espérance <span class="math display">\[\begin{align*}
 \mathbf E(\hat \beta_{\mathrm{ridge}}(\tilde\kappa))&amp;=\mathbf E(AY)=A\mathbf E(Y)=AX\beta\\
 &amp;=(X'X-\tilde\kappa I)^{-1}X'X\beta
@@ -699,18 +737,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -742,11 +769,55 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -756,8 +827,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -769,7 +849,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -813,6 +1016,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -838,6 +1042,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -895,35 +1125,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="../correction/chap4.html" class="pagination-link">
+      <a href="../correction/chap4.html" class="pagination-link" aria-label="4 Extensions : non-inversibilité et (ou) erreurs corrélées">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">4 Extensions : non-inversibilité et (ou) erreurs corrélées</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../correction/chap6.html" class="pagination-link">
+      <a href="../correction/chap6.html" class="pagination-link" aria-label="6 Variables qualitatives : ANCOVA et ANOVA">
         <span class="nav-page-text">6 Variables qualitatives : ANCOVA et ANOVA</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

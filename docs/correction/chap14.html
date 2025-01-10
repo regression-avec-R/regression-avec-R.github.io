@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Régression avec R - 14 Comparaison en classification supervisée</title>
+<title>14 Comparaison en classification supervisée – Régression avec R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -81,7 +81,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -90,13 +96,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
-    "search-submit-button-title": "Envoyer"
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -107,12 +142,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap11.html">IV Le modèle linéairé généralisé</a></li><li class="breadcrumb-item"><a href="../correction/chap14.html">14 Comparaison en classification supervisée</a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap11.html">IV Le modèle linéairé généralisé</a></li><li class="breadcrumb-item"><a href="../correction/chap14.html">14 Comparaison en classification supervisée</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -122,7 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Régression avec R</a> 
@@ -156,18 +191,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">Codes R</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -194,9 +229,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -217,9 +252,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -252,9 +287,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -293,9 +328,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -318,18 +353,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Correction des exercices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -362,9 +397,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -385,9 +420,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -414,9 +449,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -455,9 +490,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -481,7 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
@@ -489,14 +524,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content column-page-right" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap11.html">IV Le modèle linéairé généralisé</a></li><li class="breadcrumb-item"><a href="../correction/chap14.html">14 Comparaison en classification supervisée</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">14 Comparaison en classification supervisée</h1>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -504,26 +539,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <div class="cell">
 
 </div>
 <div id="exr-14-1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours) </strong></span>C, D, A, B.</p>
+<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours)</strong></span> C, D, A, B.</p>
 </div>
 <div id="exr-14-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Règle de Bayes) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 2 (Règle de Bayes)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><ol type="a">
-<li>La règle de Bayes est définie par <span class="math display">\[
+<li>La règle de Bayes est définie par <span class="math display">\[%
 g^\star(x)=\left\{
 \begin{array}{ll}
-1&amp; \text{si }\mathbf P(Y=1|X=x)\geq 0.5 \\
-0&amp; \text{sinon.}
+  1&amp; \text{si }\mathbf P(Y=1|X=x)\geq 0.5 \\
+  0&amp; \text{sinon.}
 \end{array}\right.
 \]</span> L’erreur de Bayes est définie par <span class="math inline">\(L^\star=\mathbf P(g^\star(X)\neq Y)\)</span>.</li>
-<li>On a <span class="math display">\[
+<li>On a <span class="math display">\[%
 \begin{aligned}
   \mathbf P(g(X)\neq Y|X=x) &amp; = 1-\Big(\mathbf P(g(X)=Y,g(X)=1|X=x) \\
   &amp; \hspace{2cm}+\mathbf P(g(X)=Y,g(X)=0|X=x)\Big) \\
@@ -532,50 +569,166 @@ g^\star(x)=\left\{
   &amp; = 1-(\mathbf 1_{g(x)=1}\eta(x)+\mathbf 1_{g(x)=0}(1-\eta(x))).
 \end{aligned}
 \]</span></li>
-<li>On déduit <span class="math display">\[
+<li>On déduit <span class="math display">\[%
 \begin{aligned}
-  \mathbf P(&amp;  g(X)\neq Y|X=x)-\mathbf P(g^\star(X)\neq Y|X=x) \\
+  \mathbf P( g(X)\neq Y|X=x)-\mathbf P(g^\star(X)\neq Y|X=x)
   &amp;  = \eta(x)\left(\mathbf 1_{g^\star(x)=1}-\mathbf 1_{g(x)=1}\right)+(1-\eta(x))\left(\mathbf 1_{g^\star(x)=0}-\mathbf 1_{g(x)=0}\right) \\
+  &amp;  = \eta(x)\left(\mathbf 1_{g^\star(x)=1}-\mathbf 1_{g(x)=1}\right)+(1-\eta(x))\left(1-\mathbf 1_{g^\star(x)=1}-(1-\mathbf 1_{g(x)=1})\right) \\
   &amp;  = (2\eta(x)-1) \left(\mathbf 1_{g^\star(x)=1}-\mathbf 1_{g(x)=1}\right) \\
-  &amp;  \geq 0
 \end{aligned}
-\]</span> par définition de <span class="math inline">\(g^\star\)</span>.</li>
-<li>On conclut en intégrant par la loi de <span class="math inline">\(X\)</span> que <span class="math display">\[\mathbf P(g(X)\neq Y)\geq \mathbf P(g^\star(X)\neq Y).\]</span></li>
+\]</span></li>
+</ol>
+<ul>
+<li>Quand le premier terme <span class="math inline">\((2\eta(x)-1)\)</span> est positif cela signifie que <span class="math inline">\(\eta(x)=\mathbf P(Y|=1X=x)\geq 0.5\)</span>. Par définition de <span class="math inline">\(g^\star\)</span> nous en déduisons donc que <span class="math inline">\(g^\star(x)=1\)</span> et donc que le second terme est aussi positif ou nul.</li>
+<li>Quand le premier terme <span class="math inline">\((2\eta(x)-1)\)</span> est négatif cela signifie que <span class="math inline">\(\eta(x)=\mathbf P(Y|=1X=x)&lt; 0.5\)</span>. Par définition de <span class="math inline">\(g^\star\)</span> nous en déduisons donc que <span class="math inline">\(g^\star(x)=0\)</span> et donc que le second terme est aussi négatif ou nul.<br>
+En conclusion nous avons bien que <span class="math display">\[%
+\mathbf P(g(X)\neq Y|X=x)-\mathbf P(g^\star(X)\neq Y|X=x) = (2\eta(x)-1) \left(\mathbf 1_{g^\star(x)=1}-\mathbf 1_{g(x)=1}\right) \geq 0
+\]</span></li>
+</ul>
+<ol start="4" type="a">
+<li>On conclut en intégrant par la loi de <span class="math inline">\(X\)</span> que <span class="math display">\[%
+\mathbf P(g(X)\neq Y)\geq \mathbf P(g^\star(X)\neq Y).
+\]</span></li>
 </ol></li>
 <li>Pour la règle de Bayes, on a
 <ul>
 <li>si <span class="math inline">\(x\leq 0\)</span>, on a <span class="math inline">\(\mathbf P(Y=1|X=x)=\mathbf P(U\leq 2)=\frac{1}{5}\)</span> <span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(g^\star(x)=0\)</span>.</li>
 <li>si <span class="math inline">\(x&gt; 0\)</span>, on a <span class="math inline">\(\mathbf P(Y=1|X=x)=\mathbf P(U&gt; 2)=\frac{9}{10}\)</span> <span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(g^\star(x)=1\)</span>.</li>
 </ul>
-L’erreur de Bayes vaut <span class="math display">\[
+L’erreur de Bayes vaut <span class="math display">\[%
 \begin{aligned}
   L^\star=\mathbf P(g^\star(X)\neq Y&amp;  |X\leq 0)\mathbf P(X\leq 0) \\
   &amp;  +\mathbf P(g^\star(X)\neq Y|X&gt; 0)\mathbf P(X&gt;0).
 \end{aligned}
-\]</span> Or <span class="math display">\[
+\]</span> Or <span class="math display">\[%
 \mathbf P(g^\star(X)\neq Y|X\leq 0)=\mathbf P(Y\neq 0|X\leq 0)=\frac{1}{5}
-\]</span> et <span class="math display">\[\mathbf P(g^\star(X)\neq Y|X&gt; 0)=\mathbf P(Y\neq 1|X&gt; 0)=\frac{1}{10}.\]</span> On obtient <span class="math display">\[L^\star=\frac{1}{5}\,\frac{1}{2}+\frac{1}{10}\,\frac{1}{2}=\frac{3}{20}.\]</span></li>
+\]</span> et <span class="math display">\[%
+\mathbf P(g^\star(X)\neq Y|X&gt; 0)=\mathbf P(Y\neq 1|X&gt; 0)=\frac{1}{10}.
+\]</span> On obtient <span class="math display">\[%L^\star=\frac{1}{5}\,\frac{1}{2}+\frac{1}{10}\,\frac{1}{2}=\frac{3}{20}.\]</span></li>
 </ol>
 </div>
 <div id="exr-14-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Fonctions R) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 3 (Fonctions R)</strong></span> &nbsp;</p>
 </div>
 <div id="exr-14-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 (Score aléatoire) </strong></span>Il suffit d’utiliser l’indépendance entre <span class="math inline">\(S(X)\)</span> et <span class="math inline">\(Y\)</span> : <span class="math display">\[
+<p><span class="theorem-title"><strong>Exercice 4 (Score aléatoire)</strong></span> Il suffit d’utiliser l’indépendance entre <span class="math inline">\(S(X)\)</span> et <span class="math inline">\(Y\)</span> : <span class="math display">\[
 \begin{aligned}
-x(s)= &amp; \mathbf P(S(X)&gt; s|Y=-1)=\mathbf P(S(X)&gt; s)=\mathbf P(S(X)\geq s) \\
+x(s)= &amp; \mathbf P(S(X)&gt; s|Y=0)=\mathbf P(S(X)&gt; s)=\mathbf P(S(X)\geq s) \\
 =&amp; \mathbf P(S(X)\geq s|Y=1)=y(s),
 \end{aligned}
 \]</span></p>
 </div>
 <div id="exr-14-5" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 5 (Score parfait et courbe ROC) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 5 (Score parfait et courbe ROC)</strong></span> Nous prendrons un score variant entre <span class="math inline">\(-\infty\)</span> et <span class="math inline">\(+\infty\)</span>. Si le score est issu d’une probabilité il variera entre <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span> et il suffira de remplacer <span class="math inline">\(-\infty\)</span> par 0 et <span class="math inline">\(+\infty\)</span> par 1 dans le calculs qui suivent. Le score est parfait et nous avons donc un seuil <span class="math inline">\(s^\star\)</span> tel que - si <span class="math inline">\(S(x)\leq s^\star\)</span> nous avons forcément <span class="math inline">\(Y=0\)</span> et réciproquement. Autrement dit <span class="math inline">\(\mathbf P(Y=0|S(x)\leq s^\star)=1\)</span> et <span class="math inline">\(\mathbf P(S(X)\leq s^\star|Y=0)=1\)</span> - et aussi dans l’autre sens si <span class="math inline">\(S(x)&gt; s^\star\)</span> nous avons forcément <span class="math inline">\(Y=1\)</span> et réciproquement. Autrement dit <span class="math inline">\(\mathbf P(Y=1|S(x)&gt; s^\star)=1\)</span> et <span class="math inline">\(\mathbf P(S(X)&gt; s^\star|Y=1)=1\)</span>.</p>
+<ol type="1">
+<li><p>Analysons la courbe paramétrée en ce point: <span class="math inline">\(s^\star\)</span>. On a ici pour l’abscisse <span class="math display">\[%
+\begin{align*}
+x(s^\star)= &amp; \mathbf P(S(X)&gt; s^\star|Y=0) \\
+=&amp;1 - \mathbf P(S(X)\geq s^\star | Y=0)\\
+=&amp; 1-1 =0.
+\end{align*}
+\]</span></p>
+<p>Calculons l’ordonnée: <span class="math display">\[%
+\begin{aligned}
+y(s^\star)=&amp;\mathbf P(S(X)\geq s^\star|Y=1)= 1-\mathbf P(S(X)\leq s^\star|Y=1) \\
+=&amp;1- \frac{\mathbf P(S(X)\leq s^\star\cap Y=1)}{\mathbf P(Y=1)}\\
+=&amp;1- \frac{\mathbf P(Y=1| S(X)\leq s^\star)\mathbf P(S(X)\leq s^\star) }{\mathbf P(Y=1)} \\
+=&amp;1- \frac{(1-\mathbf P(Y=0| S(X)\leq s^\star))\mathbf P(S(X)\leq s^\star) }{\mathbf P(Y=1)} \\
+=&amp;1 -0=1
+\end{aligned}
+\]</span> puisque <span class="math inline">\(\mathbf P(Y=0| S(X)\leq s^\star)=1.\)</span></p>
+<p>Conlusion: en <span class="math inline">\(s^\star\)</span> la courbe est au point <span class="math inline">\(M=(1,0)\)</span>.</p></li>
+<li><p>Plaçons nous en une valeur <span class="math inline">\(s&gt;s^\star.\)</span> Puisque <span class="math inline">\(s&gt;s^\star\)</span> nous avons forcément que que quand <span class="math inline">\(S(X)&gt;s\)</span> on a <span class="math inline">\(Y=1\)</span> et donc <span class="math inline">\(\mathbf P(Y=1| S(X)&gt; s)=0.\)</span> <span class="math display">\[%
+\begin{aligned}
+x(s)= &amp; \mathbf P(S(X)&gt; s|Y=0) \\
+=&amp;\frac{\mathbf P(S(X)&gt; s\cap Y=0)}{\mathbf P(Y=0)}\\
+=&amp; \frac{\mathbf P(Y=0| S(X)&gt; s)\mathbf P(S(X)&gt; s) }{\mathbf P(Y=0)} \\
+=&amp; \frac{(1-\mathbf P(Y=1| S(X)&gt; s))\mathbf P(S(X)&gt; s) }{\mathbf P(Y=0)}=0
+\end{aligned}
+\]</span> Pour l’ordonnée nous avons que <span class="math display">\[%
+\begin{aligned}
+y(s)=&amp;\mathbf P(S(X)\geq s|Y=1)= 1-\mathbf P(S(X)\leq s|Y=1)
+\end{aligned}
+\]</span> Comme <span class="math inline">\(prob(S(X)\leq s|Y=1)\)</span> est une fonction de répartition nous avens donc que <span class="math inline">\(\lim_{s\rightarrow+\infty}prob(S(X)\leq s|Y=1)=1\)</span> et donc que <span class="math display">\[%
+\begin{aligned}
+\lim_{s\rightarrow+\infty}y(s)=&amp;0
+\end{aligned}
+\]</span> Conclusion: pour <span class="math inline">\(s\geq s^\star\)</span> l’abscisse vaut toujours 0 et l’ordonnée tend vers 0. Donc quand <span class="math inline">\(s\in[s^\star, +\infty[\)</span> le point <span class="math inline">\((x(s),y(s))\)</span> parcourt le segment <span class="math inline">\([O,M]\)</span>.</p></li>
+<li><p>Plaçons nous dans le cas où <span class="math inline">\(s&lt;s^\star\)</span>. Dans ce cas nous avons que l’évènement <span class="math inline">\(\{S(X)\geq s^\star|Y=1\} \subset\{S(X)\geq s|Y=1\}\)</span> et donc <span class="math display">\[%
+\begin{aligned}
+y(s)=&amp;\mathbf P(S(X)\geq s|Y=1)\geq  \mathbf P(S(X)\geq s^\star|Y=1)=1
+\end{aligned}
+\]</span> De plus nous avons que <span class="math display">\[%
+\begin{aligned}
+x(s)=&amp;\mathbf P(S(X)&gt; s|Y=0)= 1-\mathbf P(S(X)\leq s|Y=0)
+\end{aligned}
+\]</span></p>
+<p>Comme <span class="math inline">\(prob(S(X)\leq s|Y=0)\)</span> est une fonction de répartition nous avens donc que <span class="math inline">\(\lim_{s\rightarrow-\infty}prob(S(X)\leq s|Y=0)=0\)</span> et donc que <span class="math display">\[%
+\begin{aligned}
+\lim_{s\rightarrow-\infty}x(s)=&amp;1
+\end{aligned}
+\]</span> Conclusion: pour <span class="math inline">\(s\leq s^\star\)</span> l’ordonnée vaut toujours 1 et l’absicsse tend vers 0. Donc quand <span class="math inline">\(s\in]- \infty , s^\star]\)</span> le point <span class="math inline">\((x(s),y(s))\)</span> parcourt le segment <span class="math inline">\([M, (1,1)]\)</span>.</p></li>
+</ol>
 </div>
 <div id="exr-14-6" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 6 (Score parfait et courbe lift) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 6 (Score parfait et courbe lift)</strong></span> Nous prendrons un score variant entre <span class="math inline">\(-\infty\)</span> et <span class="math inline">\(+\infty\)</span>. Si le score est issu d’une probabilité il variera entre <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span> et il suffira de remplacer <span class="math inline">\(-\infty\)</span> par 0 et <span class="math inline">\(+\infty\)</span> par 1 dans le calculs qui suivent. Le score est parfait et nous avons donc un seuil <span class="math inline">\(s^\star\)</span> tel que - si <span class="math inline">\(S(x)\leq s^\star\)</span> nous avons forcément <span class="math inline">\(Y=0\)</span> ou autrement dit <span class="math inline">\(\mathbf P(Y=0|S(x)\leq s^\star)=1\)</span>; - et aussi dans l’autre sens si <span class="math inline">\(S(x)&gt; s^\star\)</span> nous avons forcément <span class="math inline">\(Y=1\)</span> ou autrement dit <span class="math inline">\(\mathbf P(Y=1|S(x)&gt; s^\star)=1\)</span>.</p>
+<ol type="1">
+<li><p>Analysons la courbe paramétrée en ce point: <span class="math inline">\(s^\star\)</span>. On a ici pour l’abscisse <span class="math display">\[%
+\begin{align*}
+x(s^\star)= &amp; \mathbf P(S(X)&gt; s^\star) = \mathbf P(S(X)&gt; s^\star \cap Y=0) +  \mathbf P(S(X)&gt; s^\star \cap    Y=1)\\
+= &amp; \mathbf P(S(X)&gt; s^\star | Y=0)\mathbf P(Y=0) + \mathbf P(S(X)&gt; s^\star | Y=1)\mathbf P(Y=1)
+\end{align*}
+\]</span> Comme le score est parfait nous avons que <span class="math inline">\(\mathbf P(S(X)&gt; s^\star | Y=0)=0\)</span> et <span class="math inline">\(\mathbf P(S(X)&gt; s^\star | Y=1)=1\)</span> d’où la conclusion <span class="math display">\[%
+\begin{aligned}
+x(s^\star)= \mathbf P(Y=1)
+\end{aligned}
+\]</span></p>
+<p>Calculons maintenant l’ordonnée: <span class="math display">\[%
+\begin{aligned}
+y(s^\star)=&amp;\mathbf P(S(X)\geq s^\star |Y=1)=1
+\end{aligned}
+\]</span> puisque le score est parfait.$</p>
+<p>Conlusion: en <span class="math inline">\(s^\star\)</span> la courbe est au point <span class="math inline">\(M=(\mathbf P(Y=1),1)\)</span>.</p></li>
+<li><p>Plaçons nous en un point <span class="math inline">\(s\geq s^\star\)</span>. L’abscisse vaut <span class="math display">\[%
+\begin{aligned}
+x(s)= &amp; \mathbf P(S(X)&gt; s)
+\end{aligned}
+\]</span> et l’ordonnée <span class="math display">\[%
+\begin{aligned}
+y(s)=&amp;\mathbf P(S(X)\geq s |Y=1) = \frac{\mathbf P(S(X)\geq s \cap Y=1)}{\mathbf P(Y=1)}
+\end{aligned}
+\]</span> Comme le score est parfait nous avons en <span class="math inline">\(s\geq s^\star\)</span> <span class="math display">\[%
+\begin{aligned}
+\mathbf P( Y=1|S(X)\geq s) &amp;= 1\\
+\mathbf P( Y=0|S(X)\geq s) &amp;= 0\\
+\frac{\mathbf P(S(X)\geq s \cap Y=0)}{\mathbf P(S(X)\geq s )}&amp;=0\\
+\mathbf P(S(X)\geq s \cap Y=0)&amp;=0
+\end{aligned}
+\]</span> nous pouvons donc ajouter <span class="math inline">\(\mathbf P(S(X)\geq s \cap Y=0)\)</span> et obtenir <span class="math display">\[%
+\begin{aligned}
+y(s)=&amp; \frac{\mathbf P(S(X)\geq s \cap Y=1) + \mathbf P(S(X)\geq s \cap Y=0)}{\mathbf P(Y=1)}= \frac{\mathbf P(S(X)\geq s)}{\mathbf P(Y=1)}\\
+&amp;=\frac{x(s)}{\mathbf P(Y=1)}
+\end{aligned}
+\]</span> On en déduit donc que le coefficient directeur de la droite est <span class="math inline">\(1/\mathbf P(Y=1)\)</span> et qu’elle passe par le point <span class="math inline">\((x(s^\star), y(s^\star))\)</span>. Trouvons maintenant le point quand <span class="math inline">\(s\rightarrow+\infty\)</span>. Nous savons que <span class="math inline">\(x(s)=\mathbf P(S(X)&gt; s)=1-\mathbf P(S(X)\geq s)\)</span> et que <span class="math inline">\(prob(S(X)\geq s)\)</span> est une fonction de répartition, nous avons donc que <span class="math inline">\(\mathbf P(S(X)\geq s)\rightarrow+1\)</span> et donc que <span class="math inline">\(x(s)\rightarrow 0\)</span>. Comme <span class="math inline">\(y(s)=x(s)/\mathbf P(Y=1)\)</span> on en déduit que <span class="math inline">\(y(s)\rightarrow 0\)</span>. Conlusion: entre <span class="math inline">\(s^\star\)</span> et <span class="math inline">\(+\infty\)</span> le point <span class="math inline">\((x(s), y(s))\)</span> parcours le segment <span class="math inline">\((x(s^\star), y(s^\star))\)</span> <span class="math inline">\((0,0)\)</span>.</p>
+<ol start="3" type="1">
+<li>Quand <span class="math inline">\(s= s^\star\)</span> le score parfait on a <span class="math display">\[%
+\begin{aligned}
+y(s^\star)=&amp;\mathbf P(S(X)\geq s^\star |Y=1)=1
+\end{aligned}
+\]</span> Si nous avons <span class="math inline">\(s\leq s^\star\)</span> l’évènement le score est plus grand que <span class="math inline">\(s\)</span> contient forcément l’évènement le score est plus grand que <span class="math inline">\(s^\star\)</span> et donc en en déduit que <span class="math display">\[%
+\begin{aligned}
+y(s)=&amp;\mathbf P(S(X)\geq s|Y=1)\geq \mathbf P(S(X)\geq s^\star|Y=1)=1
+\end{aligned}
+\]</span> Donc puisqu’il s’agit d’une probabilité nous avons <span class="math inline">\(y(s)=1 \ \forall s\leq s^\star\)</span>. Par ailleurs l’abscisse est par définition <span class="math display">\[%
+\begin{aligned}
+x(s)= &amp; \mathbf P(S(X)&gt; s) = 1 - \mathbf P(S(X)\leq s)
+\end{aligned}
+\]</span> et quand <span class="math inline">\(s\rightarrow-\infty\)</span> la fonction de répartition tend vers 0 et donc <span class="math inline">\(x(s)\rightarrow 1\)</span></li>
+</ol></li>
+</ol>
 </div>
 <div id="exr-14-7" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 7 (Calculs de scores avec R) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 7 (Calculs de scores avec R)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>On propose d’utiliser la version empirique de <span class="math display">\[
 AUC(S)=\mathbf P(S(X_1)\geq S(X_2)|(Y_1,Y_2)=(1,-1)),
@@ -640,7 +793,231 @@ Area under the curve: 0.7386</code></pre>
 </ol>
 </div>
 <div id="exr-14-8" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 8 (Validation croisée) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 8 (Validation croisée)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><p>Importons les données de détection d’images publicitaires sur internet</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pub <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ad_data.txt"</span>, <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">","</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">dec =</span> <span class="st">"."</span>, <span class="at">na.strings =</span> <span class="st">"?"</span>, <span class="at">strip.white =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pub)[<span class="fu">ncol</span>(pub)] <span class="ot">&lt;-</span> <span class="st">"Y"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pub<span class="sc">$</span>Y)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   ad. nonad. 
+   459   2820 </code></pre>
+</div>
+</div>
+<p>Créons un facteur pour la variable à expliquer en gérant l’ordre des facteurs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pub<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">factor</span>(pub<span class="sc">$</span>Y, <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"1"</span>,<span class="st">"0"</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>pub<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">relevel</span>(pub<span class="sc">$</span>Y, <span class="st">"0"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>pub <span class="ot">&lt;-</span> pub[,<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pub<span class="sc">$</span>Y)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   0    1 
+2820  459 </code></pre>
+</div>
+</div>
+<p>Construisons nos blocs.</p>
+<ul>
+<li>On crée une variable discrète <code>bloc</code> qui donnera les appartenances au bloc (donc des valeurs entre 1 et 10)</li>
+<li>Pour chaque niveau de <span class="math inline">\(Y\)</span>, on crée une variable d’appartenance au bloc valant 1, 2, …, 10, 1, 2, …, 10, 1…. Il y a donc par construction autant (ou un de moins) de 1 que de 2, …, que de 10 pour chaque niveau de <span class="math inline">\(Y\)</span>. L’appartenance au bloc étant séquentielle ce n’est pas trop souhaitable</li>
+<li>On permute aléatoirement cette variable pour chaque niveau et on affecte ces valeurs aux coordonnées de chaque niveau de <span class="math inline">\(Y\)</span></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ind0 <span class="ot">&lt;-</span> <span class="fu">which</span>(pub<span class="sc">$</span>Y<span class="sc">==</span><span class="dv">0</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ind1 <span class="ot">&lt;-</span> <span class="fu">which</span>(pub<span class="sc">$</span>Y<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>nbbloc <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>bloc <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(pub)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>bloc[ind0] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nbbloc, <span class="at">length =</span> <span class="fu">length</span>(ind0)))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>bloc[ind1] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nbbloc, <span class="at">length =</span> <span class="fu">length</span>(ind1)))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>Probabilité estimée d’une publicité Nous ajustons/estimons chaque modèle sur tous les blocs sauf le <span class="math inline">\(i^e\)</span> et nous calculons les probabilités estimées du label 1 sur le bloc <span class="math inline">\(i\)</span>. Ceci est fait pour tous les blocs. Nous rangeons les probabilités estimées dans l’objet <code>SCORE</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>nomsmodeles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"glmchoix"</span>, <span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"ridge"</span>, <span class="st">"lasso"</span>, <span class="st">"elast"</span>), <span class="dv">3</span>), <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">""</span>, <span class="st">"C"</span>, <span class="st">"A"</span>), <span class="at">each=</span><span class="dv">3</span>)))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="do">## resultats des modeles + Y a prevoir</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>SCORE <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">length</span>(bloc), <span class="fu">length</span>(nomsmodeles)<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(SCORE) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Y"</span>,  nomsmodeles)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="do">## premiere colonne la var Y a prevoir</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>SCORE<span class="sc">$</span>Y <span class="ot">&lt;-</span> pub<span class="sc">$</span>Y</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co"># si on veut voir les variables choisies</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="do">## VC 10 fold</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nbbloc){</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  pubA <span class="ot">&lt;-</span> pub[bloc<span class="sc">!=</span>i,]</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  pubT <span class="ot">&lt;-</span> pub[bloc<span class="sc">==</span>i,]</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Logistique global</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  reglog <span class="ot">&lt;-</span> <span class="fu">glm</span>(Y<span class="sc">~</span>.,<span class="at">data=</span>pubA,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"glm"</span>] <span class="ot">&lt;-</span> <span class="fu">predict</span>(reglog,pubT,<span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Logistique choix </span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  reg1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Y<span class="sc">~</span><span class="dv">1</span>,<span class="at">data=</span>pubA,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  choix <span class="ot">&lt;-</span> <span class="fu">step</span>(reg1,<span class="at">scope=</span><span class="fu">list</span>(<span class="at">lower=</span><span class="fu">formula</span>(reg1),<span class="at">upper=</span><span class="fu">formula</span>(reglog)),<span class="at">trace=</span><span class="dv">0</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  models[[i]] <span class="ot">&lt;-</span> <span class="fu">formula</span>(choix)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"glmchoix"</span>] <span class="ot">&lt;-</span> <span class="fu">predict</span>(choix,pubT,<span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="do">##</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  XA <span class="ot">&lt;-</span> pub.X[bloc<span class="sc">!=</span>i,]</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  YA <span class="ot">&lt;-</span> pub.Y[bloc<span class="sc">!=</span>i]</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  XT <span class="ot">&lt;-</span> pub.X[bloc<span class="sc">==</span>i,]</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ridge</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"ridge"</span>] <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="do">##  lasso</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"lasso"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  <span class="do">##  elast</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span>.<span class="dv">5</span>,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"elast"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))  </span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ridge  CV class</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"class"</span>)</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"ridgeC"</span>] <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>  <span class="do">## lasso CV class</span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"class"</span>)</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"lassoC"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))  </span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>  <span class="do">## elast CV class</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span>.<span class="dv">5</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"class"</span>)</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"elastC"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ridge  CV AUC</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"auc"</span>)</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"ridgeA"</span>] <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  <span class="do">## lasso CV AUC</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"auc"</span>)</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"lassoA"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>  <span class="do">## elast CV AUC</span></span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span>.<span class="dv">5</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"auc"</span>)</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"elastA"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(SCORE,<span class="st">"../data_aux/scorepubm4_1VC.RDS"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>On calcule la courbe ROC On peut utiliser <code>pROC</code> et créer l’objet de classe <code>roc</code> puis sur cet objet calculer l’AUC pour chaque modèle:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>SCORE <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../data_aux/scorepubm4_1VC.RDS"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>rocCV <span class="ot">&lt;-</span> <span class="fu">roc</span>(Y<span class="sc">~</span>.,<span class="at">data=</span>SCORE)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(<span class="fu">round</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(rocCV, auc)), <span class="dv">3</span>), <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> ridge ridgeC ridgeA elastA lassoA elastC 
+ 0.982  0.982  0.963  0.963  0.961  0.959 </code></pre>
+</div>
+</div></li>
+<li><p>Pour aller plus loin on peut répéter la même procédure 20 fois (en parallèle)</p>
+<ul>
+<li>données et cluster</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">library</span>(glmnet)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">library</span>(doParallel)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a> pub <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"ad_data.txt"</span>,<span class="at">header=</span><span class="cn">FALSE</span>,<span class="at">sep=</span><span class="st">","</span>,<span class="at">dec=</span><span class="st">"."</span>,<span class="at">na.strings =</span> <span class="st">"?"</span>,<span class="at">strip.white =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">names</span>(pub)[<span class="fu">ncol</span>(pub)] <span class="ot">&lt;-</span> <span class="st">"Y"</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a> pub<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">factor</span>(pub<span class="sc">$</span>Y,<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"1"</span>,<span class="st">"0"</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a> pub<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">relevel</span>(pub<span class="sc">$</span>Y,<span class="st">"0"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a> pub <span class="ot">&lt;-</span> pub[,<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a> ind0 <span class="ot">&lt;-</span> <span class="fu">which</span>(pub<span class="sc">$</span>Y<span class="sc">==</span><span class="dv">0</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a> ind1 <span class="ot">&lt;-</span> <span class="fu">which</span>(pub<span class="sc">$</span>Y<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a> <span class="do">##les 0 sont au début les 1 à la fin</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a> <span class="do">##</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a> bloc <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">nrow</span>(pub))</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a> pub.X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(Y<span class="sc">~</span>.,<span class="at">data=</span>pub)[,<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a> pub.Y <span class="ot">&lt;-</span> pub[,<span class="st">"Y"</span>]</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a> niter <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a> coredispo <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">detectCores</span>()<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a> cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(<span class="fu">min</span>(coredispo,niter))</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a> <span class="fu">clusterSetRNGStream</span>(cl,<span class="at">iseed=</span><span class="dv">78</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a> <span class="fu">registerDoParallel</span>(cl) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ol>
+<ul>
+<li><p>boucle Attention, c’est «un peu» long (sur une machine avec plus de 20 coeurs, il faut 1-2 jours)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">j=</span><span class="dv">1</span><span class="sc">:</span>niter) <span class="sc">%dopar%</span> {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>nomsmodeles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"glmchoix"</span>, <span class="fu">paste0</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"ridge"</span>, <span class="st">"lasso"</span>, <span class="st">"elast"</span>), <span class="dv">3</span>), <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">""</span>, <span class="st">"C"</span>, <span class="st">"A"</span>), <span class="at">each=</span><span class="dv">3</span>)))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="do">## resultats des modeles + Y a prevoir</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>SCORE <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">length</span>(bloc), <span class="fu">length</span>(nomsmodeles)<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(SCORE) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Y"</span>,  nomsmodeles)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="do">## premiere colonne la var Y a prevoir</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>SCORE <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Y=</span>pub<span class="sc">$</span>Y)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>nbbloc <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span><span class="sc">+</span>j)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>bloc[ind0] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nbbloc, <span class="at">length =</span> <span class="fu">length</span>(ind0)))</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>bloc[ind1] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nbbloc, <span class="at">length =</span> <span class="fu">length</span>(ind1)))</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nbbloc){</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  pubA <span class="ot">&lt;-</span> pub[bloc<span class="sc">!=</span>i,]</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  pubT <span class="ot">&lt;-</span> pub[bloc<span class="sc">==</span>i,]</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Logistique global</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  reglog <span class="ot">&lt;-</span> <span class="fu">glm</span>(Y<span class="sc">~</span>.,<span class="at">data=</span>pubA,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"glm"</span>] <span class="ot">&lt;-</span> <span class="fu">predict</span>(reglog,pubT,<span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Logistique choix </span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  reg1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Y<span class="sc">~</span><span class="dv">1</span>,<span class="at">data=</span>pubA,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  choix <span class="ot">&lt;-</span> <span class="fu">step</span>(reg1,<span class="at">scope=</span><span class="fu">list</span>(<span class="at">lower=</span><span class="fu">formula</span>(reg1),<span class="at">upper=</span><span class="fu">formula</span>(reglog)),<span class="at">trace=</span><span class="dv">0</span>)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"glmchoix"</span>] <span class="ot">&lt;-</span> <span class="fu">predict</span>(choix,pubT,<span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="do">##</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  XA <span class="ot">&lt;-</span> pub.X[bloc<span class="sc">!=</span>i,]</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  YA <span class="ot">&lt;-</span> pub.Y[bloc<span class="sc">!=</span>i]</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  XT <span class="ot">&lt;-</span> pub.X[bloc<span class="sc">==</span>i,]</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ridge</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"ridge"</span>] <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  <span class="do">##  lasso</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"lasso"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  <span class="do">##  elast</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span>.<span class="dv">5</span>,<span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"elast"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))  </span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ridge  CV class</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"class"</span>)</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"ridgeC"</span>] <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  <span class="do">## lasso CV class</span></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"class"</span>)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"lassoC"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))  </span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>  <span class="do">## elast CV class</span></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span>.<span class="dv">5</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"class"</span>)</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"elastC"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod,XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ridge  CV AUC</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"auc"</span>)</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"ridgeA"</span>] <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>  <span class="do">## lasso CV AUC</span></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"auc"</span>)</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"lassoA"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  <span class="do">## elast CV AUC</span></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(XA,YA,<span class="at">alpha=</span>.<span class="dv">5</span>,<span class="at">family=</span><span class="st">"binomial"</span>,<span class="at">type.measure=</span><span class="st">"auc"</span>)</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>  SCORE[bloc<span class="sc">==</span>i,<span class="st">"elastA"</span>] <span class="ot">&lt;-</span>  <span class="fu">as.vector</span>(<span class="fu">predict</span>(mod, XT, <span class="st">"lambda.1se"</span>, <span class="at">type=</span><span class="st">"response"</span>))</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write</span>(<span class="fu">paste</span>(<span class="st">"rep."</span>,j,<span class="st">"bloc"</span>,j),<span class="at">file=</span><span class="st">"progress.txt"</span>,<span class="at">append=</span><span class="cn">TRUE</span>)</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>SCORE</span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(res,<span class="st">"../data_aux/scorepubm4_20VC.RDS"</span>)</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>analyse résultats</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ffroc  <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">roc</span>(Y<span class="sc">~</span>., <span class="at">data=</span>x)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>ttm4_20 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(scorepubm4_20VC, ffroc)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>ffauc  <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">unlist</span>(<span class="fu">lapply</span>(x, auc))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>aucm4_20 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(ttm4_20, ffauc))</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sort</span>(<span class="fu">apply</span>(aucm4_20,<span class="dv">2</span>,mean), <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    ridge    ridgeC    elastA    ridgeA    lassoA     elast 
+0.9800319 0.9792532 0.9631016 0.9626010 0.9590724 0.9537869 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nom <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">apply</span>(aucm4_20,<span class="dv">2</span>,mean), <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="do">## boxplot</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(aucm4_20[,<span class="sc">-</span><span class="dv">1</span>][,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">9</span>,<span class="dv">4</span>,<span class="dv">7</span>,<span class="dv">10</span>)])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chap14_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## export </span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(aucm4_20[,<span class="sc">-</span><span class="dv">1</span>][,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">8</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">9</span>,<span class="dv">4</span>,<span class="dv">7</span>,<span class="dv">10</span>)])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul>
 </div>
 
 
@@ -681,18 +1058,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -724,11 +1090,55 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -738,8 +1148,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -751,7 +1170,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -795,6 +1337,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -820,6 +1363,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -877,35 +1446,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="../correction/chap13.html" class="pagination-link">
+      <a href="../correction/chap13.html" class="pagination-link" aria-label="13 Régularisation de la vraisemblance">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">13 Régularisation de la vraisemblance</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../correction/chap15.html" class="pagination-link">
+      <a href="../correction/chap15.html" class="pagination-link" aria-label="15 Données déséquilibrées">
         <span class="nav-page-text">15 Données déséquilibrées</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

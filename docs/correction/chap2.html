@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Régression avec R - 2 La régression linéaire multiple</title>
+<title>2 La régression linéaire multiple – Régression avec R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -81,7 +81,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -90,13 +96,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
-    "search-submit-button-title": "Envoyer"
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -107,12 +142,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap1.html">I Introduction au modèle linéaire</a></li><li class="breadcrumb-item"><a href="../correction/chap2.html">2 La régression linéaire multiple</a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap1.html">I Introduction au modèle linéaire</a></li><li class="breadcrumb-item"><a href="../correction/chap2.html">2 La régression linéaire multiple</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -122,7 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Régression avec R</a> 
@@ -156,18 +191,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">Codes R</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -194,9 +229,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -217,9 +252,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -252,9 +287,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -293,9 +328,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -318,18 +353,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Correction des exercices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -362,9 +397,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -385,9 +420,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -414,9 +449,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -455,9 +490,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -481,7 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
@@ -489,14 +524,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content column-page-right" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap1.html">I Introduction au modèle linéaire</a></li><li class="breadcrumb-item"><a href="../correction/chap2.html">2 La régression linéaire multiple</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">2 La régression linéaire multiple</h1>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -504,16 +539,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <div class="cell">
 
 </div>
 <div id="exr-2-1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 1 (Question de cours) </strong></span>A, A, B, B, B, C.</p>
+<p><span class="theorem-title"><strong>Exercice 1 (Question de cours)</strong></span> A, A, B, B, B, C.</p>
 </div>
 <div id="exr-2-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Covariance de <span class="math inline">\(\hat\varepsilon\)</span> et <span class="math inline">\(\hat Y\)</span>) </strong></span>Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta}) \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 2 (Covariance de <span class="math inline">\(\hat\varepsilon\)</span> et <span class="math inline">\(\hat Y\)</span>)</strong></span> Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta})  \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
 \mathop{\mathrm{V}}(\tilde{\beta})  = \mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta+\hat \beta)
 =\mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta)+\mathop{\mathrm{V}}(\hat \beta) -
 2 \mathop{\mathrm{Cov}}(\tilde{\beta} - \hat \beta,\hat \beta).
@@ -524,10 +561,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \end{eqnarray*}\]</span></p>
 </div>
 <div id="exr-2-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Théorème de Gauss Markov) </strong></span>Nous devons montrer que, parmi tous les estimateurs linéaires sans biais, l’estimateur de MC est celui qui a la plus petite variance. La linéarité de <span class="math inline">\(\hat \beta\)</span> est évidente. Calculons sa variance : <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 3 (Théorème de Gauss Markov)</strong></span> Nous devons montrer que, parmi tous les estimateurs linéaires sans biais, l’estimateur de MC est celui qui a la plus petite variance. La linéarité de <span class="math inline">\(\hat \beta\)</span> est évidente. Calculons sa variance : <span class="math display">\[\begin{eqnarray*}
 \mathop{\mathrm{V}}(\hat \beta) = \mathop{\mathrm{V}}((X'X)^{-1}X'Y) =
 (X'X)^{-1}X'\mathop{\mathrm{V}}(Y)X(X'X)^{-1}=\sigma^2 (X'X)^{-1}.
-\end{eqnarray*}\]</span> Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta}) \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Nous allons montrer que, pour tout autre estimateur <span class="math inline">\(\tilde{\beta}\)</span> de <span class="math inline">\(\beta\)</span> linéaire et sans biais, <span class="math inline">\(\mathop{\mathrm{V}}(\tilde{\beta})  \geq \mathop{\mathrm{V}}(\hat \beta)\)</span>. Décomposons la variance de <span class="math inline">\(\tilde{\beta}\)</span> <span class="math display">\[\begin{eqnarray*}
 \mathop{\mathrm{V}}(\tilde{\beta})  = \mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta+\hat \beta)
 =\mathop{\mathrm{V}}(\tilde{\beta} - \hat \beta)+\mathop{\mathrm{V}}(\hat \beta) -
 2 \mathop{\mathrm{Cov}}(\tilde{\beta} - \hat \beta,\hat \beta).
@@ -538,19 +575,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \end{eqnarray*}\]</span></p>
 </div>
 <div id="exr-2-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 (Représentation des variables) </strong></span>Nous représentons les données dans <span class="math inline">\(\mathbb R^2\)</span> pour le premier jeu et dans <span class="math inline">\(\mathbb R^3\)</span> pour le second.</p>
+<p><span class="theorem-title"><strong>Exercice 4 (Représentation des variables)</strong></span> Nous représentons les données dans <span class="math inline">\(\mathbb R^2\)</span> pour le premier jeu et dans <span class="math inline">\(\mathbb R^3\)</span> pour le second.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="FIGURES/exo2-4.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<p><img src="FIGURES/exo2-4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
 </figure>
 </div>
-<p>Dans le premier modèle, nous projetons <span class="math inline">\(Y\)</span> sur l’espace engendré par <span class="math inline">\(X\)</span>, soit la droite de vecteur directeur <span class="math inline">\(\overrightarrow{OX}\)</span>. Nous trouvons par le calcul <span class="math inline">\(\hat \beta = 1.47\)</span>, résultat que nous aurions pu trouver graphiquement car <span class="math inline">\(\overrightarrow{O \hat Y}= \hat \beta . \overrightarrow{OX}\)</span>.</p>
+<p>Dans le premier modèle, nous projetons <span class="math inline">\(Y\)</span> sur l’espace engendré par <span class="math inline">\(X\)</span>, soit la droite de vecteur directeur <span class="math inline">\(\overrightarrow{OX}\)</span>. Nous trouvons par le calcul <span class="math inline">\(\hat \beta = 1.47\)</span>, résultat que nous aurions pu trouver graphiquement car <span class="math inline">\(\overrightarrow{O \hat Y}=
+\hat \beta . \overrightarrow{OX}\)</span>.</p>
 <p>Considérons <span class="math inline">\(\mathbb R^3\)</span> muni de la base orthonormée <span class="math inline">\((\vec{i},\vec{j},\vec{k})\)</span>. Les vecteurs <span class="math inline">\(\overrightarrow{OX}\)</span> et <span class="math inline">\(\overrightarrow{OZ}\)</span> engendrent le même plan que celui engendré par <span class="math inline">\((\vec{i},\vec{j})\)</span>. La projection de <span class="math inline">\(Y\)</span> sur ce plan donne <span class="math inline">\(\overrightarrow{O \hat Y}\)</span>. Il est quasiment impossible de trouver <span class="math inline">\(\hat \beta\)</span> et <span class="math inline">\(\hat \gamma\)</span> graphiquement mais nous trouvons par le calcul <span class="math inline">\(\hat \beta = -3.33\)</span> et <span class="math inline">\(\hat \gamma =5\)</span>.</p>
 </div>
 <div id="exr-2-5" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 5 (Modèles emboîtés) </strong></span>Nous obtenons <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 5 (Modèles emboîtés)</strong></span> Nous obtenons <span class="math display">\[\begin{eqnarray*}
 \hat Y_p = X \hat \beta \quad  \hbox{et} \quad \hat Y_q= X_q \hat \gamma.
-\end{eqnarray*}\]</span> Par définition du <span class="math inline">\(\mathbb R2\)</span>, il faut comparer la norme au carré des vecteurs <span class="math inline">\(\hat Y_p\)</span> et <span class="math inline">\(\hat Y_q\)</span>. Notons les espaces engendrés par les colonnes de <span class="math inline">\(X_q\)</span> et <span class="math inline">\(X\)</span>, <span class="math inline">\(\mathcal M_{X_q}\)</span> et <span class="math inline">\(\mathcal M_{X}\)</span>, nous avons <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>. Nous obtenons alors <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Par définition du <span class="math inline">\(\mathbb R2\)</span>, il faut comparer la norme au carré des vecteurs <span class="math inline">\(\hat Y_p\)</span> et <span class="math inline">\(\hat Y_q\)</span>. Notons les espaces engendrés par les colonnes de <span class="math inline">\(X_q\)</span> et <span class="math inline">\(X\)</span>, <span class="math inline">\(\mathcal M_{X_q}\)</span> et <span class="math inline">\(\mathcal M_{X}\)</span>, nous avons <span class="math inline">\(\mathcal M_{X_q} \subset  \mathcal M_{X}\)</span>. Nous obtenons alors <span class="math display">\[\begin{eqnarray*}
 \hat Y_p = P_{X_p}Y
 = (P_{X_q} + P_{X^{\perp}_q})P_{X_p}Y &amp;=&amp; P_{X_q}P_{X_p}Y + P_{X^{\perp}_q}P_{X_p}Y\\
 &amp;=&amp; P_{X_q}Y + P_{X^{\perp}_q \cap X_p} Y\\
@@ -562,10 +600,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \mathbb R2(p)=\frac{\| \hat Y_p \|^2}{\| Y \|^2} \geq
 \frac{\| \hat Y_q \|^2}{\| Y \|^2} =\mathbb R2(q).
 \end{eqnarray*}\]</span></p>
-<p>En conclusion, lorsque les modèles sont emboîtés <span class="math inline">\(\mathcal M_{X_q} \subset \mathcal M_{X}\)</span>, le <span class="math inline">\(\mathbb R2\)</span> du modèle le plus grand (ayant le plus de variables) sera toujours plus grand que le <span class="math inline">\(\mathbb R2\)</span> du modèle le plus petit.</p>
+<p>En conclusion, lorsque les modèles sont emboîtés <span class="math inline">\(\mathcal M_{X_q} \subset  \mathcal M_{X}\)</span>, le <span class="math inline">\(\mathbb R2\)</span> du modèle le plus grand (ayant le plus de variables) sera toujours plus grand que le <span class="math inline">\(\mathbb R2\)</span> du modèle le plus petit.</p>
 </div>
 <div id="exr-2-6" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 6 </strong></span>La matrice <span class="math inline">\(X'X\)</span> est symétrique, <span class="math inline">\(n\)</span> vaut 30 et <span class="math inline">\(\bar x= \bar z=0\)</span>. Le coefficient de corrélation <span class="math display">\[\begin{equation*}
+<p><span class="theorem-title"><strong>Exercice 6</strong></span> La matrice <span class="math inline">\(X'X\)</span> est symétrique, <span class="math inline">\(n\)</span> vaut 30 et <span class="math inline">\(\bar x= \bar z=0\)</span>. Le coefficient de corrélation <span class="math display">\[\begin{equation*}
 \rho_{x,z} = \frac{\sum_{i=1}^{30} (x_i -\bar x)(z_i - \bar z)}
 {\sqrt{\sum_{i=1}^{30} (x_i -\bar x)^2\sum_{i=1}^{30} (z_i - \bar z)^2}}
 =\frac{\sum_{i=1}^{30} x_i z_i}
@@ -583,7 +621,7 @@ y_i &amp;=&amp; -2 +x_i+z_i+\hat \varepsilon_i
 \end{eqnarray*}\]</span></p>
 </div>
 <div id="exr-2-7" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 7 (Changement d’échelle des variables explicatives) </strong></span>Nous avons l’estimation sur le modèle avec les variables originales qui minimise <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Exercice 7 (Changement d’échelle des variables explicatives)</strong></span> Nous avons l’estimation sur le modèle avec les variables originales qui minimise <span class="math display">\[\begin{align*}
 \mathop{\mathrm{MCO}}(\beta)&amp;=\|Y - \sum_{j=1}^{p} X_j \beta_j \|^{2}
 \end{align*}\]</span> Cette solution est notée <span class="math inline">\(\hat \beta\)</span>.</p>
 <p>Nous avons l’estimation sur le modèle avec les variables prémultipliées par <span class="math inline">\(a_{j}\)</span> (changement d’échelle) qui minimise</p>
@@ -596,7 +634,7 @@ y_i &amp;=&amp; -2 +x_i+z_i+\hat \varepsilon_i
 <p>en posant en dernière ligne <span class="math inline">\(\gamma_{j}=a_{j} \beta_j\)</span>. La solution de de <span class="math inline">\(\mathop{\mathrm{MCO}}(\gamma)\)</span> (ou encore <span class="math inline">\(\mathop{\mathrm{MCO}}(\beta)\)</span>) est <span class="math inline">\(\hat \beta\)</span>. La solution de <span class="math inline">\(\tilde{\mathop{\mathrm{MCO}}}(\beta)\)</span> est alors donnée par <span class="math inline">\(\hat \beta_{j}=a_{j} \tilde \beta_j\)</span>.</p>
 </div>
 <div id="exr-2-8" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 8 (Différence entre régression multiple et régressions simples) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 8 (Différence entre régression multiple et régressions simples)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Calculons l’estimateur des MCO noté traditionnellement <span class="math inline">\((X'X)^{-1}X'Y\)</span> avec la matrice <span class="math inline">\(X\)</span> qui possède ici deux colonnes (notées ici <span class="math inline">\(X\)</span> et <span class="math inline">\(Z\)</span>) et <span class="math inline">\(n\)</span> lignes. On a donc <span class="math display">\[\begin{align*}
   (X'X)&amp;=
@@ -631,7 +669,7 @@ y_i &amp;=&amp; -2 +x_i+z_i+\hat \varepsilon_i
 </ol>
 </div>
 <div id="exr-2-9" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 9 (TP : différence entre régression multiple et régressions simples) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 9 (TP : différence entre régression multiple et régressions simples)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Simulons 2 variables explicatives avec GNU-R pour <span class="math inline">\(n=100\)</span> individus selon selon deux loi uniforme <span class="math inline">\([0,1]\)</span> :</p>
 <div class="cell">
@@ -836,7 +874,7 @@ Coefficients:
 </ol>
 </div>
 <div id="exr-2-10" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 10 (TP : régression multiple et code R) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 10 (TP : régression multiple et code R)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone_complet.txt"</span>,<span class="at">sep=</span><span class="st">";"</span>,<span class="at">header=</span><span class="cn">TRUE</span>)</span>
@@ -876,14 +914,14 @@ Coefficients:
 </ol>
 </div>
 <div id="exr-2-11" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 11 (Régression orthogonale) </strong></span>Les vecteurs étant orthogonaux, nous avons <span class="math inline">\(\mathcal M_X = \mathcal M_U \stackrel{\perp}{\oplus} \mathcal M_V\)</span>. Nous pouvons alors écrire <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 11 (Régression orthogonale)</strong></span> Les vecteurs étant orthogonaux, nous avons <span class="math inline">\(\mathcal M_X = \mathcal M_U \stackrel{\perp}{\oplus} \mathcal M_V\)</span>. Nous pouvons alors écrire <span class="math display">\[\begin{eqnarray*}
 \hat Y_X = P_X Y &amp;=&amp; (P_U + P_{U^{\perp}})P_X Y \\
 &amp;=&amp; P_U P_X Y + P_{U^{\perp}}P_X Y =  P_U Y + P_{U^{\perp}\cap X} Y \\
 &amp;=&amp; \hat Y_U + \hat Y_V.
 \end{eqnarray*}\]</span> La suite de l’exercice est identique. En conclusion, effectuer une régression multiple sur des variables orthogonales revient à effectuer <span class="math inline">\(p\)</span> régressions simples.</p>
 </div>
 <div id="exr-2-12" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 12 (Centrage, centrage-réduction et coefficient constant) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 12 (Centrage, centrage-réduction et coefficient constant)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Comme la dernière colonne de <span class="math inline">\(X\)</span>, notée <span class="math inline">\(X_p\)</span> vaut <span class="math inline">\(\mathbf{1}_n\)</span> sa moyenne empirique vaut <span class="math inline">\(1\)</span> et la variable centrée issue de <span class="math inline">\(X_p\)</span> est donc <span class="math inline">\(X_p -1\times\mathbf{1}_n=\boldsymbol{0}_n\)</span>.</p></li>
 <li><p>Nous avons le modèle sur variable centrée <span class="math display">\[
@@ -897,7 +935,7 @@ Y&amp;=&amp;\sum_{j=1}^{p-1}{\tilde\beta_j X_j}+ \Bigl(\bar Y -\sum_{j=1}^{p-1}{
 \beta_j&amp;=&amp;\tilde\beta_j,\ \forall j\in\{1,\dotsc,p-1\},\nonumber\\
 \beta_p&amp;=&amp;\bar Y\mathbf{1}_n-\sum_{j=1}^{p-1}{\bar X_j\tilde\beta_j}.
 \end{eqnarray}
-\tag{1}\]</span></span> Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<a href="#eq-coefct">équation&nbsp;1</a>).</p></li>
+\tag{1}\]</span></span> Si l’on utilise des variables centrées dans le modèle de régression, on ne met pas de colonne <span class="math inline">\(\mathbf{1}\)</span> (pas de coefficient constant - <em>intercept</em>). Les coefficients du modèle sur les variables originales sont égaux à ceux sur les variables centrées et le coefficient constant est donné par la formule (<a href="#eq-coefct" class="quarto-xref">équation&nbsp;1</a>).</p></li>
 <li><p>Maintenant les variables explicatives sont centrées et réduites : <span class="math display">\[\begin{eqnarray*}
 \tilde Y&amp;=&amp;\tilde X\tilde \beta+ \varepsilon\\
 Y-\bar Y\mathbf{1}_n&amp;=&amp;\sum_{j=1}^{p-1}{\frac{(X_j -\bar X_j\mathbf{1}_n)}{\hat\sigma_{X_j}}\tilde\beta_j}+\varepsilon\\
@@ -984,7 +1022,7 @@ Y&amp;=&amp;\hat\sigma_Y\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X
  1.0225207  0.1030809 -4.0022782 </code></pre>
 </div>
 </div>
-<p>et que l’intercept est simplement est bien celui donné dans la formule (<a href="#eq-coefct">équation&nbsp;1</a>)</p>
+<p>et que l’intercept est simplement est bien celui donné dans la formule (<a href="#eq-coefct" class="quarto-xref">équation&nbsp;1</a>)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(don<span class="sc">$</span>Y)<span class="sc">-</span> <span class="fu">sum</span>( <span class="fu">coef</span>(modtilde)<span class="sc">*</span><span class="fu">colMeans</span>(X[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1052,7 +1090,7 @@ Y&amp;=&amp;\hat\sigma_Y\sum_{j=1}^{p-1}{\frac{\tilde\beta_j}{\hat\sigma_{X_j}}X
 </ol>
 </div>
 <div id="exr-2-13" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 13 (Moindres carrés contraints) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 13 (Moindres carrés contraints)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>L’estimateur des MC vaut <span class="math display">\[\begin{eqnarray*}
 \hat \beta = (X'X)^{-1}X'Y,
@@ -1103,7 +1141,8 @@ X \hat \beta - X \hat \beta_0 &amp;=&amp; X (X'X)^{-1} R' [R(X'X)^{-1}R']^{-1}R(
 &amp;=&amp; X (X'X)^{-1} R [R(X'X)^{-1}R']^{-1}R \hat \beta.
 \end{eqnarray*}\]</span> Cela donne <span class="math display">\[\begin{eqnarray*}
 \hat \beta_0 = \hat \beta - (X'X)^{-1} R [R(X'X)^{-1}R']^{-1}R \hat \beta.
-\end{eqnarray*}\]</span> Si maintenant <span class="math inline">\(r\neq 0\)</span>, nous avons alors un sous-espace affine défini par <span class="math inline">\(\{\beta\in \mathbb R^p : R\beta=r\}\)</span> dans lequel nous cherchons une solution qui minimise les moindres carrés. Un sous-espace affine peut être défini de manière équivalente par un point particulier <span class="math inline">\(\beta_p \in \mathbb R^p\)</span> tel que <span class="math inline">\(R\beta_p=r\)</span> et le sous-espace vectoriel associé <span class="math inline">\(\mathcal M_0^v=\{\beta\in \mathbb R^p : R\beta=0\}\)</span>. Les points du sous-espace affine sont alors <span class="math inline">\(\{\beta_0 \in \mathbb R^p : \beta_0=\beta_p+\beta_0^v, \beta_0^v \in \mathcal M_0^v \quad et \quad \beta_p : R\beta_p=r\}\)</span>. La solution qui minimise les moindres carrés, notée <span class="math inline">\(\hat \beta_0\)</span>, est élément de ce sous-espace affine et est définie par <span class="math inline">\(\hat \beta_0=\beta_p+\hat \beta_0^v\)</span> où <span class="math display">\[\begin{eqnarray*}
+\end{eqnarray*}\]</span> Si maintenant <span class="math inline">\(r\neq 0\)</span>, nous avons alors un sous-espace affine défini par <span class="math inline">\(\{\beta\in \mathbb R^p : R\beta=r\}\)</span> dans lequel nous cherchons une solution qui minimise les moindres carrés. Un sous-espace affine peut être défini de manière équivalente par un point particulier <span class="math inline">\(\beta_p \in \mathbb R^p\)</span> tel que <span class="math inline">\(R\beta_p=r\)</span> et le sous-espace vectoriel associé <span class="math inline">\(\mathcal M_0^v=\{\beta\in \mathbb R^p : R\beta=0\}\)</span>. Les points du sous-espace affine sont alors <span class="math inline">\(\{\beta_0 \in \mathbb R^p : \beta_0=\beta_p+\beta_0^v, \beta_0^v \in \mathcal M_0^v
+\quad et \quad \beta_p : R\beta_p=r\}\)</span>. La solution qui minimise les moindres carrés, notée <span class="math inline">\(\hat \beta_0\)</span>, est élément de ce sous-espace affine et est définie par <span class="math inline">\(\hat \beta_0=\beta_p+\hat \beta_0^v\)</span> où <span class="math display">\[\begin{eqnarray*}
 \hat \beta_0^v = \hat \beta - (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}R\hat \beta.
 \end{eqnarray*}\]</span> Nous savons que <span class="math inline">\(R\beta_p=r\)</span> donc <span class="math display">\[\begin{eqnarray*}
 R\beta_p = [R(X'X)^{-1}R'][R(X'X)^{-1}R']^{-1}r
@@ -1120,7 +1159,7 @@ R\beta_p = [R(X'X)^{-1}R'][R(X'X)^{-1}R']^{-1}r
     \end{align*}\]</span> avec <span class="math inline">\(\mathbf E(\hat \beta)=\beta\)</span> (sous l’hypothèse que <span class="math inline">\(Y\)</span> est généré par le modèle de régression) et<span class="math inline">\(\mathop{\mathrm{V}}(\hat\beta) =\sigma^{2} (X'X)^{-1}\)</span>.</p>
 <p>Pour l’EQM de <span class="math inline">\(\hat \beta_0\)</span> qui vaut selon la formule classique: <span class="math display">\[\begin{align*}
       \mathop{\mathrm{EQM}}&amp;= (\mathbf E(\hat \beta_0) - \beta_0) (\mathbf E(\hat \beta_0) - \beta_0)' + \mathop{\mathrm{V}}(\hat\beta_0)
-    \end{align*}\]</span> calculons d’abord <span class="math inline">\(\mathbf E(\hat \beta_0)\)</span> en utilisant l’équation (<a href="#eq-betacontraint">équation&nbsp;2</a>): <span class="math display">\[\begin{align*}
+    \end{align*}\]</span> calculons d’abord <span class="math inline">\(\mathbf E(\hat \beta_0)\)</span> en utilisant l’équation (<a href="#eq-betacontraint" class="quarto-xref">équation&nbsp;2</a>): <span class="math display">\[\begin{align*}
       \mathbf E(\hat \beta_0)&amp;=\mathbf E(\hat \beta) + \mathbf E[(X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\hat \beta)]\\
       &amp;=\beta + (X'X)^{-1}R'[R(X'X)^{-1}R']^{-1}(r-R\beta)
     \end{align*}\]</span> puisque <span class="math inline">\(\hat \beta\)</span> est sans biais. Si nous supposons que le modèle satisfait la contrainte (<span class="math inline">\(R\beta=r\)</span>) alors là encore le biais est nul.</p>
@@ -1183,18 +1222,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1226,11 +1254,55 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1240,8 +1312,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1253,7 +1334,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1297,6 +1501,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1322,6 +1527,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1379,35 +1610,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="../correction/chap1.html" class="pagination-link">
+      <a href="../correction/chap1.html" class="pagination-link" aria-label="1 La régression linéaire simple">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">1 La régression linéaire simple</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../correction/chap3.html" class="pagination-link">
+      <a href="../correction/chap3.html" class="pagination-link" aria-label="3 Validation du modèle">
         <span class="nav-page-text">3 Validation du modèle</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

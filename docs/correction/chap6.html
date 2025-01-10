@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Régression avec R - 6 Variables qualitatives : ANCOVA et ANOVA</title>
+<title>6 Variables qualitatives : ANCOVA et ANOVA – Régression avec R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -56,13 +62,42 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
-    "search-submit-button-title": "Envoyer"
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -73,12 +108,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../correction/chap6.html">6 Variables qualitatives : ANCOVA et ANOVA</a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../correction/chap6.html">6 Variables qualitatives : ANCOVA et ANOVA</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -88,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Régression avec R</a> 
@@ -122,18 +157,18 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">Codes R</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -160,9 +195,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -183,9 +218,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -218,9 +253,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -259,9 +294,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -284,18 +319,18 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Correction des exercices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
  <span class="menu-text">I Introduction au modèle linéaire</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -328,9 +363,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -351,9 +386,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -380,9 +415,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
  <span class="menu-text">IV Le modèle linéairé généralisé</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -421,9 +456,9 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
  <span class="menu-text">V Introduction à la régression non paramétrique</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -447,7 +482,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
@@ -455,14 +490,14 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content column-page-right" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../correction/chap6.html">6 Variables qualitatives : ANCOVA et ANOVA</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">6 Variables qualitatives : ANCOVA et ANOVA</h1>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -470,16 +505,18 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="cell">
 
 </div>
 <div id="exr-6-1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours) </strong></span>A, A, C, B.</p>
+<p><span class="theorem-title"><strong>Exercice 1 (Questions de cours)</strong></span> A, A, C, B.</p>
 </div>
 <div id="exr-6-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Analyse de la covariance) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 2 (Analyse de la covariance)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Nous avons pour le modèle complet la matrice suivante : <span class="math display">\[
 X=\begin{bmatrix}
@@ -539,7 +576,7 @@ X'Y = \begin{bmatrix}
 </ol>
 </div>
 <div id="exr-6-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Estimateurs des MC et ANOVA à 1 facteur) </strong></span>La preuve de cette proposition est relativement longue et peu difficile. Nous avons toujours <span class="math inline">\(Y\)</span> un vecteur de <span class="math inline">\(\mathbb R^n\)</span> à expliquer. Nous projetons <span class="math inline">\(Y\)</span> sur le sous-espace engendré par les colonnes de <span class="math inline">\(A_c\)</span>, noté <span class="math inline">\(\mathcal M_{A_c}\)</span>, de dimension I, et obtenons un unique <span class="math inline">\(\hat Y\)</span>. Cependant, en fonction des contraintes utilisées, le repère de <span class="math inline">\(\mathcal M_{A_c}\)</span> va changer.</p>
+<p><span class="theorem-title"><strong>Exercice 3 (Estimateurs des MC et ANOVA à 1 facteur)</strong></span> La preuve de cette proposition est relativement longue et peu difficile. Nous avons toujours <span class="math inline">\(Y\)</span> un vecteur de <span class="math inline">\(\mathbb R^n\)</span> à expliquer. Nous projetons <span class="math inline">\(Y\)</span> sur le sous-espace engendré par les colonnes de <span class="math inline">\(A_c\)</span>, noté <span class="math inline">\(\mathcal M_{A_c}\)</span>, de dimension I, et obtenons un unique <span class="math inline">\(\hat Y\)</span>. Cependant, en fonction des contraintes utilisées, le repère de <span class="math inline">\(\mathcal M_{A_c}\)</span> va changer.</p>
 <p>Le cas le plus facile se retrouve lorsque <span class="math inline">\(\mu=0\)</span>. Nous avons alors <span class="math display">\[\begin{eqnarray*}
 (A_c'A_c) =
 \begin{bmatrix}
@@ -580,7 +617,7 @@ Y &amp;=&amp;\mu \mathbf{1}+ \alpha_1 \vec{e_1} + \cdots +\alpha_{I-1} \vec{e_{I
 &amp;=&amp; X_{[\sum  n_i \alpha_i=0]} \beta_{[\sum  n_i\alpha_i=0]} + \varepsilon.
 \end{eqnarray*}
 \]</span></p></li>
-<li><p><span class="math inline">\(\sum \alpha_i = 0\)</span> cela veut dire que <span class="math inline">\(\alpha_I= - \sum_{j=1}^{I-1} \alpha_j\)</span>, le modèle devient <span class="math display">\[
+<li><p><span class="math inline">\(\sum  \alpha_i = 0\)</span> cela veut dire que <span class="math inline">\(\alpha_I= - \sum_{j=1}^{I-1} \alpha_j\)</span>, le modèle devient <span class="math display">\[
 \begin{eqnarray*}
 Y &amp;=&amp;\mu \mathbf{1} + \alpha_1 \vec{e_1} + \cdots + \alpha_{I-1} \vec{e_{I-1}} -
 \sum_{j=1}^{I-1}  \alpha_j \vec{e_I} + \varepsilon\\
@@ -609,7 +646,7 @@ Y &amp;=&amp;\mu \mathbf{1} + \alpha_1 \vec{e_1} + \cdots + \alpha_{I-1} \vec{e_
 \vec{e_{I-1}}   - \sum_{j=1}^{I-1}  \frac{n_j \hat \alpha_j}{n_I}\vec{e_I}.
 \end{eqnarray*}
 \]</span></p></li>
-<li><p><span class="math inline">\(\sum \alpha_i = 0\)</span>, la projection s’écrit <span class="math display">\[
+<li><p><span class="math inline">\(\sum  \alpha_i = 0\)</span>, la projection s’écrit <span class="math display">\[
 \begin{eqnarray*}
 \hat Y &amp;=&amp; \hat \mu \mathbf{1} + \hat \alpha_1 \vec{e_1} + \cdots +
 \hat \alpha_{I-1} \vec{e_{I-1}} - \sum_{j=1}^{I-1} \hat  \alpha_j \vec{e_I}.
@@ -650,14 +687,14 @@ Y &amp;=&amp;\mu \mathbf{1} + \alpha_1 \vec{e_1} + \cdots + \alpha_{I-1} \vec{e_
 <p>En identifiant les différents termes, nous obtenons le résultat annoncé.</p>
 </div>
 <div id="exr-6-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 (Estimateurs des MC et ANOVA à deux facteurs) </strong></span>Nous notons <span class="math inline">\(\vec{e}_{ijk}\)</span> le vecteur de <span class="math inline">\(\mathbb R^n\)</span> dont toutes les coordonnées sont nulles sauf celle indicée par <span class="math inline">\(ijk\)</span> qui vaut 1. Sous les contraintes de type analyse par cellule, le modèle devient <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 4 (Estimateurs des MC et ANOVA à deux facteurs)</strong></span> Nous notons <span class="math inline">\(\vec{e}_{ijk}\)</span> le vecteur de <span class="math inline">\(\mathbb R^n\)</span> dont toutes les coordonnées sont nulles sauf celle indicée par <span class="math inline">\(ijk\)</span> qui vaut 1. Sous les contraintes de type analyse par cellule, le modèle devient <span class="math display">\[\begin{eqnarray*}
 y_{ijk} &amp;=&amp; \gamma_{ij} + \varepsilon_{ijk},
 \end{eqnarray*}\]</span> et donc matriciellement <span class="math display">\[\begin{eqnarray*}
 Y= X \beta +\varepsilon \quad \quad X=(\vec{e_{11}},\vec{e_{12}},\ldots,\vec{e_{IJ}}),
 \end{eqnarray*}\]</span> où le vecteur <span class="math inline">\(\vec{e}_{ij}= \sum_{k} \vec{e}_{ijk}\)</span>. Les vecteurs colonnes de la matrice <span class="math inline">\(X\)</span> sont orthogonaux entre eux. Le calcul matriciel <span class="math inline">\((X'X)^{-1}X'Y\)</span> donne alors le résultat annoncé.</p>
 </div>
 <div id="exr-6-5" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 5 (Estimateurs des MC et ANOVA à deux facteurs, suite) </strong></span>Nous notons <span class="math inline">\(\vec{e}_{ijk}\)</span> le vecteur de <span class="math inline">\(\mathbb R^n\)</span> dont toutes les coordonnées sont nulles sauf celle indicée par <span class="math inline">\(ijk\)</span> qui vaut 1. Nous définissons ensuite les vecteurs suivants~: <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 5 (Estimateurs des MC et ANOVA à deux facteurs, suite)</strong></span> Nous notons <span class="math inline">\(\vec{e}_{ijk}\)</span> le vecteur de <span class="math inline">\(\mathbb R^n\)</span> dont toutes les coordonnées sont nulles sauf celle indicée par <span class="math inline">\(ijk\)</span> qui vaut 1. Nous définissons ensuite les vecteurs suivants~: <span class="math display">\[\begin{eqnarray*}
 \vec{e}_{ij} = \sum_{k} \vec{e}_{ijk} \quad
 \vec{e}_{i.} = \sum_{j} \vec{e}_{ij}  \quad
 \vec{e}_{.j} = \sum_{i} \vec{e}_{ij}  \quad
@@ -684,19 +721,19 @@ P_{E^\perp}(Y)  &amp;=&amp;\sum_{ijk} (y_{ijk}-\bar{y}_{ij})\ \vec{e}_{ijk},
 \end{eqnarray*}\]</span> où <span class="math inline">\(\vec{e}_{ijk}\)</span> est le vecteur dont toutes les coordonnées sont nulles sauf celle indicée par <span class="math inline">\({ijk}\)</span> qui vaut 1. En identifiant terme à terme, nous retrouvons le résultat énoncé.</p>
 </div>
 <div id="exr-6-6" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 6 (Tableau d’ANOVA à 2 facteurs équilibrés) </strong></span>Lorsque le plan est équilibré, nous avons démontré, que les sous-espaces <span class="math inline">\(E_1\)</span>, <span class="math inline">\(E_2\)</span>, <span class="math inline">\(E_3\)</span> et <span class="math inline">\(E_4\)</span> sont orthogonaux (cf.&nbsp;exercice précédent) deux à deux. Nous avons alors <span class="math display">\[\begin{eqnarray*}
+<p><span class="theorem-title"><strong>Exercice 6 (Tableau d’ANOVA à 2 facteurs équilibrés)</strong></span> Lorsque le plan est équilibré, nous avons démontré, que les sous-espaces <span class="math inline">\(E_1\)</span>, <span class="math inline">\(E_2\)</span>, <span class="math inline">\(E_3\)</span> et <span class="math inline">\(E_4\)</span> sont orthogonaux (cf.&nbsp;exercice précédent) deux à deux. Nous avons alors <span class="math display">\[\begin{eqnarray*}
 Y &amp;=&amp; P_{E_1}(Y) + P_{E_2}(Y) + P_{E_3}(Y) + P_{E_4}(Y) + P_{E^\perp}(Y).
 \end{eqnarray*}\]</span> Nous obtenons ensuite par le théorème de Pythagore <span class="math display">\[\begin{eqnarray*}
 \begin{array}{ccccccccccc}
 \|Y - \bar Y \|^2 &amp;=&amp;  \| P_{E_2}(Y)\|^2 &amp;+&amp;
 \|P_{E_3}(Y)\|^2 &amp;+&amp; \|P_{E_4}(Y)\|^2 &amp;+&amp; \|P_{E^\perp}(Y)\|^2\\
-\mathop{\mathrm{SCT}}&amp;=&amp; \text{SC}_A &amp;+&amp; \text{SC}_B &amp;+&amp; \text{SC}_{AB} &amp;+&amp; \mathop{\mathrm{SCR}},
+\mathop{\mathrm{SCT}}&amp;=&amp; \SC_A &amp;+&amp; \SC_B &amp;+&amp; \SC_{AB} &amp;+&amp; \mathop{\mathrm{SCR}},
 \end{array}
 \end{eqnarray*}\]</span> où <span class="math display">\[\begin{eqnarray*}
 \mathop{\mathrm{SCT}}&amp;=&amp; \sum_i \sum_j \sum k (y_{ijk} - \bar y)^2\\
-\text{SC}_A &amp;=&amp; Jr \sum_i (y_{i..}-\bar y)^2\\
-\text{SC}_B &amp;=&amp; Ir \sum_j (y_{.j.} - \bar y)^2\\
-\text{SC}_{AB} &amp;=&amp; r \sum_i \sum_j (y_{ij.} - y_{i..} - y_{.j.} +\bar y)^2\\
+\SC_A &amp;=&amp; Jr \sum_i (y_{i..}-\bar y)^2\\
+\SC_B &amp;=&amp; Ir \sum_j (y_{.j.} - \bar y)^2\\
+\SC_{AB} &amp;=&amp; r \sum_i \sum_j (y_{ij.} - y_{i..} - y_{.j.} +\bar y)^2\\
 \mathop{\mathrm{SCR}}&amp;=&amp; \sum_i \sum_j \sum_k (y_{ijk}- \bar{y_{ij}})^2.
 \end{eqnarray*}\]</span></p>
 <p>Afin de bien visualiser les vecteurs voici un exemple avec <span class="math inline">\(I=2\)</span>, <span class="math inline">\(J=3\)</span> et <span class="math inline">\(r=2\)</span> en remplaçant les <span class="math inline">\(0\)</span> par <span class="math inline">\(.\)</span> :</p>
@@ -764,10 +801,10 @@ F_{2}&amp;=(\vec{e}_{1.}|\vec{e}_{2}|\cdots|\vec{e}_{I.})
 \end{align*}\]</span> on a le projecteur <span class="math display">\[\begin{align*}
 P_{F_{2}}&amp;=F_{2}(F_{2}'F_{2})^{-1}F'_{2}
 \end{align*}\]</span> En effectuant le calcul matriciel on a <span class="math display">\[\begin{align*}
-(F_{2}'F_{2})&amp;=\mathop{\mathrm{diag}}(I, I, \dotsc, I)
+(F_{2}'F_{2})&amp;=\diag(I, I, \dotsc, I)
 \end{align*}\]</span> et par calcul matriciel direct on trouve <span id="eq-pf2bis"><span class="math display">\[
 \begin{align}
-P_{F_{2}}Y&amp;=F_{2}\mathop{\mathrm{diag}}(1/I, 1/I, \dotsc, 1/I)F_{2}'Y\nonumber\\
+P_{F_{2}}Y&amp;=F_{2}\diag(1/I, 1/I, \dotsc, 1/I)F_{2}'Y\nonumber\\
 &amp;=F_{2}
 \begin{pmatrix}
 \bar Y_{1..}\\
@@ -778,7 +815,7 @@ P_{F_{2}}Y&amp;=F_{2}\mathop{\mathrm{diag}}(1/I, 1/I, \dotsc, 1/I)F_{2}'Y\nonumb
 = \bar Y_{1..} \vec{e}_{1.} + \bar Y_{2..}\vec{e}_{2.}
 + \dotsc \bar Y_{I..}\vec{e}_{I.}
 \end{align}
-\tag{3}\]</span></span> En utilisant les équations <a href="#eq-pf2">équation&nbsp;2</a> et <a href="#eq-pf2bis">équation&nbsp;3</a> on trouve <span class="math display">\[\begin{align*}
+\tag{3}\]</span></span> En utilisant les équations <a href="#eq-pf2" class="quarto-xref">équation&nbsp;2</a> et <a href="#eq-pf2bis" class="quarto-xref">équation&nbsp;3</a> on trouve <span class="math display">\[\begin{align*}
 P_{2}Y&amp;=\bar Y_{1..} \vec{e}_{1.} + \bar Y_{2..}\vec{e}_{2.}
 + \dotsc + \bar Y_{I..}\vec{e}_{I.} - \bar Y_{...} \vec{e}.
 \end{align*}\]</span> Remarquons que <span class="math inline">\(\vec{e}=\vec{e}_{1.} + \dotsc +\vec{e}_{I.}\)</span> et en remplaçant cela dans l’équation précédente nous avons <span class="math display">\[
@@ -791,8 +828,8 @@ P_{2}Y&amp;=(\bar Y_{1..} -\bar Y_{...})  \vec{e}_{1.} + (\bar Y_{2..} - \bar Y_
 P_{3}Y&amp;=(\bar Y_{.1.}-\bar Y_{...}) \vec{e}_{.1} + (\bar Y_{.2.}-\bar Y_{...})\vec{e}_{.2}
 + \dotsc +(\bar Y_{.J.}-\bar Y_{...})\vec{e}_{.J}.
 \end{align*}\]</span></li>
-<li>Enfin pour <span class="math inline">\(E_{4}\)</span>, remarquons que <span class="math inline">\(F_{4}=E=\mathop{\mathrm{\mathsf{vect}}}(\vec{e}_{11}, \dotsc, \vec{e}_{IJ})\)</span>. La projection sur <span class="math inline">\(E\)</span> identifié à sa matrice <span class="math inline">\((\vec{e}_{11}| \dotsc |\vec{e}_{IJ})\)</span> peut être calculée de manière directe comme <span class="math display">\[\begin{align}
-P_{E}Y&amp;=E\mathop{\mathrm{diag}}(1/r, 1/r, \cdots, 1/r)E'Y\nonumber\\
+<li>Enfin pour <span class="math inline">\(E_{4}\)</span>, remarquons que <span class="math inline">\(F_{4}=E=\vect(\vec{e}_{11}, \dotsc, \vec{e}_{IJ})\)</span>. La projection sur <span class="math inline">\(E\)</span> identifié à sa matrice <span class="math inline">\((\vec{e}_{11}| \dotsc |\vec{e}_{IJ})\)</span> peut être calculée de manière directe comme <span class="math display">\[\begin{align}
+P_{E}Y&amp;=E\diag(1/r, 1/r, \cdots, 1/r)E'Y\nonumber\\
 &amp;=E
 \begin{pmatrix}
 \bar Y_{11.}\\
@@ -827,18 +864,18 @@ Y&amp;=\bar Y_{...} \vec{e}\\
 &amp; \ \  + (\bar Y_{11.} - \bar Y_{1..} - \bar Y_{.1.} + \bar Y_{...})\vec{e}_{11}+ \dotsc + (\bar Y_{IJ} - \bar Y_{I..} - \bar Y_{.J.} + \bar Y_{...})\vec{e}_{IJ} \\
 &amp; \ \ + P_{Q}Y.
 \end{split}
-\tag{6}\]</span></span> En utilisant l’<a href="#eq-anova2somme">équation&nbsp;1</a> on identifie terme à terme et nous obtenons les paramètres du modèle : <span class="math display">\[\begin{align*}
+\tag{6}\]</span></span> En utilisant l’<a href="#eq-anova2somme" class="quarto-xref">équation&nbsp;1</a> on identifie terme à terme et nous obtenons les paramètres du modèle : <span class="math display">\[\begin{align*}
 \hat \mu&amp;=\bar Y_{...}\\
 \hat \alpha_{i}&amp;=(\bar Y_{i..} - \bar Y_{...})\\
 \hat \beta_{j}&amp;=(\bar Y_{.j.} - \bar Y_{...})\\
 (\widehat{\alpha\beta})_{ij}&amp;=(\bar Y_{ij.} - \bar Y_{i..} - \bar Y_{.j.} + \bar Y_{...})\\
 \end{align*}\]</span></p></li>
-<li><p>En utilisant l’<a href="#eq-decompPanova2">équation&nbsp;5</a> et en se rappelant de l’orthogonalité (<a href="#eq-decompEanova2">équation&nbsp;4</a>) on a <span id="eq-decompositonSC1"><span class="math display">\[
+<li><p>En utilisant l’<a href="#eq-decompPanova2" class="quarto-xref">équation&nbsp;5</a> et en se rappelant de l’orthogonalité (<a href="#eq-decompEanova2" class="quarto-xref">équation&nbsp;4</a>) on a <span id="eq-decompositonSC1"><span class="math display">\[
 \begin{align}
 \|Y -\bar Y_{...} \vec{e}\|^{2} &amp;=\| P_{1}Y + P_{2}Y + P_{3}Y + P_{4}Y + P_{Q}Y\|^{2}\nonumber\\
 &amp;=\|P_{1}Y\|^{2} + \|P_{2}Y\|^{2} + \|P_{3}Y\|^{2} + \|P_{4}Y\|^{2} + \|P_{Q}Y\|^{2}
 \end{align}
-\tag{7}\]</span></span> et remplaçant les projections par leur expression (voir par exemple <a href="#eq-decompPCoefanova2">équation&nbsp;6</a>) et calculant les normes on a <span id="eq-decompositonSC2"><span class="math display">\[
+\tag{7}\]</span></span> et remplaçant les projections par leur expression (voir par exemple <a href="#eq-decompPCoefanova2" class="quarto-xref">équation&nbsp;6</a>) et calculant les normes on a <span id="eq-decompositonSC2"><span class="math display">\[
 \begin{split}
 \sum_{i=1}^I \sum_{j=1}^J\sum_{k=1}^r (Y_{ijk} - \bar Y_{...})^{2}
 &amp;= rJ\sum_{i=1}^I(\bar Y_{i..} - \bar Y_{...})^{2}
@@ -849,12 +886,12 @@ Y&amp;=\bar Y_{...} \vec{e}\\
 (Y_{ijk} -  \bar Y_{ij})^{2}.
 \end{split}
 \tag{8}\]</span></span> En multipliant par <span class="math inline">\(1/n\)</span> l’équation ci-dessus nous obtenons la décomposition de la variance.</p></li>
-<li><p>Le vecteur <span class="math inline">\(Y\)</span> grâce à <span class="math inline">\({\mathcal{H}}_{3}\)</span> est un vecteur gaussien de moyenne <span class="math inline">\(\vec{m}=\mu +\alpha_i+\beta_j+(\alpha\beta)_{ij}\)</span> et de variance <span class="math inline">\(\sigma^{2}I_{n}\)</span>. On sait que <span class="math display">\[\begin{align*}
+<li><p>Le vecteur <span class="math inline">\(Y\)</span> grâce à <span class="math inline">\(\HH_{3}\)</span> est un vecteur gaussien de moyenne <span class="math inline">\(\vec{m}=\mu +\alpha_i+\beta_j+(\alpha\beta)_{ij}\)</span> et de variance <span class="math inline">\(\sigma^{2}I_{n}\)</span>. On sait que <span class="math display">\[\begin{align*}
 P_{E}Y &amp;= P_{1}Y + P_{2}Y + P_{3}Y + P_{4}Y
 \end{align*}\]</span> Grâce au théorème de Cochran on a que <span class="math display">\[
 \frac{\|P_{i}Y -P_{i}\vec{m} \|^{2}}{\sigma^{2}} \sim \chi^{2} (dim(E_{i}))
 \]</span> ou encore que <span class="math inline">\(\frac{\|P_{i}Y\|^{2}}{\sigma^{2}}\)</span> suit un <span class="math inline">\(\chi^{2} (dim(E_{i}))\)</span> décentré de paramètre de décentrage <span class="math inline">\(\|P_{i}\vec{m} \|^{2}\)</span>. Pour <span class="math inline">\(Q=E^{\perp}\)</span> on a que <span class="math inline">\(P_{Q}\vec{m}=0\)</span> et il n’y a pas de décentrage.</p></li>
-<li><p>Reprenons l’<a href="#eq-decompositonSC1">équation&nbsp;7</a> qui s’écrit aussi avec des sommes (<a href="#eq-decompositonSC2">équation&nbsp;8</a>) ou encore <span class="math display">\[\begin{align*}
+<li><p>Reprenons l’<a href="#eq-decompositonSC1" class="quarto-xref">équation&nbsp;7</a> qui s’écrit aussi avec des sommes (<a href="#eq-decompositonSC2" class="quarto-xref">équation&nbsp;8</a>) ou encore <span class="math display">\[\begin{align*}
 \mathop{\mathrm{SCT}}
 &amp;= \mathop{\mathrm{SCE}}_{a} + \mathop{\mathrm{SCE}}_{b} + \mathop{\mathrm{SCE}}_{ab}  + \mathop{\mathrm{SCR}}
 \end{align*}\]</span> On a donc que <span class="math display">\[\begin{align*}
@@ -863,9 +900,9 @@ P_{E}Y &amp;= P_{1}Y + P_{2}Y + P_{3}Y + P_{4}Y
 \mathop{\mathrm{SCE}}_{ab}&amp;=\|P_{4}Y\|^{2}\sim \sigma^{2}\chi^{2} ((I-1)(J-1)), \|P_{4}\vec{m} \|^{2}),\\
 \mathop{\mathrm{SCE}}_{ab}&amp;=\|P_{Q}Y\|^{2}\sim \sigma^{2}\chi^{2} (n - IJ).
 \end{align*}\]</span> Nous voyons donc que chaque terme est la norme carrée d’une projection du vecteur gaussien <span class="math inline">\(Y\)</span> dans un sous-espace et que ces sous-espaces sont orthogonaux 2 à 2. Les vecteurs gaussiens projetés sont donc indépendants ainsi que leur norme au carré. Les lois de ces normes carrées sont donc à <span class="math inline">\(\sigma^{2}\)</span> près des <span class="math inline">\(\chi^{2}\)</span> décentrés (sauf pour <span class="math inline">\(Q\)</span>) qui sont indépendants.</p></li>
-<li><p>Notons <span class="math inline">\(\mathop{\mathrm{CME}}_{ab} = \mathop{\mathrm{SCE}}_{ab}/((I-1)(J-1))\)</span> et <span class="math inline">\(\mathop{\mathrm{CMR}}= \mathop{\mathrm{SCR}}/(n-IJ)\)</span> nous avons donc <span class="math display">\[\begin{align*}
-\frac{\mathop{\mathrm{CME}}_{ab}}{\mathop{\mathrm{CMR}}}&amp;=\frac{\frac{\mathop{\mathrm{SCE}}_{ab}}{\sigma^{2}(I-1)(J-1)}}{\frac{\mathop{\mathrm{SCR}}}{\sigma^{2}(n-IJ)}}
-\end{align*}\]</span> qui est le rapport de deux <span class="math inline">\(\chi^{2}\)</span> indépendants ramenés à leur degrés de liberté et dont le numérateur est décentré. Nous avons donc une loi de Fisher de paramètres <span class="math inline">\((I-1)(J-1), n -IJ, \|P_{4}\vec{m} \|^{2}\)</span>. Sous <span class="math inline">\({\mathrm{H_0}}:\)</span> « il n’y a pas d’interaction » (ou <span class="math inline">\(P_{4}\vec{m}=0\)</span>) alors la loi se simplifie et le paramètre de décentrage inconnu (qui dépend de <span class="math inline">\(\vec{m}\)</span>) disparaît et la loi est <span class="math inline">\(F((I-1)(J-1), n -IJ)\)</span>.</p></li>
+<li><p>Notons <span class="math inline">\(\CME_{ab} = \mathop{\mathrm{SCE}}_{ab}/((I-1)(J-1))\)</span> et <span class="math inline">\(\CMR = \mathop{\mathrm{SCR}}/(n-IJ)\)</span> nous avons donc <span class="math display">\[\begin{align*}
+\frac{\CME_{ab}}{\CMR}&amp;=\frac{\frac{\mathop{\mathrm{SCE}}_{ab}}{\sigma^{2}(I-1)(J-1)}}{\frac{\mathop{\mathrm{SCR}}}{\sigma^{2}(n-IJ)}}
+\end{align*}\]</span> qui est le rapport de deux <span class="math inline">\(\chi^{2}\)</span> indépendants ramenés à leur degrés de liberté et dont le numérateur est décentré. Nous avons donc une loi de Fisher de paramètres <span class="math inline">\((I-1)(J-1), n -IJ, \|P_{4}\vec{m} \|^{2}\)</span>. Sous <span class="math inline">\(\Hz:\)</span> « il n’y a pas d’interaction » (ou <span class="math inline">\(P_{4}\vec{m}=0\)</span>) alors la loi se simplifie et le paramètre de décentrage inconnu (qui dépend de <span class="math inline">\(\vec{m}\)</span>) disparaît et la loi est <span class="math inline">\(F((I-1)(J-1), n -IJ)\)</span>.</p></li>
 </ol>
 </div>
 
@@ -907,18 +944,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -950,11 +976,55 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -964,8 +1034,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -977,7 +1056,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1021,6 +1223,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1046,6 +1249,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1103,35 +1332,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="../correction/chap5.html" class="pagination-link">
+      <a href="../correction/chap5.html" class="pagination-link" aria-label="5 Inférence dans le modèle gaussien">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">5 Inférence dans le modèle gaussien</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../correction/chap7.html" class="pagination-link">
+      <a href="../correction/chap7.html" class="pagination-link" aria-label="7 Choix de variables">
         <span class="nav-page-text">7 Choix de variables</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 
