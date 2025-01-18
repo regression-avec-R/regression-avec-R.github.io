@@ -570,21 +570,21 @@ AU_i+\lambda U_i&amp;=&amp;d^2_iU_i+\lambda U_i=(d^2_i+\lambda) U_i\\
 (A+\lambda I_p)U_i&amp;=&amp;(d^2_i+\lambda) U_i,
 \end{eqnarray*}
 \]</span> c’est-à-dire que <span class="math inline">\(U_i\)</span> est aussi vecteur propre de <span class="math inline">\(A+\lambda I_p\)</span> associé à la valeur propre <span class="math inline">\(\lambda+d^2_i\)</span>.</p></li>
-<li><p>Nous savons que <span class="math inline">\(X=QD P'\)</span> avec <span class="math inline">\(Q\)</span> et <span class="math inline">\(P\)</span> matrices orthogonales et <span class="math inline">\(D=\diag(d_1,\dotsc,d_p)\)</span>. Puisque <span class="math inline">\(Q\)</span> est orthogonale, nous avons, par définition, <span class="math inline">\(Q'Q=I\)</span>. Nous avons donc que <span class="math inline">\(X'X=(QD P')'QD P'=PDQ'QDP'=PD^2P'\)</span>. Puisque <span class="math inline">\(P\)</span> est orthogonale <span class="math inline">\(P'P=I_p\)</span> et <span class="math inline">\(P^{-1}=P\)</span>. <span class="math display">\[
+<li><p>Nous savons que <span class="math inline">\(X=QD P'\)</span> avec <span class="math inline">\(Q\)</span> et <span class="math inline">\(P\)</span> matrices orthogonales et <span class="math inline">\(D=\text{diag}(d_1,\dotsc,d_p)\)</span>. Puisque <span class="math inline">\(Q\)</span> est orthogonale, nous avons, par définition, <span class="math inline">\(Q'Q=I\)</span>. Nous avons donc que <span class="math inline">\(X'X=(QD P')'QD P'=PDQ'QDP'=PD^2P'\)</span>. Puisque <span class="math inline">\(P\)</span> est orthogonale <span class="math inline">\(P'P=I_p\)</span> et <span class="math inline">\(P^{-1}=P\)</span>. <span class="math display">\[
 \begin{eqnarray*}
-\tr(X(X'X+\lambda I_p)^{-1}X')&amp;=&amp;\tr((X'X+\lambda I_p)^{-1}X'X)\\
-&amp;=&amp;\tr((PD^2P'+\lambda PP')^{-1}PD^2P')\\
-&amp;=&amp;\tr((P(D+\lambda I_p )P')^{-1}PD^2P').
+\text{tr}(X(X'X+\lambda I_p)^{-1}X')&amp;=&amp;\text{tr}((X'X+\lambda I_p)^{-1}X'X)\\
+&amp;=&amp;\text{tr}((PD^2P'+\lambda PP')^{-1}PD^2P')\\
+&amp;=&amp;\text{tr}((P(D+\lambda I_p )P')^{-1}PD^2P').
 \end{eqnarray*}
-\]</span> Nous avons donc <span class="math display">\[
+\]</span> Ainsi <span class="math display">\[
 \begin{eqnarray*}
-\tr(X(X'X+\lambda I_p)^{-1}X')&amp;=&amp;\tr( (P')^{-1}(D+\lambda I_p )^{-1} P^{-1} PD^2P')\\
-&amp;=&amp;\tr( (P')^{-1}(D+\lambda I_p )^{-1} D^2P')\\
-&amp;=&amp;\tr( (D+\lambda I_p )^{-1} D^2).
+\text{tr}(X(X'X+\lambda I_p)^{-1}X')&amp;=&amp;\text{tr}( (P')^{-1}(D+\lambda I_p )^{-1} P^{-1} PD^2P')\\
+&amp;=&amp;\text{tr}( (P')^{-1}(D+\lambda I_p )^{-1} D^2P')\\
+&amp;=&amp;\text{tr}( (D+\lambda I_p )^{-1} D^2).
 \end{eqnarray*}
 \]</span> Selon la définition de <span class="math inline">\(H^*(\kappa)\)</span>, nous savons que sa trace vaut donc <span class="math display">\[
 \begin{eqnarray*}
-\tr( (D+\kappa I_p )^{-1} D^2).
+\text{tr}( (D+\kappa I_p )^{-1} D^2).
 \end{eqnarray*}
 \]</span> Comme <span class="math inline">\(D\)</span> et <span class="math inline">\(I_p\)</span> sont des matrices diagonales, leur somme et produit sont simplement leur somme et produit terme à terme des éléments de la diagonale, et donc cette trace (somme des éléments de la diagonale) vaut <span class="math display">\[
 \sum_{i=1}^{p}{\frac{d_j^2}{d_j^2+\kappa}}.
@@ -625,15 +625,15 @@ B(\hat\gamma)=QAXQ'\gamma-\gamma.
 \end{eqnarray*}
 \]</span> et enfin les traces de ces matrices s’écrivent <span class="math display">\[
 \begin{eqnarray*}
-\tr(\mathop{\mathrm{EQM}}(\hat \beta))&amp;=&amp;(AX\beta-\beta)'(AX\beta-\beta)+\sigma^2\tr(AA'),\\
-\tr(\mathop{\mathrm{EQM}}(\hat \gamma))&amp;=&amp;(QAXQ'\gamma-\gamma)'(QAXQ'\gamma-\gamma)+ \sigma^2\tr(AA').\\
+\text{tr}(\mathop{\mathrm{EQM}}(\hat \beta))&amp;=&amp;(AX\beta-\beta)'(AX\beta-\beta)+\sigma^2\text{tr}(AA'),\\
+\text{tr}(\mathop{\mathrm{EQM}}(\hat \gamma))&amp;=&amp;(QAXQ'\gamma-\gamma)'(QAXQ'\gamma-\gamma)+ \sigma^2\text{tr}(AA').\\
 \end{eqnarray*}
 \]</span> Rappelons que <span class="math inline">\(\gamma=Q\beta\)</span> et que <span class="math inline">\(Q'Q=I_p\)</span>, nous avons donc <span class="math display">\[
 \begin{eqnarray*}
-\tr(\mathop{\mathrm{EQM}}(\hat \gamma))&amp;=&amp;\gamma'(QAXQ'-I_p)'(QAXQ'-I_p)\gamma+ \sigma^2\tr(AA')\\
-&amp;=&amp;\beta'(QAX - Q)'(QAX - Q)\beta+ \sigma^2\tr(AA')\\
-&amp;=&amp;\beta'(AX-I_p)Q'Q(AX-I_p)\beta+ \sigma^2\tr(AA')\\
-&amp;=&amp;\beta'(AX-I_p)(AX-I_p)\beta+ \sigma^2\tr(AA')=\tr(\mathop{\mathrm{EQM}}(\hat \beta)).
+\text{tr}(\mathop{\mathrm{EQM}}(\hat \gamma))&amp;=&amp;\gamma'(QAXQ'-I_p)'(QAXQ'-I_p)\gamma+ \sigma^2\text{tr}(AA')\\
+&amp;=&amp;\beta'(QAX - Q)'(QAX - Q)\beta+ \sigma^2\text{tr}(AA')\\
+&amp;=&amp;\beta'(AX-I_p)Q'Q(AX-I_p)\beta+ \sigma^2\text{tr}(AA')\\
+&amp;=&amp;\beta'(AX-I_p)(AX-I_p)\beta+ \sigma^2\text{tr}(AA')=\text{tr}(\mathop{\mathrm{EQM}}(\hat \beta)).
 \end{eqnarray*}
 \]</span> En conclusion, que l’on s’intéresse à un estimateur linéaire de <span class="math inline">\(\beta\)</span> ou à un estimateur linéaire de <span class="math inline">\(\gamma\)</span>, dès que l’on passe de l’un à l’autre en multipliant par <span class="math inline">\(Q\)</span> ou <span class="math inline">\(Q'\)</span>, matrice orthogonale, la trace de l’EQM est identique, c’est-à-dire que les performances globales des 2 estimateurs sont identiques.</p></li>
 <li><p>Nous avons le modèle de régression suivant~: <span class="math display">\[
@@ -645,8 +645,8 @@ Z_{1:p}=\Delta\gamma+\eta_{1:p},
 \]</span> Cet estimateur est d’expression très simple et il est toujours défini de manière unique, ce qui n’est pas forcément le cas de <span class="math inline">\(\hat \beta_{\mathrm{MC}}\)</span>.</p>
 <p>Comme <span class="math inline">\(Z_{1:p}\sim\mathcal{N}(\Delta\gamma,\sigma^2 I_p)\)</span> nous avons que <span class="math inline">\(\hat \gamma_{\mathrm{MC}}=\Delta^{-1}Z_{1:p}\)</span> suit une loi normale d’espérance <span class="math inline">\(\mathbf E(\Delta^{-1}Z_{1:p})=\Delta^{-1}\mathbf E(Z_{1:p})=\gamma\)</span> et de variance <span class="math inline">\(\mathop{\mathrm{V}}(\hat \gamma_{\mathrm{MC}})=\sigma^2\Delta^{-2}\)</span>. Puisque <span class="math inline">\(\hat \gamma_{\mathrm{MC}}\)</span> est un estimateur des MC, il est sans biais, ce qui est habituel.</p></li>
 <li><p>L’EQM de <span class="math inline">\(\hat \gamma_{\mathrm{MC}}\)</span>, estimateur sans biais, est simplement sa variance. Pour la <span class="math inline">\(i^e\)</span> coordonnée de <span class="math inline">\(\hat \gamma_{\mathrm{MC}}\)</span>, l’EQM est égal à l’élément <span class="math inline">\(i,i\)</span> de la matrice de variance <span class="math inline">\(\mathop{\mathrm{V}}(\hat \gamma_{\mathrm{MC}})\)</span>, c’est-à-dire <span class="math inline">\(\sigma^2/\delta_i^2\)</span>. La trace de l’EQM est alors simplement la somme, sur toutes les coordonnées <span class="math inline">\(i\)</span>, de cet EQM obtenu.</p></li>
-<li><p>Par définition <span class="math inline">\(\hat \gamma(c)=\diag(c_i)Z_{1:p}\)</span> et nous savons que <span class="math inline">\(Z_{1:p}\sim\mathcal{N}(\Delta\gamma,\sigma^2 I_p).\)</span> Nous obtenons que <span class="math inline">\(\hat \gamma(c)\)</span> suit une loi normale d’espérance <span class="math inline">\(\mathbf E(\diag(c_i)Z_{1:p})=\diag(c_i)\Delta\gamma\)</span> et de variance <span class="math display">\[
-\mathop{\mathrm{V}}(\hat \gamma(c))= \diag(c_i)\mathop{\mathrm{V}}(Z_{1:p})\diag(c_i)'= \sigma^2\diag(c_i^2).
+<li><p>Par définition <span class="math inline">\(\hat \gamma(c)=\text{diag}(c_i)Z_{1:p}\)</span> et nous savons que <span class="math inline">\(Z_{1:p}\sim\mathcal{N}(\Delta\gamma,\sigma^2 I_p).\)</span> Nous obtenons que <span class="math inline">\(\hat \gamma(c)\)</span> suit une loi normale d’espérance <span class="math inline">\(\mathbf E(\text{diag}(c_i)Z_{1:p})=\text{diag}(c_i)\Delta\gamma\)</span> et de variance <span class="math display">\[
+\mathop{\mathrm{V}}(\hat \gamma(c))= \text{diag}(c_i)\mathop{\mathrm{V}}(Z_{1:p})\text{diag}(c_i)'= \sigma^2\text{diag}(c_i^2).
 \]</span> La loi de <span class="math inline">\(\hat \gamma(c)\)</span> étant une loi normale de matrice de variance diagonale, nous en déduisons que les coordonnées de <span class="math inline">\(\hat \gamma(c)\)</span> sont indépendantes entre elles.</p></li>
 <li><p>Calculons l’EQM de la <span class="math inline">\(i^e\)</span> coordonnée de <span class="math inline">\(\hat \gamma(c)\)</span> <span class="math display">\[
 \mathop{\mathrm{EQM}}(\hat \gamma(c)_i)=\mathbf E(\hat \gamma(c)_i -\gamma)^2=\mathbf E(\hat \gamma(c)_i^2)+
@@ -669,7 +669,7 @@ Z_{1:p}=\Delta\gamma+\eta_{1:p},
 \]</span> d’où la conclusion demandée.</p></li>
 <li><p>Par définition de <span class="math inline">\(\hat \gamma(c)\)</span>, nous avons <span class="math display">\[
 \begin{eqnarray*}
-\hat \gamma(c)&amp;=&amp;\diag(c_i)Z_{1:p}=\diag(\frac{\delta_i}{\delta_i^2+\kappa})Z_{1:p}\\
+\hat \gamma(c)&amp;=&amp;\text{diag}(c_i)Z_{1:p}=\text{diag}(\frac{\delta_i}{\delta_i^2+\kappa})Z_{1:p}\\
 &amp;=&amp;(\Delta'\Delta + \kappa I_p)^{-1}\Delta'Z_{1:p},
 \end{eqnarray*}
 \]</span> puisque <span class="math inline">\(\Delta\)</span> est diagonale. De plus nous avons <span class="math display">\[
