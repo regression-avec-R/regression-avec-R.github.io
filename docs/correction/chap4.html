@@ -561,7 +561,7 @@ P_XY&amp;=&amp;P_X(2X_1-2X_2+3\eta)=2P_XX_1 -2P_XX_2+3P_X\eta=\\
 <li><p>La représentation graphique nous permet de voir que l’angle entre <span class="math inline">\(\overrightarrow{\bar YY}\)</span> et <span class="math inline">\(\overrightarrow{\bar Y_\alpha Y_\alpha}\)</span> est le même que celui entre <span class="math inline">\(\overrightarrow{\bar YY}\)</span> et <span class="math inline">\(\overrightarrow{\bar Y\hat Y}\)</span>. L’angle est minimum (et le cosinus maximum) quand <span class="math inline">\(\alpha=\hat\beta\)</span> ou pour tout <span class="math inline">\(\alpha\)</span> tel que <span class="math inline">\(\overrightarrow{\bar Y_\alpha Y_\alpha}=k\overrightarrow{\bar Y\hat Y}\)</span> avec <span class="math inline">\(k&gt;0\)</span>.</p>
 <p>Du fait de l’orthogonalité entre <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span>, <span class="math inline">\(\overrightarrow{\bar Y_\alpha Y_\alpha}\)</span> est toujours colinéaire à <span class="math inline">\(\overrightarrow{\bar Y\hat Y}\)</span>, seul le signe change en fonction de l’orientation des vecteurs (même sens ou sens opposé).</p></li>
 </ol></li>
-<li><p>Comme <span class="math inline">\(\rho(X_j;X_k)=1\)</span> alors <span class="math inline">\(R(X_j;(\mathbf{1},X_j))=1\)</span> et donc puisque la constante fait partie du modèle <span class="math inline">\(R(X_j;X_{(j)})=1\)</span>. L’hypothèse <span class="math inline">\(\HH_1\)</span> n’est donc pas vérifiée.</p></li>
+<li><p>Comme <span class="math inline">\(\rho(X_j;X_k)=1\)</span> alors <span class="math inline">\(R(X_j;(\mathbf{1},X_j))=1\)</span> et donc puisque la constante fait partie du modèle <span class="math inline">\(R(X_j;X_{(j)})=1\)</span>. L’hypothèse <span class="math inline">\({\mathcal{H}}_1\)</span> n’est donc pas vérifiée.</p></li>
 </ol>
 </div>
 <div id="exr-4-3" class="theorem exercise">
@@ -572,26 +572,26 @@ B(\hat \beta_{ridge}) &amp;=&amp; -\kappa (X'X + \kappa I)^{-1} \beta,\\
 V(\hat \beta_{\mathrm{ridge}})&amp;=&amp;\sigma^2(X'X + \kappa I)^{-1}X'X(X'X + \kappa I)^{-1}\\
 \mathop{\mathrm{EQM}}(\hat \beta_{\mathrm{ridge}})&amp;=&amp;(X'X + \kappa I)^{-1}\left[\kappa^2\beta \beta'+\sigma^2(X'X) \right](X'X + \kappa I)^{-1}.
 \end{eqnarray*}\]</span></p></li>
-<li><p>Puisque <span class="math inline">\(X'X=P\diag(\lambda_i) P'\)</span>, nous avons <span class="math display">\[\begin{eqnarray*}
-(X'X + \kappa I)&amp;=&amp;P\diag(\lambda_i) P'+ \kappa PP'=P\diag(\lambda_i+\kappa)P'.
+<li><p>Puisque <span class="math inline">\(X'X=P\text{diag}(\lambda_i) P'\)</span>, nous avons <span class="math display">\[\begin{eqnarray*}
+(X'X + \kappa I)&amp;=&amp;P\text{diag}(\lambda_i) P'+ \kappa PP'=P\text{diag}(\lambda_i+\kappa)P'.
 \end{eqnarray*}\]</span> En se rappelant que <span class="math inline">\(P^{-1}=P'\)</span>, son inverse vaut <span class="math display">\[\begin{eqnarray*}
-(X'X + \kappa I)^{-1}&amp;=&amp;P\diag(1/(\lambda_i+\kappa))P'.
+(X'X + \kappa I)^{-1}&amp;=&amp;P\text{diag}(1/(\lambda_i+\kappa))P'.
 \end{eqnarray*}\]</span> Nous avons donc <span class="math display">\[\begin{equation*}
 \begin{split}
-\mathop{\mathrm{EQM}}(\hat \beta_{\mathrm{ridge}})&amp;=P\diag(\frac{1}{\lambda_i+\kappa})P'\left[\kappa^2\beta \beta'+\sigma^2(X'X) \right]P\diag(\frac{1}{\lambda_i+\kappa})P'\\
-&amp;=P\diag(\frac{1}{\lambda_i+\kappa})\left[\kappa^2(P'\beta\beta'P)+\sigma^2 I_p\right]\diag(\frac{1}{\lambda_i+\kappa})P'.
+\mathop{\mathrm{EQM}}(\hat \beta_{\mathrm{ridge}})&amp;=P\text{diag}(\frac{1}{\lambda_i+\kappa})P'\left[\kappa^2\beta \beta'+\sigma^2(X'X) \right]P\text{diag}(\frac{1}{\lambda_i+\kappa})P'\\
+&amp;=P\text{diag}(\frac{1}{\lambda_i+\kappa})\left[\kappa^2(P'\beta\beta'P)+\sigma^2 I_p\right]\text{diag}(\frac{1}{\lambda_i+\kappa})P'.
 \end{split}
 \end{equation*}\]</span> Nous en déduisons que sa trace vaut <span class="math display">\[\begin{equation*}
 \begin{split}
-\tr\left\{EQM(\hat \beta_{\mathrm{ridge}})\right\}&amp;=\tr\left\{\diag(\frac{1}{\lambda_i+\kappa})\left[\kappa^2(P'\beta\beta'P)+\sigma^2 I_p\right]\right.\\
-&amp;\quad \left.\diag(\frac{1}{\lambda_i+\kappa})P'P\right\},
+\text{tr}\left\{EQM(\hat \beta_{\mathrm{ridge}})\right\}&amp;=\text{tr}\left\{\text{diag}(\frac{1}{\lambda_i+\kappa})\left[\kappa^2(P'\beta\beta'P)+\sigma^2 I_p\right]\right.\\
+&amp;\quad \left.\text{diag}(\frac{1}{\lambda_i+\kappa})P'P\right\},
 \end{split}
 \end{equation*}\]</span> et, comme <span class="math inline">\(P'P=I_p\)</span>, nous avons alors <span class="math display">\[\begin{eqnarray*}
-\tr\left\{EQM(\hat \beta_{\mathrm{ridge}})\right\}
-&amp;=&amp;\tr\left\{\left[\kappa^2(P'\beta\beta'P)+\sigma^2 I_p\right]\diag(\frac{1}{(\lambda_i+\kappa)^2})\right\}.
+\text{tr}\left\{EQM(\hat \beta_{\mathrm{ridge}})\right\}
+&amp;=&amp;\text{tr}\left\{\left[\kappa^2(P'\beta\beta'P)+\sigma^2 I_p\right]\text{diag}(\frac{1}{(\lambda_i+\kappa)^2})\right\}.
 \end{eqnarray*}\]</span> Le <span class="math inline">\(i^e\)</span> élément de la diagonale de la matrice <span class="math inline">\(P'\beta\beta'P\)</span> vaut <span class="math inline">\([P'\beta]_i^2\)</span>. Celui de <span class="math inline">\(\left[\kappa^2(P'\beta\beta'P)+\sigma^2
   I_p\right]\)</span> vaut <span class="math inline">\(\kappa^2[P'\beta]_i^2+\sigma^2\)</span> et celui de <span class="math display">\[\left[\kappa^2(P'\beta\beta'P)+\sigma^2
-  I_p\right]\diag(\frac{1}{(\lambda_i+\kappa)^2})\]</span> vaut donc <span class="math display">\[\kappa^2[P'\beta]_i^2+\sigma^2/(\lambda_i+\kappa)^2.\]</span> On en déduit le résultat annoncé car la trace est la somme des éléments diagonaux d’une matrice.</p></li>
+  I_p\right]\text{diag}(\frac{1}{(\lambda_i+\kappa)^2})\]</span> vaut donc <span class="math display">\[\kappa^2[P'\beta]_i^2+\sigma^2/(\lambda_i+\kappa)^2.\]</span> On en déduit le résultat annoncé car la trace est la somme des éléments diagonaux d’une matrice.</p></li>
 <li><p>L’estimateur des MC est non biaisé et son <span class="math inline">\(\mathop{\mathrm{EQM}}\)</span> vaut sa variance : <span class="math display">\[\begin{eqnarray*}
 \mathop{\mathrm{EQM}}(\hat \beta_{\mathrm{MC}})&amp;=&amp;\sigma^2(X'X)^{-1}.
 \end{eqnarray*}\]</span> Nous avons alors <span class="math display">\[\begin{eqnarray*}
@@ -605,13 +605,13 @@ V(\hat \beta_{\mathrm{ridge}})&amp;=&amp;\sigma^2(X'X + \kappa I)^{-1}X'X(X'X + 
 \mathop{\mathrm{EQM}}(\hat \beta_{\mathrm{MC}})\)</span> est immédiat en utilisant l’expression précédente de <span class="math inline">\(\mathop{\mathrm{EQM}}(\hat \beta_{\mathrm{MC}})\)</span> et celle rappelée en question 1.</p></li>
 <li><p>En utilisant le théorème proposé avec <span class="math inline">\(A=(X'X + \kappa I)^{-1}\)</span> et <span class="math inline">\(B=(\sigma^2(2I_p+\kappa^2(X'X)^{-1})-\kappa\beta\beta')\)</span> nous obtenons le résultat demandé. Cette condition dépend de <span class="math inline">\(\beta\)</span> qui est inconnu, mais aussi de <span class="math inline">\(X\)</span>, c’est-à-dire des mesures obtenues.</p></li>
 <li><p>Intéressons-nous à la matrice <span class="math inline">\(\gamma\gamma'\)</span>. Cette matrice est symétrique donc diagonalisable, de valeurs propres positives ou nulles. La somme de ses valeurs propres est égale à la trace de cette matrice <span class="math display">\[\begin{eqnarray*}
-\tr(\gamma\gamma')=\tr(\gamma'\gamma)=\gamma'\gamma.
+\text{tr}(\gamma\gamma')=\text{tr}(\gamma'\gamma)=\gamma'\gamma.
 \end{eqnarray*}\]</span> Montrons que cette matrice n’a qu’une seule valeur propre non nulle <span class="math inline">\(\gamma'\gamma\)</span>. Pour cela, considérons le vecteur <span class="math inline">\(\gamma\in\mathbb R^p\)</span> et montrons qu’il est vecteur propre de <span class="math inline">\(\gamma\gamma'\)</span> associé à la valeur propre <span class="math inline">\(\gamma'\gamma\)</span>~: <span class="math display">\[\begin{eqnarray*}
 (\gamma\gamma')\gamma&amp;=&amp;\gamma(\gamma'\gamma)=(\gamma'\gamma)\gamma.
 \end{eqnarray*}\]</span> Nous avons donc un vecteur propre de <span class="math inline">\(\gamma\gamma'\)</span> qui est <span class="math inline">\(\gamma\)</span> associé à la valeur propre <span class="math inline">\(\gamma'\gamma\)</span>. De plus, nous savons que la somme des valeurs propres positives ou nulles de <span class="math inline">\(\gamma\gamma'\)</span> vaut <span class="math inline">\(\gamma'\gamma\)</span>. Nous en déduisons que les <span class="math inline">\(p-1\)</span> valeurs propres restantes sont toutes nulles. Nous pouvons donc dire que la matrice <span class="math inline">\(\gamma\gamma'\)</span> se décompose comme <span class="math display">\[\begin{eqnarray*}
 \gamma\gamma'&amp;=&amp;UDU',
-\end{eqnarray*}\]</span> où <span class="math inline">\(U\)</span> est la matrice orthogonale des vecteurs propres normés à l’unité de <span class="math inline">\(\gamma\gamma'\)</span> et <span class="math inline">\(D=\diag(\gamma'\gamma,0,\dotsc,0)\)</span>. Nous avons donc <span class="math display">\[\begin{eqnarray*}
-I_p-\gamma\gamma'&amp;=&amp;UU' - UDU'=U(\diag(1-\gamma'\gamma,1,\dotsc,1)U'.
+\end{eqnarray*}\]</span> où <span class="math inline">\(U\)</span> est la matrice orthogonale des vecteurs propres normés à l’unité de <span class="math inline">\(\gamma\gamma'\)</span> et <span class="math inline">\(D=\text{diag}(\gamma'\gamma,0,\dotsc,0)\)</span>. Nous avons donc <span class="math display">\[\begin{eqnarray*}
+I_p-\gamma\gamma'&amp;=&amp;UU' - UDU'=U(\text{diag}(1-\gamma'\gamma,1,\dotsc,1)U'.
 \end{eqnarray*}\]</span> Les valeurs propres de <span class="math inline">\(I_p-\gamma\gamma'\)</span> sont donc <span class="math inline">\(1-\gamma'\gamma,1,\dotsc,1\)</span>, qui sont toutes positives ou nulles dès que <span class="math inline">\(\gamma'\gamma\le 1\)</span>.</p></li>
 <li><p>Une condition pour que <span class="math inline">\(\sigma^2(2I_p-\kappa\beta\beta')\)</span> soit semi-définie positive est que <span class="math inline">\((\kappa\beta\beta')\le \sigma^2\)</span> (cf.&nbsp;question précédente) et donc <span class="math inline">\((\sigma^2(2I_p+\kappa^2(X'X)^{-1})-\kappa\beta\beta')\)</span> est alors la somme de 2 matrices semi-définies positives donc semi-définie positive. Cela implique qu’il s’agit d’une condition suffisante pour que <span class="math inline">\(\Delta\)</span> soit semi-définie positive.</p></li>
 <li><p>Nous venons de montrer 2 conditions, l’une nécessaire et suffisante, l’autre suffisante, afin que <span class="math inline">\(\Delta\)</span> soit semi-définie positive. Cette assertion signifie que, quelle que soit la combinaison linéaire du vecteur de paramètre (par exemple une coordonnée), l’estimateur ridge est meilleur que celui des MC au sens de l’EQM. Cela signifie aussi que, si une de ces conditions est vérifiée, globalement au sens de la trace de l’EQM, l’estimateur ridge est meilleur que celui des MC. Au niveau des conditions, cela permet de trouver la valeur optimale de <span class="math inline">\(\kappa\)</span>. Malheureusement chacune des 2 conditions dépend de la valeur <span class="math inline">\(\beta\)</span> inconnue et donc n’est pas réellement utilisable en pratique. La condition suffisante procure une amélioration, dans le sens où elle ne dépend pas de <span class="math inline">\(X\)</span> donc de l’expérience. Le prix à payer est bien sûr qu’il s’agit seulement d’une condition suffisante et donc plus restrictive.</p></li>
@@ -626,7 +626,7 @@ I_p-\gamma\gamma'&amp;=&amp;UU' - UDU'=U(\diag(1-\gamma'\gamma,1,\dotsc,1)U'.
 \sum_{i=1}^n \left(\sqrt{p_i}y_i-\sum_{j=1}^p \beta_j\sqrt{p_i} x_{ij}\right)^2
 = \sum_{i=1}^n \left(y^\star_i-\sum_{j=1}^p \beta_jx_{ij}^\star\right)^2,
 \end{eqnarray*}\]</span> où <span class="math inline">\(y^\star_i=\sqrt{p_i}y_i\)</span> et <span class="math inline">\(x_{ij}^\star = \sqrt{p_i} x_{ij}\)</span>.</p></li>
-<li><p>Notons <span class="math inline">\(P^{1/2}\)</span> la matrice des poids qui vaut <span class="math inline">\(P^{1/2}=\diag(\sqrt{p_i})\)</span>. Ce dernier critère est un critère des MC avec comme observations <span class="math inline">\(Y^\star\)</span> et <span class="math inline">\(X^\star\)</span> où <span class="math inline">\(Y^\star = P^{1/2} Y\)</span> et <span class="math inline">\(X^\star = P^{1/2} X\)</span>. L’estimateur vaut alors <span class="math display">\[\begin{eqnarray*}
+<li><p>Notons <span class="math inline">\(P^{1/2}\)</span> la matrice des poids qui vaut <span class="math inline">\(P^{1/2}=\text{diag}(\sqrt{p_i})\)</span>. Ce dernier critère est un critère des MC avec comme observations <span class="math inline">\(Y^\star\)</span> et <span class="math inline">\(X^\star\)</span> où <span class="math inline">\(Y^\star = P^{1/2} Y\)</span> et <span class="math inline">\(X^\star = P^{1/2} X\)</span>. L’estimateur vaut alors <span class="math display">\[\begin{eqnarray*}
 \hat \beta_{pond} &amp;=&amp; (X^{\star\prime}X^\star)^{-1}X^{\star\prime}Y^\star\\
 &amp;=&amp; (X'PX)^{-1}X'PY.
 \end{eqnarray*}\]</span></p></li>
