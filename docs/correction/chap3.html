@@ -550,7 +550,7 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Exercice 1 (Questions de cours)</strong></span> C si <span class="math inline">\(\mathbf{1}\)</span> fait partie des variables ou si <span class="math inline">\(\mathbf{1} \in \Im(X)\)</span>, A, C, C, A.</p>
 </div>
 <div id="exr-3-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Propriétés d’une matrice de projection)</strong></span> La trace d’un projecteur vaut la dimension de l’espace sur lequel s’effectue la projection, donc <span class="math inline">\(\tr(P_X)=p\)</span>. Le second point découle de la propriété <span class="math inline">\(P^2=P\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercice 2 (Propriétés d’une matrice de projection)</strong></span> La trace d’un projecteur vaut la dimension de l’espace sur lequel s’effectue la projection, donc <span class="math inline">\(\text{tr}(P_X)=p\)</span>. Le second point découle de la propriété <span class="math inline">\(P^2=P\)</span>.</p>
 <p>Les matrices <span class="math inline">\(P_X\)</span> et <span class="math inline">\(P_XP_X\)</span> sont égales, nous avons que <span class="math inline">\((P_X)_{ii}\)</span> vaut <span class="math inline">\((P_XP_X)_{ii}\)</span>. Cela s’écrit <span class="math display">\[\begin{eqnarray*}
 h_{ii} &amp;=&amp;  \sum_{k=1}^n h_{ik} h_{ki}\\
 &amp;=&amp; h_{ii}^2 + \sum_{k=1, k \neq i}^n h_{ik}^2\\
@@ -573,20 +573,20 @@ h_{ii}(1-h_{ii}) &amp;=&amp; h_{ij}^2 + \sum_{k=1, k \neq i ,j }^n h_{ik}^2.
 <ol start="2" type="1">
 <li><p>Il suffit d’utiliser la définition du produit matriciel et de la somme matricielle et d’identifier les 2 membres des égalités.</p></li>
 <li><p>En utilisant maintenant l’égalité de l’exercice précédent sur les inverses, avec <span class="math inline">\(u=-x_i\)</span> et <span class="math inline">\(v=x_i'\)</span>, nous avons <span class="math display">\[\begin{eqnarray*}
-(\ssli{X'}{i}\ssli{X}{i})^{-1}=(X'X-\li{x}{i}\li{x}{i}')^{-1}=(X'X)^{-1}+
-\frac{(X'X)^{-1}\li{x}{i}\li{x}{i}'(X'X)^{-1}}
-{1-\li{x}{i}'(X'X)^{-1}\li{x}{i}}.%\label{eq:hiieta}
-\end{eqnarray*}\]</span> La définition de <span class="math inline">\(h_{ii}=\li{x}{i}'(X'X)^{-1}\li{x}{i}\)</span> donne le résultat.</p></li>
+(X'_{(i)}X_{(i)})^{-1}=(X'X-x_{i}x_{i}')^{-1}=(X'X)^{-1}+
+\frac{(X'X)^{-1}x_{i}x_{i}'(X'X)^{-1}}
+{1-x_{i}'(X'X)^{-1}x_{i}}.%\label{eq:hiieta}
+\end{eqnarray*}\]</span> La définition de <span class="math inline">\(h_{ii}=x_{i}'(X'X)^{-1}x_{i}\)</span> donne le résultat.</p></li>
 <li><p>Calculons la prévision où <span class="math inline">\(\hat \beta_{(i)}\)</span> est l’estimateur de <span class="math inline">\(\beta\)</span> obtenu sans la <span class="math inline">\(i^e\)</span> observation</p></li>
 </ol>
 <p><span class="math display">\[\begin{eqnarray*}
 \hat y_i^p
-= \li{x}{i}'\hat \beta_{(i)}
-&amp;=&amp; \li{x}{i}' (\ssli{X'}{i}\ssli{X}{i})^{-1}\ssli{X'}{i}Y_{(i)}\\
-&amp;=&amp; \li{x}{i}'\left[(X'X)^{-1}
-+ \frac{(X'X)^{-1}\li{x}{i}\li{x}{i}'(X'X)^{-1}}{1-h_{ii}}
-\right]\left(X'Y-\li{x}{i}'y_i\right)\\
-&amp;=&amp; \li{x}{i}' \hat \beta + \frac{h_{ii}}{1-h_{ii}}\li{x}{i}' \hat \beta
+= x_{i}'\hat \beta_{(i)}
+&amp;=&amp; x_{i}' (X'_{(i)}X_{(i)})^{-1}X'_{(i)}Y_{(i)}\\
+&amp;=&amp; x_{i}'\left[(X'X)^{-1}
++ \frac{(X'X)^{-1}x_{i}x_{i}'(X'X)^{-1}}{1-h_{ii}}
+\right]\left(X'Y-x_{i}'y_i\right)\\
+&amp;=&amp; x_{i}' \hat \beta + \frac{h_{ii}}{1-h_{ii}}x_{i}' \hat \beta
 - h_{ii}y_i -\frac{h_{ii}^2}{1-h_{ii}}y_i\\
 &amp;=&amp; \frac{1}{1-h_{ii}}\hat y_i - \frac{h_{ii}}{1-h_{ii}}y_i.
 \end{eqnarray*}\]</span></p>
@@ -596,15 +596,15 @@ h_{ii}(1-h_{ii}) &amp;=&amp; h_{ij}^2 + \sum_{k=1, k \neq i ,j }^n h_{ik}^2.
 \end{eqnarray*}\]</span> Nous avons alors <span class="math display">\[\begin{eqnarray*}
 t^*_i &amp;=&amp; \frac{\hat \varepsilon_i}{\hat \sigma_{(i)}\sqrt{1-h_{ii}}}\\
 &amp;=&amp;\frac{\sqrt{(1-h_{ii})}(y_i - \hat y_i^p)}{\hat \sigma_{(i)}}.
-\end{eqnarray*}\]</span> Pour terminer, remarquons qu’en multipliant l’égalité de la question 3 à gauche par <span class="math inline">\(\li{x}{i}'\)</span> et à droite par <span class="math inline">\(\li{x}{i}\)</span> <span class="math display">\[\begin{eqnarray*}
-\li{x}{i}'(\ssli{X'}{i}\ssli{X}{i})^{-1}\li{x}{i}
+\end{eqnarray*}\]</span> Pour terminer, remarquons qu’en multipliant l’égalité de la question 3 à gauche par <span class="math inline">\(x_{i}'\)</span> et à droite par <span class="math inline">\(x_{i}\)</span> <span class="math display">\[\begin{eqnarray*}
+x_{i}'(X'_{(i)}X_{(i)})^{-1}x_{i}
 &amp;=&amp; h_{ii}+ \frac{h_{ii}^2}{1-h_{ii}}.\\
-1+\li{x}{i}'(\ssli{X'}{i}\ssli{X}{i})^{-1}\li{x}{i}
+1+x_{i}'(X'_{(i)}X_{(i)})^{-1}x_{i}
 &amp;=&amp; 1 +\frac{h_{ii}}{1-h_{ii}}=\frac{h_{ii}}{1-h_{ii}}.
 \end{eqnarray*}\]</span></p></li>
 <li><p>Utilisons l’expression <span class="math display">\[\begin{eqnarray*}
 t^*_i=\frac{y_i-\hat y_i^p }
-{\hat \sigma_{(i)}\sqrt{1+\li{x}{i}'(\ssli{X'}{i}\ssli{X}{i})^{-1}\li{x}{i}}}.
+{\hat \sigma_{(i)}\sqrt{1+x_{i}'(X'_{(i)}X_{(i)})^{-1}x_{i}}}.
 \end{eqnarray*}\]</span> Nous pouvons alors appliquer la preuve de la proposition 5.4 page 97, en constatant que la <span class="math inline">\(i^e\)</span> observation est une nouvelle observation. Nous avons donc <span class="math inline">\(n-1\)</span> observations pour estimer les paramètres, cela donne donc un Student à <span class="math inline">\(n-1-p\)</span> paramètres.</p></li>
 </ol>
 </div>
@@ -612,20 +612,20 @@ t^*_i=\frac{y_i-\hat y_i^p }
 <p><span class="theorem-title"><strong>Exercice 5 (Distance de Cook)</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Nous reprenons une partie des calculs de l’exercice précédent : <span class="math display">\[\begin{eqnarray*}
-\hat \beta_{(i)} &amp;=&amp; (\ssli{X'}{i}\ssli{X}{i})^{-1}\ssli{X'}{i}\ssli{Y}{i}\\
-&amp;=&amp; (X'X)^{-1}[X'Y-\li{x}{i}y_i]+\frac{1}{1-h_{ii}}
-(X'X)^{-1}\li{x}{i}\li{x}{i}'(X'X)^{-1}[X'Y-\li{x}{i}y_i]\\
-&amp;=&amp; \hat \beta - (X'X)^{-1}\li{x}{i}y_i + \frac{1}{1-h_{ii}}
-(X'X)^{-1}\li{x}{i}\li{x}{i}'\hat \beta - \frac{h_{ii}}{1-h_{ii}}
-(X'X)^{-1}\li{x}{i}y_i,
+\hat \beta_{(i)} &amp;=&amp; (X'_{(i)}X_{(i)})^{-1}X'_{(i)}Y_{(i)}\\
+&amp;=&amp; (X'X)^{-1}[X'Y-x_{i}y_i]+\frac{1}{1-h_{ii}}
+(X'X)^{-1}x_{i}x_{i}'(X'X)^{-1}[X'Y-x_{i}y_i]\\
+&amp;=&amp; \hat \beta - (X'X)^{-1}x_{i}y_i + \frac{1}{1-h_{ii}}
+(X'X)^{-1}x_{i}x_{i}'\hat \beta - \frac{h_{ii}}{1-h_{ii}}
+(X'X)^{-1}x_{i}y_i,
 \end{eqnarray*}\]</span> d’où le résultat.</p></li>
 <li><p>Pour obtenir la seconde écriture de la distance de Cook, nous écrivons d’abord que <span class="math display">\[\begin{eqnarray*}
 \hat \beta_{(i)} - \hat \beta = \frac{- \hat \varepsilon_i}{1-h_{ii}}
-(X'X)^{-1}\li{x}{i}.
+(X'X)^{-1}x_{i}.
 \end{eqnarray*}\]</span> Puis nous développons <span class="math display">\[\begin{eqnarray*}
 C_i &amp;=&amp; \frac{1}{p \hat \sigma^2}(\hat \beta_{[i]}-\hat \beta)'
 X'X(\hat \beta_{(i)}-\hat \beta)\\
-&amp;=&amp; \frac{1}{p \hat \sigma^2} \left(\frac{- \hat \varepsilon_i}{1-h_{ii}}\right)^2 \li{x}{i}' (X'X)^{-1}(X'X)(X'X)^{-1}\li{x}{i}.
+&amp;=&amp; \frac{1}{p \hat \sigma^2} \left(\frac{- \hat \varepsilon_i}{1-h_{ii}}\right)^2 x_{i}' (X'X)^{-1}(X'X)(X'X)^{-1}x_{i}.
 \end{eqnarray*}\]</span> Le résultat est démontré.</p></li>
 </ol>
 </div>
