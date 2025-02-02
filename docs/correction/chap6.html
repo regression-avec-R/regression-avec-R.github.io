@@ -727,13 +727,13 @@ Y &amp;=&amp; P_{E_1}(Y) + P_{E_2}(Y) + P_{E_3}(Y) + P_{E_4}(Y) + P_{E^\perp}(Y)
 \begin{array}{ccccccccccc}
 \|Y - \bar Y \|^2 &amp;=&amp;  \| P_{E_2}(Y)\|^2 &amp;+&amp;
 \|P_{E_3}(Y)\|^2 &amp;+&amp; \|P_{E_4}(Y)\|^2 &amp;+&amp; \|P_{E^\perp}(Y)\|^2\\
-\mathop{\mathrm{SCT}}&amp;=&amp; \SC_A &amp;+&amp; \SC_B &amp;+&amp; \SC_{AB} &amp;+&amp; \mathop{\mathrm{SCR}},
+\mathop{\mathrm{SCT}}&amp;=&amp; \mathop{\mathrm{SC}}_A &amp;+&amp; \mathop{\mathrm{SC}}_B &amp;+&amp; \mathop{\mathrm{SC}}_{AB} &amp;+&amp; \mathop{\mathrm{SCR}},
 \end{array}
 \end{eqnarray*}\]</span> où <span class="math display">\[\begin{eqnarray*}
 \mathop{\mathrm{SCT}}&amp;=&amp; \sum_i \sum_j \sum k (y_{ijk} - \bar y)^2\\
-\SC_A &amp;=&amp; Jr \sum_i (y_{i..}-\bar y)^2\\
-\SC_B &amp;=&amp; Ir \sum_j (y_{.j.} - \bar y)^2\\
-\SC_{AB} &amp;=&amp; r \sum_i \sum_j (y_{ij.} - y_{i..} - y_{.j.} +\bar y)^2\\
+\mathop{\mathrm{SC}}_A &amp;=&amp; Jr \sum_i (y_{i..}-\bar y)^2\\
+\mathop{\mathrm{SC}}_B &amp;=&amp; Ir \sum_j (y_{.j.} - \bar y)^2\\
+\mathop{\mathrm{SC}}_{AB} &amp;=&amp; r \sum_i \sum_j (y_{ij.} - y_{i..} - y_{.j.} +\bar y)^2\\
 \mathop{\mathrm{SCR}}&amp;=&amp; \sum_i \sum_j \sum_k (y_{ijk}- \bar{y_{ij}})^2.
 \end{eqnarray*}\]</span></p>
 <p>Afin de bien visualiser les vecteurs voici un exemple avec <span class="math inline">\(I=2\)</span>, <span class="math inline">\(J=3\)</span> et <span class="math inline">\(r=2\)</span> en remplaçant les <span class="math inline">\(0\)</span> par <span class="math inline">\(.\)</span> :</p>
@@ -801,10 +801,10 @@ F_{2}&amp;=(\vec{e}_{1.}|\vec{e}_{2}|\cdots|\vec{e}_{I.})
 \end{align*}\]</span> on a le projecteur <span class="math display">\[\begin{align*}
 P_{F_{2}}&amp;=F_{2}(F_{2}'F_{2})^{-1}F'_{2}
 \end{align*}\]</span> En effectuant le calcul matriciel on a <span class="math display">\[\begin{align*}
-(F_{2}'F_{2})&amp;=\diag(I, I, \dotsc, I)
+(F_{2}'F_{2})&amp;=\text{diag}(I, I, \dotsc, I)
 \end{align*}\]</span> et par calcul matriciel direct on trouve <span id="eq-pf2bis"><span class="math display">\[
 \begin{align}
-P_{F_{2}}Y&amp;=F_{2}\diag(1/I, 1/I, \dotsc, 1/I)F_{2}'Y\nonumber\\
+P_{F_{2}}Y&amp;=F_{2}\text{diag}(1/I, 1/I, \dotsc, 1/I)F_{2}'Y\nonumber\\
 &amp;=F_{2}
 \begin{pmatrix}
 \bar Y_{1..}\\
@@ -829,7 +829,7 @@ P_{3}Y&amp;=(\bar Y_{.1.}-\bar Y_{...}) \vec{e}_{.1} + (\bar Y_{.2.}-\bar Y_{...
 + \dotsc +(\bar Y_{.J.}-\bar Y_{...})\vec{e}_{.J}.
 \end{align*}\]</span></li>
 <li>Enfin pour <span class="math inline">\(E_{4}\)</span>, remarquons que <span class="math inline">\(F_{4}=E=\vect(\vec{e}_{11}, \dotsc, \vec{e}_{IJ})\)</span>. La projection sur <span class="math inline">\(E\)</span> identifié à sa matrice <span class="math inline">\((\vec{e}_{11}| \dotsc |\vec{e}_{IJ})\)</span> peut être calculée de manière directe comme <span class="math display">\[\begin{align}
-P_{E}Y&amp;=E\diag(1/r, 1/r, \cdots, 1/r)E'Y\nonumber\\
+P_{E}Y&amp;=E\text{diag}(1/r, 1/r, \cdots, 1/r)E'Y\nonumber\\
 &amp;=E
 \begin{pmatrix}
 \bar Y_{11.}\\
@@ -886,7 +886,7 @@ Y&amp;=\bar Y_{...} \vec{e}\\
 (Y_{ijk} -  \bar Y_{ij})^{2}.
 \end{split}
 \tag{8}\]</span></span> En multipliant par <span class="math inline">\(1/n\)</span> l’équation ci-dessus nous obtenons la décomposition de la variance.</p></li>
-<li><p>Le vecteur <span class="math inline">\(Y\)</span> grâce à <span class="math inline">\(\HH_{3}\)</span> est un vecteur gaussien de moyenne <span class="math inline">\(\vec{m}=\mu +\alpha_i+\beta_j+(\alpha\beta)_{ij}\)</span> et de variance <span class="math inline">\(\sigma^{2}I_{n}\)</span>. On sait que <span class="math display">\[\begin{align*}
+<li><p>Le vecteur <span class="math inline">\(Y\)</span> grâce à <span class="math inline">\({\mathcal{H}}_{3}\)</span> est un vecteur gaussien de moyenne <span class="math inline">\(\vec{m}=\mu +\alpha_i+\beta_j+(\alpha\beta)_{ij}\)</span> et de variance <span class="math inline">\(\sigma^{2}I_{n}\)</span>. On sait que <span class="math display">\[\begin{align*}
 P_{E}Y &amp;= P_{1}Y + P_{2}Y + P_{3}Y + P_{4}Y
 \end{align*}\]</span> Grâce au théorème de Cochran on a que <span class="math display">\[
 \frac{\|P_{i}Y -P_{i}\vec{m} \|^{2}}{\sigma^{2}} \sim \chi^{2} (dim(E_{i}))
@@ -900,9 +900,9 @@ P_{E}Y &amp;= P_{1}Y + P_{2}Y + P_{3}Y + P_{4}Y
 \mathop{\mathrm{SCE}}_{ab}&amp;=\|P_{4}Y\|^{2}\sim \sigma^{2}\chi^{2} ((I-1)(J-1)), \|P_{4}\vec{m} \|^{2}),\\
 \mathop{\mathrm{SCE}}_{ab}&amp;=\|P_{Q}Y\|^{2}\sim \sigma^{2}\chi^{2} (n - IJ).
 \end{align*}\]</span> Nous voyons donc que chaque terme est la norme carrée d’une projection du vecteur gaussien <span class="math inline">\(Y\)</span> dans un sous-espace et que ces sous-espaces sont orthogonaux 2 à 2. Les vecteurs gaussiens projetés sont donc indépendants ainsi que leur norme au carré. Les lois de ces normes carrées sont donc à <span class="math inline">\(\sigma^{2}\)</span> près des <span class="math inline">\(\chi^{2}\)</span> décentrés (sauf pour <span class="math inline">\(Q\)</span>) qui sont indépendants.</p></li>
-<li><p>Notons <span class="math inline">\(\CME_{ab} = \mathop{\mathrm{SCE}}_{ab}/((I-1)(J-1))\)</span> et <span class="math inline">\(\CMR = \mathop{\mathrm{SCR}}/(n-IJ)\)</span> nous avons donc <span class="math display">\[\begin{align*}
-\frac{\CME_{ab}}{\CMR}&amp;=\frac{\frac{\mathop{\mathrm{SCE}}_{ab}}{\sigma^{2}(I-1)(J-1)}}{\frac{\mathop{\mathrm{SCR}}}{\sigma^{2}(n-IJ)}}
-\end{align*}\]</span> qui est le rapport de deux <span class="math inline">\(\chi^{2}\)</span> indépendants ramenés à leur degrés de liberté et dont le numérateur est décentré. Nous avons donc une loi de Fisher de paramètres <span class="math inline">\((I-1)(J-1), n -IJ, \|P_{4}\vec{m} \|^{2}\)</span>. Sous <span class="math inline">\(\Hz:\)</span> « il n’y a pas d’interaction » (ou <span class="math inline">\(P_{4}\vec{m}=0\)</span>) alors la loi se simplifie et le paramètre de décentrage inconnu (qui dépend de <span class="math inline">\(\vec{m}\)</span>) disparaît et la loi est <span class="math inline">\(F((I-1)(J-1), n -IJ)\)</span>.</p></li>
+<li><p>Notons <span class="math inline">\(\mathop{\mathrm{CME}}_{ab} = \mathop{\mathrm{SCE}}_{ab}/((I-1)(J-1))\)</span> et <span class="math inline">\(\mathop{\mathrm{CMR}}= \mathop{\mathrm{SCR}}/(n-IJ)\)</span> nous avons donc <span class="math display">\[\begin{align*}
+\frac{\mathop{\mathrm{CME}}_{ab}}{\mathop{\mathrm{CMR}}}&amp;=\frac{\frac{\mathop{\mathrm{SCE}}_{ab}}{\sigma^{2}(I-1)(J-1)}}{\frac{\mathop{\mathrm{SCR}}}{\sigma^{2}(n-IJ)}}
+\end{align*}\]</span> qui est le rapport de deux <span class="math inline">\(\chi^{2}\)</span> indépendants ramenés à leur degrés de liberté et dont le numérateur est décentré. Nous avons donc une loi de Fisher de paramètres <span class="math inline">\((I-1)(J-1), n -IJ, \|P_{4}\vec{m} \|^{2}\)</span>. Sous <span class="math inline">\({\mathrm{H_0}}:\)</span> « il n’y a pas d’interaction » (ou <span class="math inline">\(P_{4}\vec{m}=0\)</span>) alors la loi se simplifie et le paramètre de décentrage inconnu (qui dépend de <span class="math inline">\(\vec{m}\)</span>) disparaît et la loi est <span class="math inline">\(F((I-1)(J-1), n -IJ)\)</span>.</p></li>
 </ol>
 </div>
 

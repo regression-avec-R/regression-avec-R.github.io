@@ -571,7 +571,7 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">T12=</span>grillex)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
-<li><p>On effectue une regression polynomiale de degré 3</p>
+<li><p>On effectue une régression polynomiale de degré 3</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>basepoly <span class="ot">&lt;-</span> <span class="fu">poly</span>(ozone<span class="sc">$</span>T12,<span class="at">degree=</span><span class="dv">3</span>,<span class="at">raw=</span>T)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>newval <span class="ot">&lt;-</span> <span class="fu">predict</span>(basepoly,df<span class="sc">$</span>T12)</span>
@@ -612,7 +612,7 @@ window.Quarto = {
 <div id="exr-16-3" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 3</strong></span> On applique la fonction précédente</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees//ozone_simple.txt"</span>,<span class="at">header=</span>T,<span class="at">sep=</span><span class="st">";"</span>)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone_simple.txt"</span>,<span class="at">header=</span>T,<span class="at">sep=</span><span class="st">";"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(O3 <span class="sc">~</span> T12, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">35</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>), <span class="at">data=</span>ozone)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(ii <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">9</span>)){</span>
