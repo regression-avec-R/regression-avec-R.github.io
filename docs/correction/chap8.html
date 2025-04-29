@@ -445,6 +445,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -550,10 +556,59 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Exercice 1 (Questions de cours)</strong></span> A, B, B, B, A (pour un bon choix de <span class="math inline">\(\lambda\)</span>) et B, A, C et D.</p>
 </div>
 <div id="exr-8-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Projection et régression ridge)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 2 (Projection et régression ridge)</strong></span> L’ajustement avec la méthode ridge est <span class="math display">\[
+\begin{align*}
+\hat Y_{\mathrm{ridge}}&amp;= X(X'X - \kappa I)^{-1}X'Y=H^*(\kappa)Y.
+\end{align*}
+\]</span> Nous avons que <span class="math inline">\(H^*(\kappa)H^*(\kappa) \neq H^*(\kappa)\)</span> sauf si <span class="math inline">\(\kappa=0\)</span> (cas des MC) et donc ce n’est pas un projecteur.</p>
 </div>
 <div id="exr-8-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Variance des valeurs ajustées avec une régression ridge)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 3 (Variance des valeurs ajustées avec une régression ridge)</strong></span> <span class="math inline">\(X\)</span> de rang <span class="math inline">\(p\)</span>. Soit la décomposition en valeurs singulières de <span class="math inline">\(X\)</span>~: <span class="math display">\[
+\begin{align*}
+X &amp;=U\Lambda V'
+\end{align*}
+\]</span> avec <span class="math inline">\(U\)</span> de dimension <span class="math inline">\(n\times p\)</span> (avec <span class="math inline">\(U'U=I_p\)</span> mais nous n’avons pas <span class="math inline">\(UU'\)</span>…), <span class="math inline">\(V\)</span> <span class="math inline">\(p\times p\)</span> (avec <span class="math inline">\(V'V=VV'=I_p\)</span>) et <span class="math inline">\(\Lambda=\text{diag}(\lambda_j)\)</span>.</p>
+<p>De cette décomposition et de ses propriétés nous déduisons <span class="math display">\[
+\begin{align*}
+X' &amp;=V\Lambda U'\\
+X'X &amp;=V\Lambda^2 V'
+(X'X)^{-1} &amp;=V\Lambda^{-2} V'\\
+(X'X + \kappa I)^{-1} &amp;=(V\Lambda^2 V' + \kappa VV')^{-1} = V(\text{diag}(\lambda_j^2 + \kappa)^{-1} V'
+\end{align*}
+\]</span> L’ajustement avec la méthode ridge est <span class="math display">\[
+\begin{align*}
+  \hat Y_{\mathrm{ridge}}&amp;= X(X'X - \kappa I)^{-1}X'Y=U\Lambda V'
+  V(\text{diag}(1/(\lambda_j^2 + \kappa))V'V\Lambda U'Y = U\Lambda \text{diag}(1/(\lambda_j^2 + \kappa)) \Lambda U'Y
+  =U\text{diag}(\lambda_j^2/(\lambda_j^2 + \kappa))U'Y
+\end{align*}
+\]</span> et celui des MCO est <span class="math display">\[
+\begin{align*}
+  \hat Y&amp;= X(X'X)^{-1}X'Y=U\Lambda V'
+  V(\Lambda^{-2}) V'V\Lambda U'Y = UU'Y.
+\end{align*}
+\]</span></p>
+<p>Calculons leur norme carrée <span class="math display">\[
+\begin{align*}
+  \|\hat Y_{\mathrm{ridge}}\|^2&amp;=\hat Y_{\mathrm{ridge}}'\hat Y_{\mathrm{ridge}}
+  =Y'U\text{diag}(\lambda_j^2/(\lambda_j^2 + \kappa))U'U\text{diag}(\lambda_j^2/(\lambda_j^2 + \kappa))U'Y=Y'U\text{diag}(\lambda_j^4/(\lambda_j^2 + \kappa)^2)U'Y\\
+\|\hat Y\|^2&amp;=\hat Y\hat Y
+  =Y'UU'UU'Y=Y'UU'Y\\
+\end{align*}
+\]</span> Comme <span class="math inline">\(X\)</span> est de rang <span class="math inline">\(p\)</span> on a <span class="math inline">\(\lambda_j&gt;0\)</span> pour tout <span class="math inline">\(j\)</span>. Si on choisit <span class="math inline">\(\kappa\)</span> tel que <span class="math inline">\(\lambda_j^4/(\lambda_j^2 + \kappa)^2&lt;1\)</span> pour toutes les valeurs <span class="math inline">\(j\)</span> on obtient le résultat.</p>
+<p><span class="math inline">\(X\)</span> de rang <span class="math inline">\(r&lt;p\)</span>. Nous avons toujours la décomposition en valeurs singulières de <span class="math inline">\(X\)</span>. Nous pouvons l’écrire comme <span class="math display">\[
+\begin{align*}
+X &amp;=U\Lambda V'
+\end{align*}
+\]</span> (avec <span class="math inline">\(U'U=I_p\)</span> mais nous n’avons pas <span class="math inline">\(UU'\)</span>…), <span class="math inline">\(V\)</span> <span class="math inline">\(p\times p\)</span> (avec <span class="math inline">\(V'V=VV'=I_p\)</span>) et <span class="math inline">\(\Lambda=\text{diag}(\lambda_1,\dotsc,\lambda_r,0,\dotsc, 0)\)</span> mais après le rang <span class="math inline">\(r\)</span> (avec <span class="math inline">\(r&lt;p\)</span>) les valeurs singulières sont nulles.</p>
+<p>Ici <span class="math inline">\(\Lambda\)</span> n’est plus inversible ou encore <span class="math inline">\(X'X\)</span> n’est pas inversible. On ne peut donc écrire l’ajustement par MCO comme <span class="math inline">\(X(X'X)^{-1}X'Y\)</span> car cela n’a pas de sens, mais on peut prendre l’inverse généralisé de Moore-Penrose à la place de l’inverse: <span class="math display">\[
+\begin{align*}
+  \hat Y&amp;=P_X Y=  X(X'X)^{+}X'Y
+\end{align*}
+\]</span> Techniquement pour calculer cet inverse il suffit d’inverser les valeurs propres non nulles (ou les carrés des valeurs singulières) et de laisser les autres à zéros: <span class="math display">\[
+\begin{align*}
+  (X'X)^{+}&amp;=V\text{diag}(\frac{1}{\lambda^2_1},\dotsc,\frac{1}{\lambda^2_r},0,\dotsc,0)V'
+\end{align*}
+\]</span> Si on note (avec un abus de notation) <span class="math inline">\(\Lambda^{-2}=\text{diag}(\frac{1}{\lambda^2_1},\dotsc,\frac{1}{\lambda^2_r},0,\dotsc,0)\)</span> on a alors les mêmes formules pour les ajustements et les normes et donc la même conclusion.</p>
 </div>
 <div id="exr-8-4" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 4 (Nombre effectif de paramètres de la régression ridge)</strong></span> &nbsp;</p>
@@ -636,7 +691,7 @@ B(\hat\gamma)=QAXQ'\gamma-\gamma.
 &amp;=&amp;\beta'(AX-I_p)(AX-I_p)\beta+ \sigma^2\text{tr}(AA')=\text{tr}(\mathop{\mathrm{EQM}}(\hat \beta)).
 \end{eqnarray*}
 \]</span> En conclusion, que l’on s’intéresse à un estimateur linéaire de <span class="math inline">\(\beta\)</span> ou à un estimateur linéaire de <span class="math inline">\(\gamma\)</span>, dès que l’on passe de l’un à l’autre en multipliant par <span class="math inline">\(Q\)</span> ou <span class="math inline">\(Q'\)</span>, matrice orthogonale, la trace de l’EQM est identique, c’est-à-dire que les performances globales des 2 estimateurs sont identiques.</p></li>
-<li><p>Nous avons le modèle de régression suivant~: <span class="math display">\[
+<li><p>Nous avons le modèle de régression suivant : <span class="math display">\[
 Z_{1:p}=\Delta\gamma+\eta_{1:p},
 \]</span> et donc, par définition de l’estimateur des MC, nous avons <span class="math display">\[
 \hat \gamma_{\mathrm{MC}}=(\Delta'\Delta)^{-1}\Delta'Z_{1:p}.
@@ -695,9 +750,106 @@ D =
 </div>
 <div id="exr-8-6" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 6 (Coefficient constant et régression sous contraintes)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><p>Comme chaque variable <span class="math inline">\(X_j\)</span>, <span class="math inline">\(1\leq j \leq (p-1)\)</span>, est centrée on a <span class="math display">\[
+\begin{align*}
+  \bar X_j =0 =\frac{1}{n}&lt;\mathbf{1}_n, X_j&gt;
+\end{align*}
+\]</span> donc <span class="math inline">\(\forall z\in\mathsf{Vect}(X_\xi)\)</span> on a <span class="math inline">\(z=X_\xi\alpha\)</span> avec <span class="math inline">\(\alpha\in\mathbb R^{p-1}\)</span> et donc <span class="math display">\[%
+\begin{align*}
+  &lt;\mathbf{1}, z&gt;&amp;=\mathbf{1}' X_\xi\alpha = 0
+\end{align*}
+\]</span> ou écrit autrement <span class="math inline">\(\mathsf{Vect}(\mathbf{1}) \stackrel{\perp}{\oplus} \mathsf{Vect}(X_{\xi})\)</span>.</p></li>
+<li><p>La fonction à minimiser est <span class="math inline">\(\|Y-X\beta\|^2+\lambda J(\beta_\xi)\)</span> et on a la décomposition unique de <span class="math inline">\(Y\)</span>: <span class="math inline">\(Y=P_X Y + P_{X^\perp} Y\)</span> que l’on peut insérer dans la fonction à minimiser: <span class="math display">\[%
+\begin{align*}
+\|Y-X\beta\|^2+\lambda J(\beta_\xi)&amp;=\|P_X Y + P_{X^\perp} Y-X\beta\|^2+\lambda J(\beta_\xi)
+\end{align*}
+\]</span> Comme <span class="math inline">\(X\beta\)</span> est dans <span class="math inline">\(\mathsf{Vect}(X)\)</span> donc par Pythagore on a <span class="math display">\[%
+\begin{align*}
+\|Y-X\beta\|^2+\lambda J(\beta_\xi)&amp;=\|P_{X^\perp} Y\|^2 + \|P_X Y-X\beta\|^2+\lambda J(\beta_\xi)
+\end{align*}
+\]</span> L’argument du minimum (sur <span class="math inline">\(\beta\)</span>) ne dépend pas de <span class="math inline">\(\|P_{X^\perp} Y\|^2\)</span> (qui ne dépend pas de <span class="math inline">\(\beta\)</span>) et donc nous pouvons donc minimiser la fonction <span class="math display">\[
+\begin{align*}
+\|P_X Y-X\beta\|^2+\lambda J(\beta_\xi)
+\end{align*}
+\]</span></p></li>
+<li><p>De la question 1. nous avons que <span class="math inline">\(P_X Y= P_\mathbf{1}Y + P_{X_\xi} Y\)</span> et donc par Pythagore nous pouvons minimiser la fonction <span class="math display">\[
+\begin{align*}
+\|P_X Y-X\beta\|^2+\lambda J(\beta_\xi) = \|P_\mathbf{1}Y - \mathbf{1}\beta_p \|^2 +  \|P_{X_\xi} Y-X_\xi\beta_\xi\|^2+\lambda J(\beta_\xi)
+   \end{align*}
+\]</span> Comme <span class="math inline">\(P_\mathbf{1}Y = \mathbf{1}(\mathbf{1}'\mathbf{1})^{-1}\mathbf{1}' Y = \bar y \mathbf{1}\)</span> on a donc que <span class="math inline">\(\hat\beta_p =\bar y\)</span> et que les autres coefficients sont obtenus en minimisant <span class="math display">\[
+\begin{align*}
+\|P_{X_\xi} Y-X_\xi\beta_\xi\|^2+\lambda J(\beta_\xi)
+\end{align*}
+\]</span> ou, en refaisant le même raisonnement qu’en question 2 avec <span class="math inline">\(Y=P_{X_\xi} Y + P_{X_\xi^\perp}Y\)</span> et Pythagore, on peut aussi minimiser <span class="math display">\[
+\begin{align*}
+\|Y-X_\xi\beta_\xi\|^2+\lambda J(\beta_\xi).
+\end{align*}
+\]</span></p></li>
+</ol>
 </div>
 <div id="exr-8-7" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 7 (Unicité pour la régression lasso, Giraud (2014))</strong></span> &nbsp;</p>
+<ol type="1">
+<li><p>Prenons deux solutions du lasso <span class="math inline">\(\hat\beta_1\)</span> et <span class="math inline">\(\hat\beta_2\)</span>, on a donc qu’ils réalisent le minimum: <span class="math display">\[
+\begin{align*}
+\|Y-X\hat\beta_1\|^2+\lambda \|\hat\beta_1\|_1=\|Y-X\hat\beta_2\|^2+\lambda \|\hat\beta_2\|_1 = \mathrm{mini}
+\end{align*}
+\]</span> Prenons le milieu <span class="math inline">\(\hat \beta = (\hat\beta_1 + \hat\beta_2)/2\)</span> on a donc <span class="math display">\[
+\begin{align*}
+  \|Y-X\hat\beta\|^2+\lambda \|\hat\beta\|_1&amp;=
+  \|Y-X\hat\beta_1/2 -X\hat\beta_2/2 \|^2 + \lambda \|\hat\beta_1/2 + \hat\beta_2/2\|_1
+\end{align*}
+\]</span> Comme <span class="math inline">\(\|.\|_1\)</span> est convexe on a donc que <span class="math display">\[
+\begin{align*}
+\lambda \|\hat\beta_1/2 + \hat\beta_2/2\|_1\leq \lambda \|\hat\beta_1/2\|_1 + \|\hat\beta_2/2\|_1 = \lambda/2 (\|\hat\beta_1\|_1 + \|\hat\beta_2\|_1 )
+\end{align*}
+\]</span> D’où l’inégalité <span class="math display">\[
+\begin{align*}
+  \|Y-X\hat\beta\|^2+\lambda \|\hat\beta\|_1&amp;\leq
+  \|Y/2 -X\hat\beta_1/2 + Y/2 -X\hat\beta_2/2 \|^2 + \lambda/2 (\|\hat\beta_1\|_1 + \|\hat\beta_2\|_1 )
+\end{align*}
+\]</span> Maintenant comme <span class="math inline">\(Z\in\mathbb R^n, Z\mapsto \|Y-Z\|^2\)</span> est une fonction strictement convexe on a l’inégalité stricte (si <span class="math inline">\(X\hat\beta_1\neq X\hat\beta_2\)</span>) <span class="math display">\[
+\begin{align*}
+  \|Y-X\hat\beta\|^2+\lambda \|\hat\beta\|_1&amp;&lt;
+  \|Y/2-X\hat\beta_1/2\|^2 + \|Y/2-X\hat\beta_2/2 \|^2 + \lambda/2 (\|\hat\beta_1\|_1 + \|\hat\beta_2\|_1 )\\
+  &amp;=\frac{1}{2}(\|Y-X\hat\beta_1\|^2  \lambda\|\hat\beta_1\|_1) +
+  \frac{1}{2}(\|Y-X\hat\beta_2\|^2  \lambda\|\hat\beta_2\|_1) = \mathrm{mini}
+\end{align*}
+\]</span> ce qui contredit l’hypothèse du minimum atteint en <span class="math inline">\(\hat\beta_1\)</span> ou <span class="math inline">\(\hat\beta_2\)</span>, donc <span class="math inline">\(X\hat\beta_1= X\hat\beta_2\)</span></p></li>
+<li><p>En utilisant la question précédente on ne peut pas avoir deux minimiseurs globaux du lasso avec <span class="math inline">\(X\hat\beta_1\neq X\hat\beta_2\)</span> donc on note la valeur unique <span class="math inline">\(X\hat\beta\)</span>.</p></li>
+<li><p>Si on a 2 vecteurs <span class="math inline">\(z_1\)</span> et <span class="math inline">\(z_2\)</span> dans les sous-différentiels on a <span class="math display">\[
+\begin{align}
+  -2X'(Y-\mu \mathbf{1}-X\hat\beta)+ z_1&amp;=0\\
+  -2X'(Y-\mu \mathbf{1}-X\hat\beta)+ z_2&amp;=0
+\end{align}
+\]</span> Comme <span class="math inline">\(X\hat\beta\)</span> est unique, en faisant la différence on obtient que <span class="math inline">\(z_1-z_2=0\)</span>, on a donc un vecteur <span class="math inline">\(z=z_1=z_2\)</span> unique.</p></li>
+<li><p>Pour une valeur quelconque réalisant le minimum du lasso <span class="math inline">\(X\hat\beta\)</span> est unique on a le vecteur unique <span class="math inline">\(z\)</span> qui s’écrit <span class="math display">\[%
+\begin{align}
+  z&amp;=2X'(Y-\mu \mathbf{1}-X\hat\beta)
+\end{align}
+\]</span> Il en est de même pour l’ensemble des coordonnées de <span class="math inline">\(z\)</span> valant <span class="math inline">\(\pm \lambda\)</span>.</p></li>
+<li><p>Comme on a nécessairement que quand <span class="math inline">\(\hat\beta_j\neq 0\)</span> alors <span class="math inline">\(z_j=\pm\lambda\)</span> on a donc que l’ensemble <span class="math inline">\(\xi\)</span> contient les coordonnées non nulles de <span class="math inline">\(\hat\beta\)</span>.</p></li>
+<li><p>La condition nécessaire et suffisante est <span class="math display">\[%
+\begin{align}
+  -2X'(Y-\mu \mathbf{1}-X\hat\beta)+ z&amp;=0
+\end{align}
+\]</span> Comme <span class="math inline">\(\xi\)</span> contient les coordonnées non nulles on se restreint à <span class="math inline">\(\xi\)</span> et on a <span class="math display">\[%
+\begin{align}
+  -2X_\xi'(Y-\mu \mathbf{1}-X_\xi\hat\beta_\xi)+ z&amp;=0\\
+  2X_\xi'X_\xi\hat\beta_\xi &amp;= 2X_\xi'(Y-\mu \mathbf{1}) - z_\xi &amp;= \\
+\end{align}
+\]</span> et si <span class="math inline">\({\mathcal{H}}_1'\)</span> (<span class="math inline">\(X_\xi\)</span> est de <span class="math display">\[\begin{align*}
+  \|Y-X\hat\beta\|^2+\lambda \|\hat\beta\|_1&amp;&lt;
+  \|Y/2-X\hat\beta_1/2\|^2 + \|Y/2-X\hat\beta_2/2 \|^2 + \lambda/2 (\|\hat\beta_1\|_1 + \|\hat\beta_2\|_1 )\\
+  &amp;=\frac{1}{2}(\|Y-X\hat\beta_1\|^2  \lambda\|\hat\beta_1\|_1) +
+  \frac{1}{2}(\|Y-X\hat\beta_2\|^2  \lambda\|\hat\beta_2\|_1) = \mathrm{mini}
+\end{align*}\]</span> plein rang) alors <span class="math inline">\(X_\xi'X_\xi\)</span> inversible et donc <span class="math display">\[
+\begin{align}
+  \hat\beta_\xi&amp;= (X_\xi'X_\xi)^{-1} (X_\xi'(Y-\mu \mathbf{1}) - z_\xi/2)
+\end{align}
+\]</span> unique.</p></li>
+</ol>
 </div>
 <div id="exr-8-8" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 8</strong></span> &nbsp;</p>

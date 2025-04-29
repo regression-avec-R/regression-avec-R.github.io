@@ -445,6 +445,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -551,32 +557,194 @@ window.Quarto = {
 </div>
 <div id="exr-12-2" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 2</strong></span> &nbsp;</p>
+<ul>
+<li><p>Le modèle linéaire gaussien s’écrit <span class="math display">\[%
+\begin{align*}
+  Y_i=X_{i.}'\beta + \varepsilon_i, \ \ \ \varepsilon_i\sim\mathcal{N}(0,\sigma^2)
+\end{align*}
+\]</span> c’est-à-dire <span class="math display">\[%
+\begin{align*}
+  Y_i\sim\mathcal{N}(X_{i.}'\beta,\sigma^2)
+\end{align*}
+\]</span> La densité en <span class="math inline">\(y\)</span> est <span class="math display">\[%
+\begin{align*}
+f(y)&amp;=\frac{1}{\sqrt{2\pi}}\exp(\frac{-(y-x'\beta)^2}{2\sigma^2})
+=\exp(\frac{(y (x'\beta) - (x'\beta)^2/2)}{\sigma^2} - \frac{1}{2}(\frac{y^2}{\sigma^2} + \log(2\pi\sigma^2) ))
+\end{align*}
+\]</span> On a donc <span class="math display">\[%
+\begin{align*}
+  \alpha&amp;=x'\beta\\
+  b(\alpha)&amp;=\alpha^2/2\\
+  \phi&amp;=\sigma^2\\
+  a(\phi)&amp;=\sigma^2\\
+  c(y, \phi)&amp;=- \frac{1}{2}(\frac{y^2}{\phi} + \log(2\pi\phi) ).
+\end{align*}
+\]</span> La fonction de lien canonique est par définition <span class="math display">\[%
+\begin{align*}
+  g(u)=(b')^{-1}(u)
+  b'(\alpha)=(\alpha^2/2)'=\alpha
+\end{align*}
+\]</span> L’inverse de <span class="math inline">\(b'(.): \alpha\mapsto u=b'(\alpha)=\alpha\)</span> est donc <span class="math inline">\(b'(.)^{-1}: u\mapsto \alpha=u\)</span>, c’est le lien identité.</p></li>
+<li><p>Le modèle logistique avec répétition en <span class="math inline">\(\tilde x_t\)</span> (voir paragraphe 11.4.1, p.&nbsp;270) s’écrit <span class="math display">\[%
+\begin{align}
+  \tilde Y_t=\tilde y_t | X=\tilde x_t \sim \mathcal{B}(n_t, p_\beta(x_t))
+\end{align}
+\]</span> où <span class="math inline">\(p_\beta(x_t)=\text{logit}(x_t\beta).\)</span> La probabilité que <span class="math inline">\(\tilde Y_t\)</span> vaille <span class="math inline">\(\tilde y_t\)</span> ou densité par rapport à la mesure de comptage au point <span class="math inline">\(\tilde y_t\)</span> en s’écrit <span class="math display">\[%
+\begin{align*}
+  f(\tilde y_t)= P(\tilde Y_t=\tilde y_t)=\binom{n_t}{ \tilde y_t} p_\beta(x_t)^{\tilde y_t} (1-p_\beta(x_t))^{\tilde n_t-\tilde y_t}
+\end{align*}
+\]</span> Si il n’y a pas de répétitions en <span class="math inline">\(\tilde x_t\)</span> on a <span class="math inline">\(n_t=1\)</span> et <span class="math inline">\(\tilde y_t=0\)</span> ou <span class="math inline">\(1\)</span>.</p>
+<p>En modèle GLM on s’intéresse non pas au comptage <span class="math inline">\(\tilde Y_t\)</span> mais à la moyenne <span class="math inline">\(\bar Y_t=\tilde Y_t/n_t\)</span>, nous avons donc <span class="math display">\[%
+\begin{align*}
+  f(\bar y_t)= P(\bar Y_t=\bar y_t)=\binom{n_t}{n_t \bar y_t} p_\beta(x_t)^{n_t\bar y_t} (1-p_\beta(x_t))^{n_t-n_t\bar y_t}
+\end{align*}
+\]</span> En introduisant l’exponentielle: <span class="math display">\[%
+\begin{align*}
+  f(\bar  y_t) &amp;= \exp\biggl(\log\binom{n_t}{n_t \bar y_t}\biggr)
+\exp\biggl(\log \bigl(p_\beta(x_t)^{n_t\bar y_t}\bigr)\biggr) \exp\biggl(\log\bigl( (1-p_\beta(x_t))^{n_t-n_t\bar y_t}\bigr)\biggr)\\
+&amp;=  \exp\biggl(n_t\bar y_t\log p_\beta(x_t) + (n_t-n_t\bar y_t )\log (1-p_\beta(x_t)) + \log\binom{n_t}{n_t \bar y_t}\biggr)\\
+&amp;=\exp\biggl(n_t\bar y_t(\log p_\beta(x_t)-\log (1-p_\beta(x_t))) - n_t\log (1-p_\beta(x_t)) + \log\binom{n_t}{n_t \bar y_t}\biggr)\\
+&amp;=\exp\biggl(n_t\bigl(\bar y_t\log\frac{ p_\beta(x_t)}{1-p_\beta(x_t)} - \log (1-p_\beta(x_t))\bigr) + \log\binom{n_t}{n_t \bar y_t}\biggr)
+\end{align*}
+\]</span> Ici nous avons <span class="math inline">\(\alpha=\)</span> ou <span class="math display">\[%
+\begin{align*}
+  \alpha&amp;=\log\frac{ p_\beta(x_t)}{1-p_\beta(x_t)}\\
+  b(\alpha)&amp;=\log(1+\exp\alpha)=\log (1-p_\beta(x_t))\\
+  \phi&amp;=1/n_t\\
+  a(\phi)&amp;=\phi\\
+  c(\bar y_t, \phi)&amp;=\log\binom{1/\phi}{\bar y_t/\phi}.
+\end{align*}
+\]</span> Pour calculer la fonction de lien canonique nous devons dériver <span class="math inline">\(b(.)\)</span> et inverser la fonction <span class="math display">\[%
+\begin{align*}
+  b'(\alpha)=\log(1+\exp \alpha)'=\frac{\exp(\alpha)}{1+\exp \alpha}=u\\
+  (b')^{-1}(u)=\log\frac{u}{1-u}=\alpha
+\end{align*}
+\]</span> c’est le lien logistique.</p></li>
+<li><p>Le modèle de poisson s’écrit <span class="math display">\[%
+\begin{align*}
+  Y_i=y_i | X=x_i \sim \mathcal{P}(\lambda_\beta(x_i))
+\end{align*}
+\]</span> La probabilité que <span class="math inline">\(Y_i\)</span> vaille $y_i ou densité par rapport à la mesure de comptage au point <span class="math inline">\(y_i\)</span> en s’écrit <span class="math display">\[%
+\begin{align*}
+  f(y_i)&amp;= P(\tilde Y_i=\tilde y_i)=\exp(-\lambda_\beta(x_i)) \frac{\lambda_\beta(x_i)^{y_i}}{y_i!}\\
+  &amp;=\exp\bigl(-\lambda_\beta(x_i) + \log (\lambda_\beta(x_i)^{y_i}) - \log (y_i!)\bigr)\\
+  &amp;=\exp\bigl(y_i\log (\lambda_\beta(x_i)) - \lambda_\beta(x_i) - \log (y_i!)\bigr)    
+\end{align*}
+\]</span> Ici nous avons <span class="math display">\[%
+\begin{align*}
+  \alpha&amp;=\log (\lambda_\beta(x_i))\\
+  b(\alpha)&amp;=\exp(\alpha)=\lambda_\beta(x_i)\\
+  \phi&amp;=1\\
+  a(\phi)&amp;=1\\
+  c(\bar y_t, \phi)&amp;=- \log (y_i!).
+\end{align*}
+\]</span> Pour calculer la fonction de lien canonique nous devons dériver <span class="math inline">\(b(.)\)</span> et inverser la fonction <span class="math display">\[%
+\begin{align*}
+  b'(\alpha)=\exp(\alpha)=u\\
+  (b')^{-1}(u)=\log u=\alpha
+\end{align*}
+\]</span> c’est le lien log.</p></li>
+</ul>
 </div>
 <div id="exr-12-3" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 3</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Les moments factoriels d’ordre <span class="math inline">\(r\)</span> d’une variable aléatoire suivant une loi de Poisson valent: <span class="math display">\[%
+\begin{align*}
+  \mathbf E[X(X-1)\dots(X-r+1)] &amp;= \sum_{k=0}^\infty k(k-1)\dots(k-r+1)
+  \frac{\lambda^k}{k!} e^{-\lambda}\\
+  &amp;=  e^{-\lambda} \sum_{k=r}^\infty \frac{k(k-1)\dots(k-r+1)}{k!} \lambda^k \\
+  &amp;=  e^{-\lambda} \lambda^r \sum_{k=r}^\infty \frac{1}{(k-r)!} \lambda^{k-r}\\
+  &amp;= \lambda^r.
+\end{align*}
+\]</span>
+<ol start="2" type="1">
+<li>Pour <span class="math inline">\(r=1\)</span> nous avons donc <span class="math display">\[%
+\begin{align*}
+  \mathbf E(X) = \lambda
+\end{align*}
+\]</span> Pour <span class="math inline">\(r=2\)</span> nous avons donc <span class="math display">\[%
+\begin{align*}
+  \mathbf E(X(X-1)) &amp;= \mathbf E(X^2) - \mathbf E(X) =\lambda^2\\
+  \mathbf E(X^2) &amp;= \lambda^2 + \lambda
+\end{align*}
+\]</span> Et nous avons la variance <span class="math display">\[%
+\begin{align*}
+  \mathop{\mathrm{V}}(X) &amp;= \mathbf E(X^2) - \mathbf E(X)^2 =\lambda^2 + \lambda - \lambda^2 = \lambda.
+\end{align*}
+\]</span></li>
+</ol></li>
+</ol>
 </div>
 <div id="exr-12-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 (Stabilisation de la variance)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 4 (Stabilisation de la variance)</strong></span> Tirons notre échantillon de taille <span class="math inline">\(n=10^6\)</span> selon des loi de poisson de paramètre <span class="math inline">\(\lambda\in\{1,2,\dotsc, 20\}\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e7</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lambdas <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>varX <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(lambdas))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>varZ <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(lambdas))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(lambdas)){</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    ech <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, lambdas[l])</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    varX[l] <span class="ot">&lt;-</span> <span class="fu">var</span>(ech)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    ech <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(ech)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    varZ[l] <span class="ot">&lt;-</span> <span class="fu">var</span>(ech)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(varX)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  0.9997369  1.9997818  2.9984626  4.0031435  4.9959479  5.9992567
+ [7]  7.0043691  7.9954055  8.9991719  9.9990725 10.9885709 12.0038720
+[13] 12.9821786 13.9998158 14.9955777 16.0014936 16.9962143 17.9969313
+[19] 19.0054412 19.9929461</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(varZ)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.4022116 0.3897837 0.3396863 0.3059119 0.2856383 0.2753928 0.2693276
+ [8] 0.2652610 0.2629826 0.2613118 0.2598299 0.2590222 0.2578215 0.2575848
+[15] 0.2568114 0.2565663 0.2560164 0.2556442 0.2554479 0.2549726</code></pre>
+</div>
+</div>
 </div>
 <div id="exr-12-5" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 5 (Stabilisation de la variance)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 5 (Stabilisation de la variance)</strong></span> Comme <span class="math inline">\(X_i\stackrel{\mathrm{iid}}{\sim} \mathcal{P}(\lambda)\)</span> nous avons par le TCL que la moyenne d’un <span class="math inline">\(n\)</span> échantillon <span class="math inline">\(\bar X_n\)</span> converge vers la loi normale et plus exactement <span class="math inline">\(\sqrt{n}(\bar X_n - \lambda) \stackrel{\mathcal{D}}{\rightarrow} \mathcal{N}(0, \lambda)\)</span>. Posons la fonction <span class="math inline">\(g(.)\)</span> de classe <span class="math inline">\(C^1\)</span> et utilisons un développement de Taylor autour de <span class="math inline">\(\lambda\)</span>: <span class="math display">\[
+\begin{align*}
+  g(x)&amp;=g(\lambda) + (x-\lambda) g'(\lambda) + o(x-\lambda)
+\end{align*}
+\]</span> Ici nous nous intéressons à stabiliser <span class="math inline">\(\bar X_n\)</span> et nous posons la transformation <span class="math inline">\(g(\bar X_n)\)</span> ce qui donne <span class="math display">\[
+\begin{align*}
+g(\bar X_n)&amp;=g(\lambda) + (\bar X_n-\lambda) g'(\lambda) + o(\bar X_n-\lambda)\\
+\sqrt{n}(g(\bar X_n)- g(\lambda))&amp;= \sqrt{n}(\bar X_n-\lambda) g'(\lambda) + \sqrt{n}o(\bar X_n-\lambda)
+\end{align*}
+\]</span> Comme <span class="math inline">\(\sqrt{n}(\bar X_n - \lambda)\)</span> converge en distribution donc <span class="math inline">\((\bar X_n - \lambda)=O_P(1/\sqrt{n})\)</span> donc <span class="math inline">\(\sqrt{n}o(\bar X_n-\lambda)=o_P(1)\)</span> et donc <span class="math display">\[
+\begin{align*}
+  \sqrt{n}(g(\bar X_n)- g(\lambda))&amp;= \sqrt{n}(\bar X_n-\lambda) g'(\lambda) + o_P(1)
+\end{align*}
+\]</span> Si <span class="math inline">\(g'(\lambda)\neq 0\)</span> on a <span class="math display">\[
+\begin{align*}
+  \sqrt{n}(g(\bar X_n)- g(\lambda))\stackrel{\mathcal{D}}{\rightarrow} \mathcal{N}(0, \lambda g'(\lambda)^2)
+\end{align*}
+\]</span> Pour avoir la variance unité, on choisit <span class="math inline">\(\lambda g'(\lambda)^2)=1\)</span> c’est à dire <span class="math display">\[
+\begin{align*}
+  g'(\lambda)&amp;=\frac{1}{\sqrt{\lambda}}\\
+  g(\lambda)&amp;=2\sqrt{\lambda}
+\end{align*}
+\]</span> On peut donc prendre la transformée <span class="math inline">\(g(X)=2\sqrt{X}\)</span> (pour avoir la variance unité) ou <span class="math inline">\(g(X)=\sqrt{X}\)</span> et on aura une variance de <span class="math inline">\(1/4\)</span>.</p>
 </div>
 <div id="exr-12-6" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 6</strong></span> &nbsp;</p>
 <ol type="1">
 <li><p>Graphique</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Malaria <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../donnees/poissonData3.csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">lapply</span>( <span class="fu">split</span>( Malaria<span class="sc">$</span>N.malaria, Malaria<span class="sc">$</span>Sexe ), table )</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Tab <span class="ot">&lt;-</span> <span class="fu">matrix</span>( <span class="dv">0</span>,<span class="dv">2</span>, <span class="fu">max</span>( Malaria<span class="sc">$</span>N.malaria )<span class="sc">+</span><span class="dv">1</span> )</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Tab) <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="fu">max</span>( Malaria<span class="sc">$</span>N.malaria )</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Tab[<span class="dv">1</span>, <span class="fu">names</span>(tab[[<span class="dv">1</span>]]) ] <span class="ot">&lt;-</span> tab[[<span class="dv">1</span>]]</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Tab[<span class="dv">2</span>, <span class="fu">names</span>(tab[[<span class="dv">2</span>]]) ] <span class="ot">&lt;-</span> tab[[<span class="dv">2</span>]]</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>( Tab, <span class="at">offset =</span> <span class="sc">-</span>Tab[<span class="dv">1</span>,])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Malaria <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../donnees/poissonData3.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">lapply</span>( <span class="fu">split</span>( Malaria<span class="sc">$</span>N.malaria, Malaria<span class="sc">$</span>Sexe ), table )</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Tab <span class="ot">&lt;-</span> <span class="fu">matrix</span>( <span class="dv">0</span>,<span class="dv">2</span>, <span class="fu">max</span>( Malaria<span class="sc">$</span>N.malaria )<span class="sc">+</span><span class="dv">1</span> )</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Tab) <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="fu">max</span>( Malaria<span class="sc">$</span>N.malaria )</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Tab[<span class="dv">1</span>, <span class="fu">names</span>(tab[[<span class="dv">1</span>]]) ] <span class="ot">&lt;-</span> tab[[<span class="dv">1</span>]]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>Tab[<span class="dv">2</span>, <span class="fu">names</span>(tab[[<span class="dv">2</span>]]) ] <span class="ot">&lt;-</span> tab[[<span class="dv">2</span>]]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>( Tab, <span class="at">offset =</span> <span class="sc">-</span>Tab[<span class="dv">1</span>,])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap12_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap12_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -584,7 +752,7 @@ window.Quarto = {
 <p>Les barres sont superposées : les filles puis les garçons. Comme on soustrait à la hauteur totale les garçons (argument <code>offset</code>), on a les effectifs des filles en dessous et ceux des garçons au dessus.</p></li>
 <li><p>Les moyennes par groupe</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(Malaria<span class="sc">$</span>N.malaria, <span class="fu">list</span>(Malaria<span class="sc">$</span>Sexe), mean)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(Malaria<span class="sc">$</span>N.malaria, <span class="fu">list</span>(Malaria<span class="sc">$</span>Sexe), mean)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Group.1        x
 1       F 4.579012
@@ -593,15 +761,15 @@ window.Quarto = {
 </div>
 <p>et la différence des logarithme népérien</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">log</span>(<span class="fu">aggregate</span>(Malaria<span class="sc">$</span>N.malaria, <span class="fu">list</span>(Malaria<span class="sc">$</span>Sexe), mean)[,<span class="st">"x"</span>]))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">log</span>(<span class="fu">aggregate</span>(Malaria<span class="sc">$</span>N.malaria, <span class="fu">list</span>(Malaria<span class="sc">$</span>Sexe), mean)[,<span class="st">"x"</span>]))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.04595891</code></pre>
 </div>
 </div></li>
 <li><p>Un autre code</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> <span class="fu">sapply</span>( <span class="fu">split</span>( Malaria<span class="sc">$</span>N.malaria, <span class="fu">list</span>(Malaria<span class="sc">$</span>Sexe) ),mean,<span class="at">na.rm=</span>T)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">c</span>( <span class="fu">log</span>( mm[<span class="dv">1</span>] ), <span class="fu">diff</span>( <span class="fu">log</span>( mm ) ) ), <span class="dv">5</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> <span class="fu">sapply</span>( <span class="fu">split</span>( Malaria<span class="sc">$</span>N.malaria, <span class="fu">list</span>(Malaria<span class="sc">$</span>Sexe) ),mean,<span class="at">na.rm=</span>T)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">c</span>( <span class="fu">log</span>( mm[<span class="dv">1</span>] ), <span class="fu">diff</span>( <span class="fu">log</span>( mm ) ) ), <span class="dv">5</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      F       M 
 1.52148 0.04596 </code></pre>
@@ -609,8 +777,8 @@ window.Quarto = {
 </div></li>
 <li><p>Régression de Poisson</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(N.malaria <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Sexe, <span class="at">data=</span>Malaria, <span class="at">family =</span> poisson)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>mod</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(N.malaria <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Sexe, <span class="at">data=</span>Malaria, <span class="at">family =</span> poisson)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>mod</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:  glm(formula = N.malaria ~ 1 + Sexe, family = poisson, data = Malaria)
@@ -629,15 +797,437 @@ Residual Deviance: 5706     AIC: 10510</code></pre>
 </div>
 <div id="exr-12-7" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 7 (Table de contingence et loi de Poisson)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><p>Importons les données</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Malaria <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/poissonData3.csv"</span>, <span class="at">sep=</span><span class="st">","</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">stringsAsFactors=</span><span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>et le tableau de contingence est</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(Malaria<span class="sc">$</span>Sexe, Malaria<span class="sc">$</span>Prevention)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Autre Moustiquaire Rien Serpentin/Spray
+  F     2          557  223              28
+  M     6          543  233              35</code></pre>
+</div>
+</div></li>
+<li><p>Lien entre Sexe et Prévention</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(Malaria<span class="sc">$</span>Sexe,Malaria<span class="sc">$</span>Prevention)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  Malaria$Sexe and Malaria$Prevention
+X-squared = 3.1452, df = 3, p-value = 0.3698</code></pre>
+</div>
+</div>
+<p>La probabilité critique est de 0.3698 donc nous conservons <span class="math inline">\({\mathrm{H_0}}\)</span> il y a indépendance entre Sexe et Prévention.</p></li>
+<li><p>Constitution du data-frame</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">table</span>(Malaria<span class="sc">$</span>Sexe, Malaria<span class="sc">$</span>Prevention))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>eff <span class="ot">&lt;-</span> <span class="fu">table</span>(Malaria<span class="sc">$</span>Sexe, Malaria<span class="sc">$</span>Prevention)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>Sexe <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"M"</span>), <span class="dv">4</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>Prevention <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">levels</span>(Malaria<span class="sc">$</span>Prevention), <span class="at">each=</span><span class="dv">2</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>don <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(Y, Sexe, Prevention)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>Modèle de Poisson avec interaction</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glm</span>( Y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> Sexe<span class="sc">:</span>Prevention, <span class="at">data=</span>don, <span class="at">family=</span>poisson)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>Il n’y a pas de contraintes ici. On a <span class="math inline">\(2\times 4\)</span> niveaux d’interactions et 8 coefficients estimés. Il s’agit d’une situation analogue à une analyse de variance à 2 facteurs (à 2 et 4 niveaux) avec interaction et sans répétitions. Dans chaque niveau d’interaction <span class="math inline">\(i\times j\)</span> on observe un comptage <span class="math inline">\(Y_{ij}\)</span> (l’effectif) qui est modélisé par un modèle de Poisson. Les comptages suivent une loi de Poisson de paramètre <span class="math inline">\(\lambda_{ij}\)</span> dont le log est fonction du niveau de l’interaction <span class="math display">\[
+\begin{align*}
+\log \lambda_{ij}= \gamma_{ij}
+\end{align*}
+\]</span> En ANOVA c’est un modèle normal et le lien est l’identité.</p></li>
+<li><p>Le modèle est saturé, il y a une <span class="math inline">\(n=8\)</span> observations et 8 points distincts dans le design: 8 niveaux d’interactions. Par ailleurs on a bien <span class="math inline">\(p=8\)</span> paramètres.</p></li>
+<li><p>Comme le modèle est saturé nous avons que les items ci-dessous représentent la même chose:</p>
+<ul>
+<li>les ajustements du modèle <code>mod1</code></li>
+<li>les observations en chaque point du design (chaque niveau d’interaction)</li>
+<li>la moyenne en chaque point du design car il n’y a qu’un point par niveau d’interaction</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">abs</span>(<span class="fu">fitted</span>(mod1) <span class="sc">-</span> don<span class="sc">$</span>Y)<span class="sc">&lt;</span><span class="fl">1e-10</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>moyparcellule <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(don<span class="sc">$</span>Y, <span class="fu">list</span>(don<span class="sc">$</span>Sexe,don<span class="sc">$</span>Prevention), mean)[,<span class="st">"x"</span>]</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">abs</span>(<span class="fu">fitted</span>(mod1) <span class="sc">-</span> moyparcellule)<span class="sc">&lt;</span><span class="fl">1e-10</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>En passant au log, les ajustements (ou les comptages, ou la moyenne par niveau) valent les coefficients <span class="math inline">\(\beta_{ij}\)</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">abs</span>(<span class="fu">log</span>(don<span class="sc">$</span>Y) <span class="sc">-</span> <span class="fu">coef</span>(mod1))<span class="sc">&lt;</span><span class="fl">1e-10</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div></li>
+</ul></li>
+<li><p>Modèle de Poisson sans interaction</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>( Y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Sexe <span class="sc">+</span> Prevention, <span class="at">data=</span>don, <span class="at">family=</span>poisson)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Le comptage <span class="math inline">\(Y_{ij}\)</span> (l’effectif) est modélisé par un modèle de Poisson : les comptages suivent une loi de Poisson de paramètre <span class="math inline">\(\lambda_{ij}\)</span> dont le log est modélisé par <span class="math display">\[
+\begin{align*}
+\log \lambda_{ij}= \mu + \alpha_i + \beta_{j}
+\end{align*}
+\]</span></p>
+<ul>
+<li>Il y a des contraintes identifiantes qui sont celles choisies par défaut: <span class="math inline">\(\beta_1=\alpha_1=0\)</span></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>      mod2</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm(formula = Y ~ 1 + Sexe + Prevention, family = poisson, data = don)
+
+Coefficients:
+              (Intercept)                      SexeM  
+                 1.381983                   0.008605  
+   PreventionMoustiquaire             PreventionRien  
+                 4.923624                   4.043051  
+PreventionSerpentin/Spray  
+                 2.063693  
+
+Degrees of Freedom: 7 Total (i.e. Null);  3 Residual
+Null Deviance:      1998 
+Residual Deviance: 3.24     AIC: 60.92</code></pre>
+</div>
+</div>
+<ul>
+<li>Le modèle n’est pas saturé, il y a toujours 8 points distincts dans le design et <span class="math inline">\(p=5\)</span> paramètres.</li>
+<li>Les estimations du modèle tendent à modéliser les effectifs par un effet Sexe et Prevention sans interaction.</li>
+</ul></li>
+<li><p>Comparaison via AIC</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 63.67658</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 60.91634</code></pre>
+</div>
+</div>
+<p>Le modèle avec le plus petit AIC est retenu: le modèle sans interaction. Ce choix est en accord avec la décision prise en question 2.</p></li>
+</ol>
 </div>
 <div id="exr-12-8" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 8 (Table de contingence et probabilité)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>La probabilité d’être une femme <span class="math display">\[
+\begin{align*}
+\pi_{1.}&amp;=\Pr(F)=\Pr(F\cup \mathrm{Autre}) +
+\Pr(F\cup \mathrm{Moust} +
+\Pr(F\cup \mathrm{Rien}+
+\Pr(F\cup \mathrm{Ser/Sp}\\
+&amp;=\sum_{j=1}^4\pi_{1j}   
+\end{align*}
+\]</span></li>
+<li>La probabilité d’utiliser au moyen Autre est <span class="math display">\[
+\begin{align*}
+\pi_{.1}&amp;=\Pr(\mathrm{Autre})=\Pr(F\cup \mathrm{Autre}) +\Pr(M\cup \mathrm{Autre}) \\
+&amp;=\sum_{i=1}^2\pi_{i1}   
+\end{align*}
+\]</span> Toutes les autres lignes ou colonnes sont traitées de manière similaire.</li>
+<li>Contraintes Il s’agit de probabilité donc leur somme vaut 1: <span class="math display">\[
+\begin{align*}
+  \pi_{.1}+\pi_{.2}+\pi_{.3}+\pi_{.4}&amp;=1\\
+  \pi_{1.}+\pi_{2.}&amp;=1
+\end{align*}
+\]</span> On a aussi d’autres probabilités : <span class="math display">\[
+\begin{align*}
+  \sum{i,j} \pi_{ij}&amp;=1\\
+  \sum{i} \pi_{i|j}&amp;=1, \forall j\in\{1,2,3,4\}\\
+  \sum{j} \pi_{j|i}&amp;=1, \forall i\in\{1,2\}\\
+\end{align*}
+\]</span></li>
+<li>Indépendance <span class="math display">\[
+\begin{align*}
+  \pi_{ij}&amp;=\Pr(\mathrm{Sexe}=i \cup \mathrm{Prévention}=j)=\Pr(\mathrm{Sexe}=i)\Pr(\mathrm{Prévention}=j)\pi_{i.}\pi_{.j}
+\end{align*}
+\]</span></li>
+<li>On part de l’écart proposé et on multiplie par <span class="math inline">\(N\)</span>: <span class="math display">\[
+\begin{align*}
+  \pi_{ij}&amp;=\pi_{i.}\pi_{.j}\frac{\pi_{ij}}{\pi_{i.}\pi_{.j}}\\
+  N\pi_{ij}&amp;=N\pi_{i.} N \pi_{.j}\frac{N\pi_{ij}}{N\pi_{i.}N\pi_{.j}}
+  \log(N\pi_{ij}) &amp;= \log N\pi_{i.} + \log N\pi_{.j} +
+  \log \frac{N\pi_{ij}}{N\pi_{i.}N\pi_{.j}}\\
+\log(\lambda_{ij}) &amp;= \alpha_i + \beta_j + \gamma_{ij}.
+\end{align*}
+\]</span> On a comme contrainte <span class="math display">\[
+\begin{align*}
+  \pi_{1.}+\pi_{2.}&amp;=1=\frac{1}{N}(\exp(\alpha_1)+ \exp(\alpha_2))
+  \pi_{.1}+\pi_{.2}+\pi_{.3}+\pi_{.4}&amp;=1=
+  \frac{1}{N}(\sum_{j=1}^4\exp(\alpha_1\pi_{.j})\\
+\end{align*}
+\]</span> On peut aussi exprimer les contraintes sur les <span class="math inline">\(\{\gamma_{ij}\}\)</span> avec les contraintes sur les probabilités conditionnelles.</li>
+</ol>
 </div>
 <div id="exr-12-9" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 9 (Loi Multinomiale)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 9 (Loi Multinomiale)</strong></span> Soit <span class="math inline">\(N\)</span> qui suit une multinomiale : <span class="math display">\[%
+\begin{align*}
+\Pr(N_1=n_1,\dotsc,N_K=n_K)&amp;=\frac{n!}{n_1! \dotsc n_K!}\prod_{k=1}^K \pi_k^{n_k}.
+\end{align*}
+\]</span> en introduisant l’exponentielle <span class="math display">\[%
+\begin{align*}
+  f(n1,\dotsc,n_K)&amp;=\exp\biggl(\log\Bigl(\frac{n!}{n_1! \dotsc n_K!}\Bigr)\biggr)
+  \exp\biggl(\log\Bigl(\prod_{k=1}^K \pi_k^{n_k}\Bigr)\biggr)\\
+  f(n1, \dotsc, n_K)&amp;=\exp\biggl(\sum_{k=1}^K n_k\log\pi_k + \log\Bigl(\frac{n!}{n_1! \dotsc n_K!}\Bigr)\biggr)
+\end{align*}
+\]</span></p>
 </div>
 <div id="exr-12-10" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 10</strong></span> &nbsp;</p>
+<ol type="1">
+<li><p>Nous souhaitons modéliser des effectifs répartis dans des cases <span class="math inline">\(i\times j\)</span> ce qui représente le champs d’action de la loi multinomiale.</p>
+<ul>
+<li>Un premier modèle possible est de modéliser toute la table d’un coup. On désigne par <span class="math inline">\(N_{ij},i\in\{1,2\},j\in\{1,2,3\}\)</span> l’effectif (aléatoire) du croisement <span class="math inline">\((i,j)\)</span> et par <span class="math inline">\(\pi_{ij}\)</span> la probabilité (inconnue) d’appartenir à ce croisement (voir le tableau de l’énoncé). Ainsi <span class="math inline">\(N_{1,3}\)</span> correspondra par exemple au croisement (,). Nous avons donc l’effectif total de la table <span class="math inline">\(n=631\)</span> et nous utilisons toute la table d’un coup et nous modélisons les effectifs <span class="math inline">\(N_{ij}\)</span> par une loi multinomiale <span class="math inline">\(\mathcal{M}(n,\pi_{11}, \pi_{12}, \dotsc, \pi_{23})\)</span>. Pour une case <span class="math inline">\(i,j\)</span> nous avons pour les probabilités: <span class="math display">\[%
+\begin{align*}
+  \Pr(\mathtt{Gr}=i,\mathtt{In}=j)&amp;=\pi_{ij}.
+\end{align*}
+\]</span> Si nous soupçonnons qu’il n’y ait pas de lien entre Groupe et Intention nous pouvons simplifier le modèle via l’indépendance et avoir pour une case <span class="math inline">\(i,j\)</span> <span class="math display">\[%
+\begin{align*}
+  \Pr(\mathtt{Gr}=i,\mathtt{In}=j)&amp;=\Pr(\mathtt{Gr}=i)\Pr(\mathtt{In}=j)=\pi_{i.}\pi_{.j}.
+\end{align*}
+\]</span> Cette approche est celle du test du <span class="math inline">\(\chi^2\)</span> et nous ne la développerons pas dans cet exercice.</li>
+<li>Une seconde approche (utilisée ici) est de modéliser chaque ligne du tableau.
+<ul>
+<li>Si nous soupçonnons qu’il n’y ait pas de lien entre Groupe et Intention nous pouvons dire que chaque ligne est modélisée par une loi multinomiale <span class="math inline">\(\mathcal{M}(n_{i}, \pi_{.1}, \pi_{.2}, \pi_{.3})\)</span>. D’une ligne à l’autre la loi est presque la même (l’effectif <span class="math inline">\(n_{i}\)</span> change): la répartition dans les cases suit les mêmes probabilité puisque l’on soupçonne qu’il n’y a pas de lien entre Groupe et Intention.</li>
+<li>Si nous soupçonnons qu’il y ait un lien entre Groupe et Intention nous pouvons dire que chaque ligne est modélisée par une loi multinomiale <span class="math inline">\(\mathcal{M}(n_{i}, \pi_{i1}, \pi_{i2}, \pi_{i3})\)</span>. D’une ligne à l’autre la loi est différente: l’effectif <span class="math inline">\(n_{i}\)</span> change et la répartition dans les cases (<span class="math inline">\(\pi_{i1}, \pi_{i2}, \pi_{i3}\)</span>) change aussi ; c’est l’objet de la question 2.</li>
+</ul></li>
+</ul>
+<p>Pour la ligne <span class="math inline">\(i\)</span> on a comme observation les effectifs (d’une multinomiale) <span class="math inline">\(n_{i1}, n_{i2}, n_{i3}\)</span>. Leur somme vaut <span class="math inline">\(n_{i.}\)</span>. On doit répartir dans 3 groupes mais les probabilités de répartitions sont les mêmes d’une ligne à l’autre elles sont notées <span class="math inline">\(\pi_{.j}\)</span>. On a donc la probabilité d’observer <span class="math inline">\(n_{i1}, n_{i2}, n_{i3}\)</span>: <span class="math display">\[%
+\begin{align*}
+  \Pr(N_{i1}=n_{i1},N_{i2}=n_{i2},N_{i3}=n_{i3})
+  &amp;=\frac{n_{i.}!}{n_{i1}! n_{i1}! n_{i3}!}\prod_{j} (\pi_{.j})^{n_{ij}}.
+\end{align*}  
+\]</span> Pour toutes les données nous avons alors <span class="math display">\[%
+\begin{align*}
+   \Pr(N_{11}=n_{11},N_{12}=n_{12},,N_{13}=n_{13})\Pr(N_{21}=n_{11},N_{22}=n_{22}, N_{23}=n_{23})&amp;=
+  =\prod_{i=1}^2\frac{n_{i.}!}{n_{i1}! n_{i1}! n_{i3}!}\prod_{j} (\pi_{.j})^{n_{ij}}.
+\end{align*}
+\]</span></p></li>
+<li><p>Le modèle avec lien entre Groupe et Intention permet d’écrire la probabilité de l’échantillon comme: <span class="math display">\[%
+\begin{align*}
+   \Pr(N_{11}=n_{11},N_{12}=n_{12},,N_{13}=n_{13})\Pr(N_{21}=n_{11},N_{22}=n_{22}, N_{23}=n_{23})&amp;=
+  =\prod_{i=1}^2\frac{n_{i.}!}{n_{i1}! n_{i1}! n_{i3}!}\prod_{j} (\pi_{ij})^{n_{ij}}.
+\end{align*}
+\]</span></p></li>
+<li><p>Calculons les log-vraisemblances pour les deux modèles.</p>
+<ul>
+<li><p>Modèle sans effet Groupe: <span class="math display">\[%
+\begin{align*}
+\mathcal L(Y,\pi_{ij})=  &amp; \sum_{i,j} n_{ij}\log\pi_{.j} + \mathrm{cte}.
+\end{align*}
+\]</span> sous les contraintes <span class="math inline">\(\sum_{j} \pi_{.j}=1\)</span> et les probabilités sont positives. La positivité peut être imposée en écrivant <span class="math inline">\(\pi_{.j}=\exp(\mu_{j})\)</span> et la somme à 1 impose alors <span class="math display">\[%
+\pi_{.j}=\frac{\exp(\mu_{j})}{\sum_j \exp(\mu_{j})}.
+\]</span> En utilisant cette paramétrisation nous avons <span class="math display">\[%
+\begin{align*}
+  \mathcal L(Y,\mu_{j})=&amp; \sum_{i,j} n_{ij}\mu_{j} - \sum_{i,j} n_{ij}\log(\sum_j\exp(\mu_{j}))  + \mathrm{cte}\\
+  \mathcal L(Y,\mu_{j})=&amp; \sum_{j} n_{i.}\mu_{j} - \sum_{i} n_{i.}\log(\sum_j\exp(\mu_{j}))  + \mathrm{cte}\\
+\end{align*}
+\]</span></p></li>
+<li><p>Modèle avec effet Groupe: <span class="math display">\[%
+\begin{align*}
+\mathcal L(Y,\pi)=&amp; \sum_{i,j} n_{ij}\log\pi_{ij} +
+\sum_{i,j} \log(n!)-\sum_{i,j}\log(n_{ij}!) =  \sum_{i,j} n_{ij}\log\pi_{ij} + \mathrm{cte}.,
+\end{align*}
+\]</span> sous les contraintes <span class="math inline">\(\sum_{j} \pi_{ij}=1, \forall i\)</span> et les probabilités sont positives. La positivité peut être imposée en écrivant <span class="math inline">\(\pi_{ij}=\exp(\eta_{ij})\)</span> et la somme à 1 impose alors <span class="math display">\[%
+\pi_{ij}=\frac{\exp(\eta_{ij})}{\sum_j \exp(\eta_{ij})}.
+\]</span> En utilisant cette paramétrisation nous avons <span id="eq-multinomcomplet"><span class="math display">\[%
+\begin{align*}
+  \mathcal L(Y,\eta_{ij})=&amp; \sum_{i,j} n_{ij}\eta_{ij} - \sum_{i,j} n_{ij}\log(\sum_j\exp(\eta_{ij}))  + \mathrm{cte}\\
+  \mathcal L(Y,\eta_{ij})=&amp; \sum_{j} n_{ij}\eta_{ij} - \sum_{i} n_{i.}\log(\sum_j\exp(\eta_{ij}))  + \mathrm{cte}\\
+\end{align*}
+\tag{1}\]</span></span></p></li>
+</ul></li>
+<li><p>Le modèle de poisson complet est <span class="math display">\[%
+\begin{align*}
+   Y&amp;\sim\mathcal{P}(\lambda_{ij})\\
+   \log(\lambda_{ij})&amp;=\mu + \alpha_i + \beta_j + \gamma_{ij}
+\end{align*}
+\]</span> Ce modèle est sur-paramétré et nécessite des contraintes pour être estimable. On peut choisir <span class="math display">\[%
+\begin{align*}
+  \alpha_1&amp;=0,\\
+  \beta_1&amp;=0,\\
+  \gamma_{11}=\gamma_{12}=\dotsc=\gamma{31}=0
+\end{align*}
+\]</span> Il donne les mêmes prévisions que le modèle plus simple suivant: <span class="math display">\[%
+\begin{align*}
+   Y&amp;\sim\mathcal{P}(\lambda_{ij})\\
+   \log(\lambda_{ij})&amp;=\mu + \alpha_i + \gamma_{ij}
+\end{align*}
+\]</span> Ce modèle est sur-paramétré et nécessite des contraintes pour être estimable. On peut choisir $$% <span class="math display">\[\begin{align*}
+  \alpha_1&amp;=0,\\
+  \gamma_{11}=\gamma_{12}=\dotsc=\gamma{31}=0
+  \gamma_{11}=\gamma_{21}=0
+\end{align*}\]</span></p>
+<p>Ils donnent les mêmes prévisions que le modèle sans contraintes suivant: <span class="math display">\[%
+\begin{align*}
+   Y&amp;\sim\mathcal{P}(\lambda_{ij})\\
+   \log(\lambda_{ij})&amp;=m_{ij}
+\end{align*}
+\]</span> Pour ce dernier modèle, nous avons l’écriture suivante (qui correspond bien à l’écriture de l’équation ci-dessus) et où l’on voit apparaître sous forme matricielle le modèle saturé (la matrice de design est <span class="math inline">\(6\times 6\)</span> et de plein rang): <span class="math display">\[%
+\begin{align*}
+  \begin{bmatrix}
+\log(\lambda_{11}) \\
+\log(\lambda_{21}) \\
+\log(\lambda_{12}) \\
+\log(\lambda_{22}) \\
+\log(\lambda_{13}) \\
+\log(\lambda_{23}) \\
+\end{bmatrix} &amp;=
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\
+  \end{bmatrix}
+  \begin{bmatrix}
+m_{11} \\
+m_{21} \\
+m_{12} \\
+m_{22} \\
+m_{13} \\
+m_{23} \\
+  \end{bmatrix}
+\end{align*}
+\]</span> Pour le second modèle nous avons <span class="math display">\[%
+\begin{align*}
+  \begin{bmatrix}
+\log(\lambda_{11}) \\
+\log(\lambda_{21}) \\
+\log(\lambda_{12}) \\
+\log(\lambda_{22}) \\
+\log(\lambda_{13}) \\
+\log(\lambda_{23}) \\
+\end{bmatrix} &amp;=
+\begin{bmatrix}
+1&amp;0&amp;0&amp;0&amp;0&amp;0\\
+1&amp;1&amp;0&amp;0&amp;0&amp;0\\
+1&amp;0&amp;1&amp;0&amp;0&amp;0\\
+1&amp;1&amp;0&amp;1&amp;0&amp;0\\
+1&amp;0&amp;0&amp;0&amp;1&amp;0\\
+1&amp;1&amp;0&amp;0&amp;0&amp;1\\
+  \end{bmatrix} \begin{bmatrix}
+\mu\\
+\alpha_2\\
+\gamma_{12} \\
+\gamma_{22} \\
+\gamma_{13} \\
+\gamma_{23} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mu +\alpha_{1} + \gamma_{11} \\
+\mu +\alpha_{1} + \gamma_{21} \\
+\mu +\alpha_{2} + \gamma_{12} \\
+  \mu +\alpha_{2} + \gamma_{22} \\
+  \mu +\alpha_{2} + \gamma_{13} \\
+\mu +\alpha_{3} + \gamma_{23} \\
+  \end{bmatrix}
+\end{align*}
+\]</span> Pour le premier modèle nous avons <span class="math display">\[%
+\begin{align*}
+  \begin{bmatrix}
+\log(\lambda_{11}) \\
+\log(\lambda_{21}) \\
+\log(\lambda_{12}) \\
+\log(\lambda_{22}) \\
+\log(\lambda_{13}) \\
+\log(\lambda_{23}) \\
+\end{bmatrix} &amp;=
+\begin{bmatrix}
+1&amp;0&amp;0&amp;0&amp;0&amp;0\\
+1&amp;1&amp;0&amp;0&amp;0&amp;0\\
+1&amp;0&amp;1&amp;0&amp;0&amp;0\\
+1&amp;1&amp;1&amp;0&amp;1&amp;0\\
+1&amp;0&amp;0&amp;1&amp;0&amp;0\\
+1&amp;1&amp;0&amp;1&amp;0&amp;1\\
+\end{bmatrix}
+\begin{bmatrix}
+\mu\\
+\alpha_2\\
+\beta_2\\
+\beta_3\\
+\gamma_{13} \\
+\gamma_{23} \\
+\end{bmatrix}
+=
+  \begin{bmatrix}
+\mu +\alpha_{1} +\beta_{1} + \gamma_{11} \\
+\mu +\alpha_{1}+\beta_{2} + \gamma_{21} \\
+\mu +\alpha_{2}+\beta_{3} + \gamma_{12} \\
+  \mu +\alpha_{2}+\beta_{1} + \gamma_{22} \\
+  \mu +\alpha_{2}+\beta_{2} + \gamma_{13} \\
+\mu +\alpha_{3}+\beta_{3} + \gamma_{23} \\
+  \end{bmatrix}
+\end{align*}
+\]</span></p></li>
+<li><p>Calculons la vraisemblance du modèle avec contrainte pour les observations <span class="math inline">\(\{n_{ij}\}\)</span>: <span class="math display">\[%
+\begin{align*}
+   \prod_{i,j}e^{-\lambda_{ij}}\frac{\lambda_{ij}^{n_{ij}}}{n_{ij}}
+\end{align*}
+\]</span> dont le logarithme est <span class="math display">\[%
+\begin{align*}
+   \mathcal{L}(n,\lambda)&amp;=-\sum_{i,j}\lambda_{ij} + \sum_{i,j}n_{ij}\log\lambda_{ij} + cte.
+\end{align*}
+\]</span> Comme <span class="math inline">\(\log(\lambda_{ij})=\mu + \alpha_i + \gamma_{ij}\)</span>, on en déduit <span class="math display">\[%
+\begin{align*}
+   \mathcal{L}(n,\mu,\alpha_i,\gamma_{ij})&amp;=-\sum_{i}\sum_{j}\exp(\mu + \alpha_i + \gamma_{ij}) + \sum_{i,j}n_{ij}(\mu + \alpha_i + \gamma_{ij}) + cte.
+\end{align*}
+\]</span> Posons <span class="math inline">\(\tau_{i}=\sum_j \exp((\mu+ \alpha_i) + \gamma_{ij})\)</span> et on a donc <span class="math display">\[%
+\begin{align*}
+   \mathcal{L}(n,\mu,\tau_i,\gamma_{ij})&amp;=-\sum_{i}\tau_{i} + \sum_{i,j}n_{ij}(\mu + \alpha_i)  + \sum_{i,j}n_{ij}\gamma_{ij} + cte.
+\end{align*}
+\]</span> Exprimons <span class="math inline">\((\mu+ \alpha_i)\)</span> en fonction de <span class="math inline">\(\tau_i\)</span>: <span class="math display">\[%
+\begin{align*}
+  \tau_{i}&amp;=\sum_j \exp((\mu+ \alpha_i) + \gamma_{ij}) = \exp(\mu+ \alpha_i) \sum_j \exp(\gamma_{ij})\\
+  \exp(\mu+ \alpha_i)&amp;=\frac{\tau_{i}}{\sum_j \exp(\gamma_{ij})}\\
+  \mu+ \alpha_i&amp;=\log\frac{\tau_{i}}{\sum_j \exp(\gamma_{ij})}=\log\tau_{i} - \log\bigl(\sum_j \exp(\gamma_{ij})\bigr)
+\end{align*}
+\]</span> et nous introduisons cette dernière équation dans la log-vraisemblance: <span class="math display">\[%
+\begin{align*}
+  \mathcal{L}(n,\mu,\tau_i,\gamma_{ij})&amp;=-\sum_{i}\tau_{i} + \sum_{i,j}n_{ij} \Bigl(\log\tau_{i} - \log\bigl(\sum_j \exp(\gamma_{ij})\bigr)\Bigr) + \sum_{i,j}n_{ij}\gamma_{ij} + cte\\
+  \mathcal{L}(n,\mu,\tau_i,\gamma_{ij})&amp;=\sum_{i}\bigl(n_{i.} \log\tau_{i}-\tau_{i}\bigr) +  \sum_{i,j}n_{ij}\gamma_{ij} - \sum_{i}n_{i.}\log\bigl(\sum_j \exp(\gamma_{ij})\bigr)+ cte.
+\end{align*}
+\]</span> La vraisemblance est séparée en 2 parties: le premier terme <span class="math inline">\(\sum_{i}\bigl(n_{i.} \log\tau_{i}-\tau_{i}\bigr)\)</span> dépend de <span class="math inline">\(\tau_i\)</span> alors que les 2 derniers dépendent de <span class="math inline">\(\gamma_{ij}\)</span>. On reconnaît dans les 2 derniers termes la vraisemblance de la modélisation multinomiale avec effet Groupe (<a href="#eq-multinomcomplet" class="quarto-xref">équation&nbsp;1</a>). La maximisation donnerait les mêmes <span class="math inline">\(\gamma_{ij}\)</span> si il n’y avait pas les contraintes… Regardons cela:</p>
+<ul>
+<li>Du côté de la régression Poisson on a pour chaque cellule <span class="math inline">\((i,j)\)</span> la modélisation <span class="math inline">\(\mu + \alpha_i + \gamma_{ij}\)</span> avec comme contrainte par exemple <span class="math display">\[%
+\begin{align*}
+  \alpha_1&amp;=0,\\
+  \beta_1&amp;=0,\\
+  \gamma_{11}=\gamma_{12}=\gamma_{21}=\gamma_{22}=0
+\end{align*}
+\]</span> Pour passer sur l’échelle des probabilités on utilise toujours l’exponentielle et on divise par la somme sur chaque ligne <span class="math inline">\(i\)</span> (les probabilités doivent sommer à 1 pour chaque ligne) <span class="math display">\[%
+\begin{align*}
+  \pi_{ij}&amp;=\frac{\exp(\mu + \alpha_i + \gamma_{ij})}{\sum_j \exp(\mu + \alpha_i + \gamma_{ij})}
+\end{align*}
+\]</span></li>
+<li>Du côté de la régression Multinomiale on a pour chaque cellule <span class="math inline">\((i,j)\)</span> directement <span class="math inline">\(\gamma_{ij}\)</span> et pour passer sur l’échelle des probabilités on utilise toujours l’exponentielle et on divise par la somme sur chaque ligne <span class="math inline">\(i\)</span> (les probabilités doivent sommer à 1 pour chaque ligne) <span class="math display">\[%
+\begin{align*}
+  \pi_{ij}&amp;=\frac{\exp(\gamma_{ij})}{\sum_j \exp(\gamma_{ij})}
+\end{align*}
+\]</span></li>
+</ul>
+<p>Le même calcul que ci-dessus peut être conduit avec le modèle sans contrainte avec les <span class="math inline">\(m_{ij}\)</span> et on obtient (non demandé) <span class="math display">\[%
+\begin{align*}
+  \mathcal{L}(n,m_{ij})&amp;=-\sum_{i,j}\exp(m_{ij}) + \sum_{i,j} n_{ij}m_{ij} + cte
+\end{align*}
+\]</span> Pour passer sur l’échelle des probabilités on utilise toujours l’exponentielle et on divise par la somme sur chaque ligne <span class="math inline">\(i\)</span> (les probabilités doivent sommer à 1 pour chaque ligne) <span class="math display">\[%
+\begin{align*}
+\pi_{ij}&amp;=\frac{\exp(m_{ij})}{\sum_j \exp(m_{ij})}
+\end{align*}
+\]</span></p></li>
+</ol>
 </div>
 
 

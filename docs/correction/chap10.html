@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5 Inférence dans le modèle Gaussien – Régression avec R</title>
+<title>10 Comparaison des différentes méthodes, étude de cas réels – Régression avec R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../code/chap6.html" rel="next">
-<link href="../code/chap3.html" rel="prev">
+<link href="../correction/chap11.html" rel="next">
+<link href="../correction/chap9.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -145,7 +145,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Codes R</li><li class="breadcrumb-item"><a href="../code/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../code/chap5.html">5 Inférence dans le modèle Gaussien</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap7.html">III Réduction de dimension</a></li><li class="breadcrumb-item"><a href="../correction/chap10.html">10 Comparaison des différentes méthodes, étude de cas réels</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
@@ -191,13 +191,13 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">Codes R</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
@@ -229,16 +229,16 @@ window.Quarto = {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">II Inférence</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../code/chap5.html" class="sidebar-item-text sidebar-link active">
+  <a href="../code/chap5.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">5 Inférence dans le modèle Gaussien</span></a>
   </div>
 </li>
@@ -353,13 +353,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Correction des exercices</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
@@ -420,13 +420,13 @@ window.Quarto = {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
  <span class="menu-text">III Réduction de dimension</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Basculer la section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Basculer la section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../correction/chap7.html" class="sidebar-item-text sidebar-link">
@@ -447,7 +447,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
   </div>
 </li>
@@ -524,28 +524,20 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Sur cette page</h2>
-   
-  <ul>
-  <li><a href="#exemple-1-la-concentration-en-ozone" id="toc-exemple-1-la-concentration-en-ozone" class="nav-link active" data-scroll-target="#exemple-1-la-concentration-en-ozone">Exemple 1 : la concentration en ozone</a></li>
-  <li><a href="#exemple-2-la-hauteur-des-eucalyptus" id="toc-exemple-2-la-hauteur-des-eucalyptus" class="nav-link" data-scroll-target="#exemple-2-la-hauteur-des-eucalyptus">Exemple 2 : la hauteur des eucalyptus</a></li>
-  <li><a href="#intervalle-de-confiance-bootstrap" id="toc-intervalle-de-confiance-bootstrap" class="nav-link" data-scroll-target="#intervalle-de-confiance-bootstrap">Intervalle de confiance bootstrap</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Codes R</li><li class="breadcrumb-item"><a href="../code/chap5.html">II Inférence</a></li><li class="breadcrumb-item"><a href="../code/chap5.html">5 Inférence dans le modèle Gaussien</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correction des exercices</li><li class="breadcrumb-item"><a href="../correction/chap7.html">III Réduction de dimension</a></li><li class="breadcrumb-item"><a href="../correction/chap10.html">10 Comparaison des différentes méthodes, étude de cas réels</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">5 Inférence dans le modèle Gaussien</h1>
+<h1 class="title">10 Comparaison des différentes méthodes, étude de cas réels</h1>
 </div>
 
 
 
-<div class="quarto-title-meta column-body">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -557,204 +549,54 @@ window.Quarto = {
 </header>
 
 
+<div id="exr-10-1" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercice 1 (Fonctions R)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><p>fonction <code>sse_regbic</code> :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone.txt"</span>, <span class="at">header =</span> T, <span class="at">sep =</span> <span class="st">";"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>modele3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12 <span class="sc">+</span> Vx <span class="sc">+</span> Ne12, <span class="at">data =</span> ozone)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>resume3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(modele3)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>coef3 <span class="ot">&lt;-</span> <span class="fu">coef</span>(resume3)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>IC3 <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">confint</span>(modele3, <span class="at">level =</span> <span class="fl">0.95</span>))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>IC3</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       (Intercept)       T12        Vx      Ne12
-2.5 %     57.15842 0.3138112 0.1491857 -6.960609
-97.5 %   111.93625 2.3162807 0.8237055 -2.826137</code></pre>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sse_regbic <span class="ot">&lt;-</span> <span class="cf">function</span>(don, bloc, b, nvmax, method) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    recherche <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(maxO3<span class="sc">~</span>., <span class="at">int=</span>T, <span class="at">nbest=</span><span class="dv">1</span>,<span class="at">data=</span>don[bloc<span class="sc">!=</span>b, ],</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">nvmax=</span>nvmax, <span class="at">method=</span>method)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    resume <span class="ot">&lt;-</span> <span class="fu">summary</span>(recherche)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    nomselec <span class="ot">&lt;-</span> <span class="fu">colnames</span>(resume<span class="sc">$</span>which)[resume<span class="sc">$</span>which[<span class="fu">which.min</span>(resume<span class="sc">$</span>bic), ]][<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste</span>(<span class="st">"maxO3 ~"</span>, <span class="fu">paste</span>(nomselec, <span class="at">collapse =</span> <span class="st">"+"</span>)))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    m_reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(formule, <span class="at">data=</span>don[bloc<span class="sc">!=</span>b, ])</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    previsions <span class="ot">&lt;-</span> <span class="fu">predict</span>(m_reg, don[bloc<span class="sc">==</span>b, ])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">sum</span>((don[bloc<span class="sc">==</span>b,<span class="st">"maxO3"</span>] <span class="sc">-</span> previsions)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>fonction <code>sse_glmnet</code> :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellipse)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> (i<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="dv">4</span>){</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(<span class="fu">ellipse</span>(modele3,<span class="fu">c</span>(i,j),<span class="at">level=</span><span class="fl">0.95</span>),<span class="at">type=</span><span class="st">"l"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="fu">paste</span>(<span class="st">"beta"</span>,i,<span class="at">sep=</span><span class="st">""</span>),<span class="at">ylab=</span><span class="fu">paste</span>(<span class="st">"beta"</span>,j,<span class="at">sep=</span><span class="st">""</span>))</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(<span class="fu">coef</span>(modele3)[i], <span class="fu">coef</span>(modele3)[j],<span class="at">pch=</span><span class="dv">3</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="fu">c</span>(IC3[<span class="dv">1</span>,i],IC3[<span class="dv">1</span>,i],IC3[<span class="dv">2</span>,i],IC3[<span class="dv">2</span>,i],IC3[<span class="dv">1</span>,i]),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          <span class="fu">c</span>(IC3[<span class="dv">1</span>,j],IC3[<span class="dv">2</span>,j],IC3[<span class="dv">2</span>,j],IC3[<span class="dv">1</span>,j],IC3[<span class="dv">1</span>,j]),<span class="at">lty=</span><span class="dv">2</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="chap5_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sse_glmnet <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y, bloc, b, a) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    rech <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(X[bloc<span class="sc">!=</span>b, ], Y[bloc<span class="sc">!=</span>b, <span class="at">drop=</span><span class="cn">FALSE</span>], <span class="at">alpha=</span>a)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    prev <span class="ot">&lt;-</span> <span class="fu">predict</span>(rech, <span class="at">newx=</span>X[bloc<span class="sc">==</span>b, ], <span class="at">s=</span>rech<span class="sc">$</span>lambda.min)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">sum</span>((Y[bloc<span class="sc">==</span>b, <span class="st">"maxO3"</span>] <span class="sc">-</span> <span class="fu">as.vector</span>(prev))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</div>
+<p>On obtient les résultats du <strong>test de Wald</strong> sur la nullité des paramètres <span class="math inline">\(\beta_0,\beta_2\)</span> et <span class="math inline">\(\beta_3\)</span>.</p></li>
+<li><p>fonction <code>sse_pls</code> :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(resume3<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>modele3<span class="sc">$</span>df.res<span class="sc">/</span><span class="fu">qchisq</span>(<span class="fl">0.975</span>,modele3<span class="sc">$</span>df.res),</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  resume3<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>modele3<span class="sc">$</span>df.res<span class="sc">/</span><span class="fu">qchisq</span>(<span class="fl">0.025</span>,modele3<span class="sc">$</span>df.res))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 133.6699 305.3706</code></pre>
-</div>
-</div>
-<section id="exemple-1-la-concentration-en-ozone" class="level1">
-<h1>Exemple 1 : la concentration en ozone</h1>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sse_pls <span class="ot">&lt;-</span> <span class="cf">function</span>(don, bloc, b, compmax) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    rech <span class="ot">&lt;-</span> <span class="fu">plsr</span>(maxO3<span class="sc">~</span>., <span class="at">data=</span>don[bloc<span class="sc">!=</span>b, ], <span class="at">ncomp=</span>compmax, <span class="at">validation=</span><span class="st">"CV"</span>, <span class="at">scale=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    ncomp <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">MSEP</span>(rech)<span class="sc">$</span>val[<span class="st">"CV"</span>, , ])<span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    prev <span class="ot">&lt;-</span> <span class="fu">predict</span>(rech, <span class="at">newdata=</span>don[bloc<span class="sc">==</span>b, ], <span class="at">ncomp=</span>ncomp)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">sum</span>((don[bloc<span class="sc">==</span>b, <span class="st">"maxO3"</span>] <span class="sc">-</span> <span class="fu">as.vector</span>(prev))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>fonction <code>sse_pls</code> :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>modele3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12 <span class="sc">+</span> Vx <span class="sc">+</span> Ne12, <span class="at">data =</span> ozone)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>resume3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(modele3)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>resume3</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = O3 ~ T12 + Vx + Ne12, data = ozone)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--29.0461  -8.4824   0.7861   7.7024  28.2916 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  84.5473    13.6067   6.214 1.38e-07 ***
-T12           1.3150     0.4974   2.644  0.01117 *  
-Vx            0.4864     0.1675   2.903  0.00565 ** 
-Ne12         -4.8934     1.0270  -4.765 1.93e-05 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 13.91 on 46 degrees of freedom
-Multiple R-squared:  0.6819,    Adjusted R-squared:  0.6611 
-F-statistic: 32.87 on 3 and 46 DF,  p-value: 1.663e-11</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>modele2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12 <span class="sc">+</span> Vx, <span class="at">data =</span> ozone)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(modele2, modele3)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Analysis of Variance Table
-
-Model 1: O3 ~ T12 + Vx
-Model 2: O3 ~ T12 + Vx + Ne12
-  Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
-1     47 13299.4                                  
-2     46  8904.6  1    4394.8 22.703 1.927e-05 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
-</div>
-</section>
-<section id="exemple-2-la-hauteur-des-eucalyptus" class="level1">
-<h1>Exemple 2 : la hauteur des eucalyptus</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>eucalypt <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/eucalyptus.txt"</span>, <span class="at">header =</span> T, <span class="at">sep =</span> <span class="st">";"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>regsimple <span class="ot">&lt;-</span> <span class="fu">lm</span>(ht <span class="sc">~</span> circ, <span class="at">data =</span> eucalypt)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>regM <span class="ot">&lt;-</span> <span class="fu">lm</span>(ht <span class="sc">~</span> circ <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">sqrt</span>(circ)), <span class="at">data =</span> eucalypt)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(regsimple, regM)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Analysis of Variance Table
-
-Model 1: ht ~ circ
-Model 2: ht ~ circ + I(sqrt(circ))
-  Res.Df    RSS Df Sum of Sq     F    Pr(&gt;F)    
-1   1427 2052.1                                 
-2   1426 1840.7  1    211.43 163.8 &lt; 2.2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(regM)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = ht ~ circ + I(sqrt(circ)), data = eucalypt)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--4.1881 -0.6881  0.0427  0.7927  3.7481 
-
-Coefficients:
-               Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   -24.35200    2.61444  -9.314   &lt;2e-16 ***
-circ           -0.48295    0.05793  -8.336   &lt;2e-16 ***
-I(sqrt(circ))   9.98689    0.78033  12.798   &lt;2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.136 on 1426 degrees of freedom
-Multiple R-squared:  0.7922,    Adjusted R-squared:  0.7919 
-F-statistic:  2718 on 2 and 1426 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>grille <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">circ =</span> <span class="fu">seq</span>(<span class="fu">min</span>(eucalypt[,<span class="st">"circ"</span>]),</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">max</span>(eucalypt[,<span class="st">"circ"</span>]), <span class="at">len =</span> <span class="dv">100</span>))</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>ICdte <span class="ot">&lt;-</span> <span class="fu">predict</span>(regM,<span class="at">new=</span>grille,<span class="at">interval=</span><span class="st">"conf"</span>,<span class="at">level=</span><span class="fl">0.95</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>ICpre <span class="ot">&lt;-</span> <span class="fu">predict</span>(regM,<span class="at">new=</span>grille,<span class="at">interval=</span><span class="st">"pred"</span>,<span class="at">level=</span><span class="fl">0.95</span>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ht <span class="sc">~</span> circ, <span class="at">data =</span> eucalypt, <span class="at">pch=</span><span class="st">"+"</span>, <span class="at">col=</span><span class="st">"grey60"</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">matlines</span>(grille,<span class="fu">cbind</span>(ICdte,ICpre[,<span class="sc">-</span><span class="dv">1</span>]),<span class="at">lty=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>),<span class="at">col=</span><span class="dv">1</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="at">lty=</span><span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="fu">c</span>(<span class="st">"E(Y)"</span>,<span class="st">"Y"</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="chap5_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="intervalle-de-confiance-bootstrap" class="level1">
-<h1>Intervalle de confiance bootstrap</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>modele3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(O3 <span class="sc">~</span> T12 <span class="sc">+</span> Vx <span class="sc">+</span> Ne12, <span class="at">data =</span> ozone)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>resume3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(modele3)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>resume3<span class="sc">$</span>coef[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>              Estimate Std. Error
-(Intercept) 84.5473326 13.6067253
-T12          1.3150459  0.4974102
-Vx           0.4864456  0.1675496
-Ne12        -4.8933729  1.0269960</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">residuals</span>(modele3)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ychap <span class="ot">&lt;-</span> <span class="fu">predict</span>(modele3)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>COEFF <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">nrow =</span> <span class="dv">1000</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(COEFF) <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">coef</span>(modele3))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>ozone.boot <span class="ot">&lt;-</span> ozone</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(COEFF)){</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  resetoile <span class="ot">&lt;-</span> <span class="fu">sample</span>(res, <span class="fu">length</span>(res), <span class="at">replace=</span>T)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  O3etoile <span class="ot">&lt;-</span> ychap <span class="sc">+</span> resetoile</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  ozone.boot[,<span class="st">"O3"</span>] <span class="ot">&lt;-</span> O3etoile</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  regboot <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">formula</span>(modele3), <span class="at">data=</span>ozone.boot)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  COEFF[i,] <span class="ot">&lt;-</span> <span class="fu">coef</span>(regboot)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a> }</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(COEFF, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      (Intercept)       T12        Vx      Ne12
-2.5%      59.0565 0.3754807 0.1793584 -6.924389
-97.5%    109.3364 2.2212252 0.7865275 -2.968154</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(COEFF[,<span class="st">"T12"</span>], <span class="at">main =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">"Coefficient de T12"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="chap5_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sse_pcr <span class="ot">&lt;-</span> <span class="cf">function</span>(don, bloc, b, compmax) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    rech <span class="ot">&lt;-</span> <span class="fu">pcr</span>(maxO3<span class="sc">~</span>., <span class="at">data=</span>don[bloc<span class="sc">!=</span>b, ],<span class="at">ncomp=</span>compmax, <span class="at">validation=</span><span class="st">"CV"</span>, <span class="at">scale=</span><span class="cn">TRUE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    ncomp <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">MSEP</span>(rech)<span class="sc">$</span>val[<span class="st">"CV"</span>, , ])<span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    prev <span class="ot">&lt;-</span> <span class="fu">predict</span>(rech, <span class="at">newdata=</span>don[bloc<span class="sc">==</span>b, ], <span class="at">ncomp=</span>ncomp)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">sum</span>((don[bloc<span class="sc">==</span>b, <span class="st">"maxO3"</span>] <span class="sc">-</span> <span class="fu">as.vector</span>(prev))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ol>
 </div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1182,15 +1024,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation column-body">
+<nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="../code/chap3.html" class="pagination-link" aria-label="3 Validation du modèle">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">3 Validation du modèle</span>
+      <a href="../correction/chap9.html" class="pagination-link" aria-label="9 Régression sur composantes : PCR et PLS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">9 Régression sur composantes : PCR et PLS</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../code/chap6.html" class="pagination-link" aria-label="6 Variables qualitatives : ANCOVA et ANOVA">
-        <span class="nav-page-text">6 Variables qualitatives : ANCOVA et ANOVA</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../correction/chap11.html" class="pagination-link" aria-label="11 Régression logistique">
+        <span class="nav-page-text">11 Régression logistique</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

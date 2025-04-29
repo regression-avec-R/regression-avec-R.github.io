@@ -444,6 +444,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -557,7 +563,107 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Exercice 2 (Estimateur de Nadaraya-Watson)</strong></span> Il suffit de dériver la quantité à minimiser par rapport à <span class="math inline">\(\beta_1\)</span> et la valeur de <span class="math inline">\(\beta_1\)</span> qui annule cette dérivée : <span class="math display">\[-2\sum_{i=1}^n(y_i-\beta_1)p_i(x)=0\quad\Longleftrightarrow \quad\widehat\beta_1(x)=\frac{\sum_{i=1}^ny_ip_i(x)}{\sum_{i=1}^np_i(x)}.\]</span></p>
 </div>
 <div id="exr-17-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Polynômes locaux)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 3 (Polynômes locaux)</strong></span> Notons <span class="math inline">\(P=\text{diag}(p_1(x), \dots, p_n(x))\)</span> et nous avons donc à minimiser la fonction <span class="math display">\[
+\begin{eqnarray*}
+\min_{\beta} \sum_{i=1}^n (y_i-\beta_1-\beta_2(x_i-x))^2 p_i(x) = (Y - X\beta)'P(Y - X\beta)
+\end{eqnarray*}
+\]</span> avec <span class="math inline">\(\beta=(\beta_1,\beta_2)'\)</span> et <span class="math display">\[
+\begin{align*}
+  X= \begin{pmatrix}
+    1&amp;x_1\\
+    1&amp;x_2\\
+    \vdots&amp;\vdots\\
+    1&amp;x_n\\
+  \end{pmatrix}.
+\end{align*}
+\]</span> Le minimum (voir régression pondérée au chapitre 4 (p.&nbsp;81) avec ici <span class="math inline">\(\omega_i^2=p_i(x)\)</span>) est atteint pour <span id="eq-polylocaux"><span class="math display">\[
+\begin{eqnarray}
+\hat \beta=(X'PX)^{-1}X'PY
+\end{eqnarray}
+\tag{1}\]</span></span> Calculons <span class="math inline">\((X'PX)\)</span>: <span class="math display">\[
+\begin{align*}
+  X'PX=\begin{pmatrix}
+  1&amp;1&amp;\cdots &amp;1\\
+  x_1&amp;x_2&amp;\cdots&amp;x_n\\
+  \end{pmatrix}
+\begin{pmatrix}
+  p_1(x)&amp;0&amp;\cdots &amp;0\\
+  0&amp;p_2(x)&amp;&amp;0 \\
+  \vdots&amp;&amp;\ddots&amp;\vdots \\
+  0&amp;\cdots&amp;0&amp;p_n(x) \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    1&amp;x_1\\
+    1&amp;x_2\\
+    \vdots&amp;\vdots\\
+    1&amp;x_n\\
+  \end{pmatrix}=
+  \begin{pmatrix}
+    S_0&amp;S_1\\
+    S_1&amp;S_2
+  \end{pmatrix}
+\end{align*}
+\]</span> avec <span class="math display">\[
+\begin{eqnarray*}
+S_{0} &amp;=&amp; \sum_{i=1}^n p_i(x)\\
+S_{1} &amp;=&amp; \sum_{i=1}^n p_i(x)(x_i-x)\\
+S_{2} &amp;=&amp; \sum_{i=1}^n p_i(x)(x_i-x)^2.
+\end{eqnarray*}
+\]</span> Inversons cette matrice <span class="math display">\[
+\begin{align*}
+  (X'PX)^{-1}=\frac{1}{S_2S_0 - S_1^2}\begin{pmatrix}
+    S_2&amp;-S_1\\
+    -S_1&amp;S_0
+  \end{pmatrix}
+\end{align*}
+\]</span> Remarquons que <span class="math display">\[
+\begin{align*}
+\sum_{i=1}^n q_i(x) =\sum_{i=1}^n p_i(x)(S_{2}-(x_i-x)S_{1}) = S_2 \sum_{i=1}^n p_i(x) - S_{1}\sum_{i=1}^n p_i(x)(x_i-x)= S_2S_0 - S_1^2
+\end{align*}
+\]</span> Ensuite calculons <span class="math display">\[
+\begin{align*}
+X'PY=\begin{pmatrix}
+  1&amp;1&amp;\cdots &amp;1\\
+  x_1&amp;x_2&amp;\cdots&amp;x_n\\
+  \end{pmatrix}
+\begin{pmatrix}
+  p_1(x)&amp;0&amp;\cdots &amp;0\\
+  0&amp;p_2(x)&amp;&amp;0 \\
+  \vdots&amp;&amp;\ddots&amp;\vdots \\
+  0&amp;\cdots&amp;0&amp;p_n(x) \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    y_1\\
+    y_2\\
+    \vdots\\
+    y_n\\
+  \end{pmatrix}
+  =
+   \begin{pmatrix}
+    \sum_{i=1}^n p_i(x)y_i\\
+    \sum_{i=1}^n(x_i-x)p_i(x)y_i
+  \end{pmatrix}
+\end{align*}
+\]</span> En utilisant dans (<a href="#eq-polylocaux" class="quarto-xref">équation&nbsp;1</a>) les différentes parties calculées ci-dessus nous obtenons enfin <span class="math display">\[
+\begin{align*}
+\hat\beta=\frac{1}{\sum_{i=1}^n q_i(x)}\begin{pmatrix}
+    S_2&amp;-S_1\\
+    -S_1&amp;S_0
+\end{pmatrix}
+\begin{pmatrix}
+    \sum_{i=1}^n p_i(x)y_i\\
+    \sum_{i=1}^n(x_i-x)p_i(x)y_i
+\end{pmatrix}=
+=\frac{1}{\sum_{i=1}^n q_i(x)}\begin{pmatrix}
+  S_2\sum_{i=1}^n p_i(x)y_i - S_1\sum_{i=1}^n(x_i-x)p_i(x)y_i\\
+  -S_1\sum_{i=1}^n p_i(x)y_i + S_0\sum_{i=1}^n(x_i-x)p_i(x)y_i
+\end{pmatrix}
+\end{align*}
+\]</span> Comme nous cherchons la première coordonnée cela donne <span class="math display">\[
+\begin{align*}
+\hat\beta_1=\frac{\sum_{i=1}^n y_i p_i(x)(S_2 - (x_i-x)S_1)}{\sum_{i=1}^n q_i(x)} = \frac{\sum_{i=1}^n y_i q_i(x)}{\sum_{i=1}^n q_i(x)}.
+\end{align*}
+\]</span></p>
 </div>
 <div id="exr-17-4" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 4 (Estimateur à noyau uniforme dans <span class="math inline">\(\mathbb R^p\)</span>)</strong></span> &nbsp;</p>

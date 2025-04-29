@@ -445,6 +445,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -1001,6 +1007,63 @@ Prediction   0   1
 </div>
 <div id="exr-15-4" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 4 (Rééquilibrage et information de Fisher)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Vérifier intuitivement que la situation de sous-échantillonnage proposé aléatoire peut être approximée par ce schéma si la taille du sous échantillons des$ Y=0 $(dans lequel on sélectionne) est grande. Si la taille est grande alors un tirage le tirage est approximativement équivalent à un tirage avec remise, ce qui est le schéma de l’exercice.</li>
+<li>En écrivant la loi conjointe <span class="math inline">\(g(s, y|x)\)</span> comme la densité de <span class="math inline">\(s\)</span> sachant <span class="math inline">\(y,x\)</span> multipliée par la densité de <span class="math inline">\(y\)</span> sachant <span class="math inline">\(x\)</span> <span class="math display">\[
+\begin{align*}
+  g(y,s|x) = \mathrm{densite}(s|x, y) \mathrm{densite}(y|x) =h(s|y)f_\theta(y|x).
+\end{align*}
+\]</span> En passant au log nous avons <span class="math display">\[
+\begin{align*}
+  \log g(y,s|x) = \log h(s|y) + \log f_\theta(y|x).
+\end{align*}
+\]</span> Écrivons la log-vraisemblance des données complètes: <span class="math display">\[
+  \begin{align*}
+  \sum_{i=1}^{n}\log g(y_{i},s_{i}|x_{i}) = \sum_{i=1}^{n}\log h(s_{i}|y_{i}) + \sum_{i=1}^{n}\log f_\theta(y_{i}|x_{i}),
+\end{align*}
+\]</span> et notons alors <span class="math inline">\(\mathcal{L^*}(\theta)\)</span> la partie gauche et <span class="math inline">\(\mathcal{L}(\theta)\)</span> la partie de droite nous retrouvons l’équation demandée.</li>
+<li>En dérivant 2 fois par rapport à <span class="math inline">\(\theta\)</span> (on sait que <span class="math inline">\(h(s|y)\)</span> ne dépend pas de <span class="math inline">\(\theta\)</span>) et en passant à l’opposé on a <span class="math display">\[%
+\begin{align*}
+- \sum_{i=1}^{n} \frac{\partial^{2} g(y_{i},s_{i}|x_{i})}{\partial \theta^{2}} =  - \sum_{i=1}^{n} \frac{\partial^{2} f_\theta(y_{i}|x_{i})}{\partial \theta^{2}}
+\end{align*}
+\]</span> Ce qui est bien l’égalité demandée.</li>
+<li>On reconditionne dans l’autre sens: <span class="math display">\[%
+\begin{align*}
+  g(y,s|x) = \mathrm{densité}(y|s, y) \mathrm{densité}(s|x) =l(y|s,x)m(s|x).
+\end{align*}
+\]</span> En passant au log nous avons <span class="math display">\[%
+\begin{align*}
+  \log g(y,s|x) = \log l(y|s,x) + \log m(s|x).
+\end{align*}
+\]</span> Et nous avons la vraisemblance: <span class="math display">\[%
+\begin{align*}
+  \sum_{i=1}^{n}\log g(y_{i},s_{i}|x_{i}) = \sum_{i=1}^{n}\log l(y_{i}|s_{i},x_{i}) + \sum_{i=1}^{n}\log m(s_{i}|x_{i}).
+\end{align*}
+\]</span> Comme <span class="math inline">\(s_{i}\)</span> vaut 0 ou 1 en regroupant nous avons bien <span class="math display">\[%
+\begin{align*}
+\mathcal{L^*}(\theta)&amp;=\sum_{i\in\{i | S_i=1\}}{\log l(y|s=1,x)} +
+                       \sum_{i\in\{i | S_i=0\}}{\log l(y|s=0,x)}+
+                       \sum_{i=1}^{n}{\log m(s_i|x_i)}.
+\end{align*}
+\]</span></li>
+<li>En dérivant 2 fois par rapport à <span class="math inline">\(\theta\)</span> et en passant à l’opposé on retrouve l’expression demandée notée aussi <span class="math display">\[%
+\begin{align*}
+     I^*_n(\theta)&amp;=I_n(\theta|S=1)+ I_n(\theta|S=0) + I_n(\theta, S).
+   \end{align*}
+\]</span></li>
+<li>Parmi toutes les informations de Fisher introduites,
+<ul>
+<li>quelle est celle qui correspond à l’échantillon ?<br>
+C’est <span class="math inline">\(I_n(\theta)\)</span>,</li>
+<li>quelle est celle qui correspond à l’échantillon après rééquilibrage ?<br>
+C’est <span class="math inline">\(I_n(\theta|S=1)\)</span></li>
+</ul></li>
+<li>Comme nous savons que <span class="math display">\[
+\begin{align*}
+   I_n(\theta) = I^*_n(\theta) = I_n(\theta|S=1)+ I_n(\theta|S=0) + I_n(\theta, S)
+\end{align*}
+\]</span> On déduit que si chaque information de Fisher empirique converge vers vers une matrice définie positive alors il vaut mieux garder l’information la plus grande, <span class="math inline">\(I_n(\theta) = I^*_n(\theta)\)</span> donc tout l’échantillon.</li>
+</ol>
 </div>
 
 

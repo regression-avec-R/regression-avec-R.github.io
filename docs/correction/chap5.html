@@ -411,6 +411,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -659,9 +665,11 @@ F&amp;=&amp;\frac{\|\hat Y -\hat Y_0\|^2/\dim(\mathcal M_0^{\perp}  \cap \mathca
 <div id="exr-5-10" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 10 (IC pour la régression ridge)</strong></span> &nbsp;</p>
 <ol type="1">
-<li><p>Loi de <span class="math inline">\(\hat \beta\)</span> : <span class="math inline">\(\NO(\beta, \sigma^{2}(X'X)^{-1})\)</span> grâce au modèle et à <span class="math inline">\({\mathcal{H}}_3\)</span>.</p></li>
-<li><p>Loi de $_{}() $. Comme <span class="math inline">\(\hat \beta_{\mathrm{ridge}}(\tilde\kappa)= (X'X-\tilde\kappa I)^{-1}X'Y\)</span> avec <span class="math inline">\(A=(X'X-\tilde\kappa I)^{-1}X'\)</span> qui est une matrice fixe. Avec <span class="math inline">\({\mathcal{H}}_{3}\)</span> et le modèle de régression multiple on a que <span class="math inline">\(Y\sim\NO(X\beta, \sigma^{2}I)\)</span>.</p>
-<p>Puisque <span class="math inline">\(Y\)</span> est un vecteur gaussien, il en est de même de <span class="math inline">\(\hat \beta_{\mathrm{ridge}}(\tilde\kappa)=AY\)</span>. Calculons son espérance <span class="math display">\[\begin{align*}
+<li><p>Loi de <span class="math inline">\(\hat \beta\)</span> : <span class="math inline">\(\mathcal{N}(\beta, \sigma^{2}(X'X)^{-1})\)</span> grâce au modèle et à <span class="math inline">\({\mathcal{H}}_3\)</span>.</p></li>
+<li><p>Nous avons <span class="math display">\[
+\hat \beta_{\mathrm{ridge}}(\tilde\kappa)= (X'X-\tilde\kappa I)^{-1}X'Y
+\]</span> avec <span class="math inline">\(A=(X'X-\tilde\kappa I)^{-1}X'\)</span> qui est une matrice fixe. Avec <span class="math inline">\({\mathcal{H}}_{3}\)</span> et le modèle de régression multiple on a que <span class="math inline">\(Y\sim\mathcal{N}(X\beta, \sigma^{2}I)\)</span>.</p></li>
+<li><p>Puisque <span class="math inline">\(Y\)</span> est un vecteur gaussien, il en est de même de <span class="math inline">\(\hat \beta_{\mathrm{ridge}}(\tilde\kappa)=AY\)</span>. Calculons son espérance <span class="math display">\[\begin{align*}
 \mathbf E(\hat \beta_{\mathrm{ridge}}(\tilde\kappa))&amp;=\mathbf E(AY)=A\mathbf E(Y)=AX\beta\\
 &amp;=(X'X-\tilde\kappa I)^{-1}X'X\beta
 \end{align*}\]</span> et sa variance <span class="math display">\[\begin{align*}
@@ -676,8 +684,7 @@ F&amp;=&amp;\frac{\|\hat Y -\hat Y_0\|^2/\dim(\mathcal M_0^{\perp}  \cap \mathca
 <li><p>Il faut pouvoir démontrer l’indépendance de <span class="math inline">\(\hat\sigma_{\mathrm{ridge}}\)</span> et <span class="math inline">\(\hat \beta_{\mathrm{ridge}}\)</span>. Pour le théorème 5.1, on montre l’indépendance entre<span class="math inline">\(\hat \beta\)</span> et <span class="math inline">\(\hat \sigma\)</span> en considérant les 2 vecteurs <span class="math inline">\(\hat\beta\)</span> et <span class="math inline">\(\hat \varepsilon=(Y-\hat Y)\)</span>. Comme nous pouvons écrire <span class="math inline">\(\hat \beta=(X'X)^{-1}X'P_XY\)</span>, <span class="math inline">\(\hat \beta\)</span> est donc une fonction fixe (dépendante uniquement des <span class="math inline">\(X\)</span>) de <span class="math inline">\(P_XY\)</span>. De plus, <span class="math inline">\(\hat \varepsilon=P_{X^\perp}Y\)</span> est orthogonal à <span class="math inline">\(P_XY\)</span>. Ces 2 vecteurs suivent des lois normales et sont donc indépendants. Il en résulte que <span class="math inline">\(\hat \beta\)</span> et <span class="math inline">\(Y-\hat Y\)</span> sont indépendants et de même pour <span class="math inline">\(\hat \beta\)</span> et <span class="math inline">\(\hat \sigma\)</span>.</p>
 <p>Ici, <span class="math inline">\(\hat\sigma_{\mathrm{ridge}}\)</span> est une fonction de <span class="math inline">\(Y-\hat Y_{\mathrm{ridge}}\)</span>. Le vecteur <span class="math inline">\(\hat\beta_{\mathrm{ridge}}=(X'X+\tilde\kappa I_p)^{-1}X'Y=(X'X+\tilde\kappa I_p)^{-1}X'P_XY\)</span> est une fonction fixe (<span class="math inline">\(\tilde \kappa\)</span> est considéré comme fixé) de <span class="math inline">\(P_XY\)</span>. Par contre, <span class="math inline">\(P_XY\)</span> n’est pas orthogonal à <span class="math inline">\((Y-\hat Y_{\mathrm{ridge}})\)</span>, comme nous l’avons montré, nous ne pouvons donc montrer l’indépendance de <span class="math inline">\(\hat\beta_{\mathrm{ridge}}\)</span> et <span class="math inline">\(\hat\sigma_{\mathrm{ridge}}\)</span>.</p>
 <p>Une autre idée serait d’utiliser <span class="math inline">\(\hat\sigma\)</span> mais en général si l’on utilise la régression ridge c’est que l’on se doute que <span class="math inline">\(\hat Y\)</span> n’est pas un bon estimateur de <span class="math inline">\(X\beta\)</span> et donc <span class="math inline">\(\hat\sigma\)</span> qui est une fonction de <span class="math inline">\(Y-\hat Y\)</span> risque de ne pas être un bon estimateur de <span class="math inline">\(\sigma\)</span>. L’estimateur <span class="math inline">\(\hat\sigma\)</span> peut même être nul, ce qui pratiquement peut arriver quand <span class="math inline">\(p&gt;n\)</span>.</p></li>
-<li><p>En général quand <span class="math inline">\(X\)</span> est fixe pour un bootstrap en régression on estime <span class="math inline">\(\hat \beta\)</span> puis on déduit les <span class="math inline">\(\{\hat \epsilon_{i}\}\)</span>. De cet ensemble sont tirés de manière équiprobable avec remise <span class="math inline">\(n\)</span> résidus <span class="math inline">\(\{\hat \epsilon_{i}^{*}\}\)</span>. Ces nouveaux résidus sont additionnés à <span class="math inline">\(X\beta\)</span> pour faire un nouveau vecteur <span class="math inline">\(Y^{*}\)</span> et avoir un échantillon bootstap <span class="math inline">\(Y^{*}, X\)</span>.</p>
-<p>Ici l’estimation de <span class="math inline">\(\hat \beta\)</span> sera mauvaise (et c’est pour cela que l’on utilise la régression ridge) et plutôt que d’estimer de mauvais résidus nous allons retirer avec remise parmi les <span class="math inline">\(Y_{i}, X_{i.}\)</span> ce qui est la procédure adaptée au <span class="math inline">\(X\)</span> aléatoire mais ici nous avons peu de choix</p>
+<li><p>Pour la régression on considère (et c’est le cas ici) que <span class="math inline">\(X\)</span> est fixe. Dans ce cas, pour effectuer un bootstrap on estime <span class="math inline">\(\hat \beta\)</span> puis on déduit les <span class="math inline">\(\{\hat \epsilon_{i}\}\)</span>. De cet ensemble sont tirés de manière équiprobable avec remise <span class="math inline">\(n\)</span> résidus <span class="math inline">\(\{\hat \epsilon_{i}^{*}\}\)</span>. Ces nouveaux résidus sont additionnés à <span class="math inline">\(X\beta\)</span> pour faire un nouveau vecteur <span class="math inline">\(Y^{*}\)</span> et avoir un échantillon bootstap <span class="math inline">\(Y^{*}, X\)</span>. Le seul changement est que l’on utilise <span class="math inline">\(\beta_{\mathrm{ridge}}(\tilde \kappa)\)</span>.</p>
 <p><strong>Entrées</strong> : <span class="math inline">\(\tilde \kappa\)</span> fixé, <span class="math inline">\(\alpha\)</span> fixé, <span class="math inline">\(B\)</span> choisi. <br> <strong>Sorties</strong> : IC, au niveau <span class="math inline">\(\alpha\)</span>, coordonnée par coordonnée de <span class="math inline">\(\beta\)</span>.</p>
 <ol type="1">
 <li>Estimer <span class="math inline">\(\beta_{\mathrm{ridge}}(\tilde \kappa)\)</span> .</li>
@@ -695,7 +702,24 @@ F&amp;=&amp;\frac{\|\hat Y -\hat Y_0\|^2/\dim(\mathcal M_0^{\perp}  \cap \mathca
 <li>calculer les quantiles empiriques de niveau <span class="math inline">\(\alpha/2\)</span> et <span class="math inline">\(1-\alpha/2\)</span> pour la coordonnée <span class="math inline">\(j\)</span>, sur tous les vecteurs <span class="math inline">\(\{\beta_{\mathrm{ridge}}^{(k)}(\tilde \kappa)\}\)</span> ;</li>
 </ul></li>
 </ol></li>
-<li><p>L’algorithme est presque le même. Cependant comme <span class="math inline">\(\tilde \kappa\)</span> n’est pas fixé, pour estimer <span class="math inline">\(\beta_{\mathrm{ridge}}(\tilde \kappa)\)</span> il faut déterminer <span class="math inline">\(\tilde \kappa\)</span> par une méthode choisie. Ensuite, à chaque estimation de <span class="math inline">\(\beta_{\mathrm{ridge}}^{(k)}(\tilde \kappa^{(k)})\)</span>, il est nécessaire au préalable de déterminer <span class="math inline">\(\tilde \kappa^{(k)}\)</span> par la même méthode que celle utilisée pour déterminer <span class="math inline">\(\tilde \kappa\)</span>.</p></li>
+<li><p>Ici nous souhaitons intégrer l’incertitude sur l’estimation de <span class="math inline">\(\tilde \kappa\)</span> qui n’est pas fixé. Le plus simple est alors d’utiliser la procédure adaptée au cas <span class="math inline">\(X\)</span> aléatoire: pour avoir un échantillon bootstap <span class="math inline">\(Y^{*}, X^{*}\)</span> on tire au hasard avec remise les individus de cet échantillon <span class="math inline">\(*\)</span> parmi les individus de départ <span class="math inline">\(1\leq i\leq n\)</span>: fs</p>
+<p><strong>Entrées</strong> : <span class="math inline">\(\alpha\)</span> fixé, <span class="math inline">\(B\)</span> choisi. <br> <strong>Sorties</strong> : IC, au niveau <span class="math inline">\(\alpha\)</span>, coordonnée par coordonnée de <span class="math inline">\(\beta\)</span>.</p>
+<ul>
+<li>Pour <span class="math inline">\(k=1\)</span> à <span class="math inline">\(B\)</span>
+<ul>
+<li>Pour <span class="math inline">\(i=1\)</span> à <span class="math inline">\(n\)</span>
+<ul>
+<li>tirer de manière équiprobable avec remise parmi <span class="math inline">\(\{1, 2, \cdots, n\}\)</span> (notons <span class="math inline">\(l\)</span> le nombre obtenu)</li>
+<li>sélectionner la ligne <span class="math inline">\(l\)</span> de <span class="math inline">\(X\)</span> et la coordonnée <span class="math inline">\(l\)</span> de <span class="math inline">\(Y\)</span>. Ils constitueront les individus <span class="math inline">\(i\)</span> de l’échantillon bootstrap <span class="math inline">\(k\)</span>. On note ces individus <span class="math inline">\(X_i^{(k)}\)</span> et <span class="math inline">\(Y_i^{(k)}\)</span> ;</li>
+</ul></li>
+<li>On estime <span class="math inline">\(\tilde \kappa^{(k)}\)</span> selon la méthode choisie avec les données<span class="math inline">\(X^{(k)}\)</span> et <span class="math inline">\(Y^{(k)}\)</span> ;</li>
+<li>On calcule le vecteur de paramètre <span class="math inline">\(\hat \beta_{\mathrm{ridge}}^{(k)}(\tilde \kappa^{(k)})=({X^{(k)}}'X^{(k)}+\tilde\kappa^{(k)} I_p)^{-1}{X^{(k)}}'Y^{(k)}\)</span> ;</li>
+</ul></li>
+<li>Pour <span class="math inline">\(j=1\)</span> à <span class="math inline">\(p\)</span>
+<ul>
+<li>calculer les quantiles empiriques de niveau <span class="math inline">\(\alpha/2\)</span> et <span class="math inline">\(1-\alpha/2\)</span> pour la coordonnée <span class="math inline">\(j\)</span>, sur tous les vecteurs <span class="math inline">\(\{\hat \beta_{\mathrm{ridge}}^{(k)}(\tilde \kappa^{(k)})\}\)</span>.</li>
+</ul></li>
+</ul></li>
 </ol>
 </div>
 

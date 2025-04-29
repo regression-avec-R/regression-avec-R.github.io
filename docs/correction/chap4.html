@@ -411,6 +411,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -660,7 +666,7 @@ I_p-\gamma\gamma'&amp;=&amp;UU' - UDU'=U(\text{diag}(1-\gamma'\gamma,1,\dotsc,1)
 <div id="exr-4-6" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 6 (Corrélation spatiale)</strong></span> &nbsp;</p>
 <ol type="1">
-<li><p>Écrivons pour la ligne/site <span class="math inline">\(i\)</span>: <span class="math display">\[\begin{align*}
+<li><p>Écrivons pour la ligne/site <span class="math inline">\(i\)</span> : <span class="math display">\[\begin{align*}
 Y_{i}&amp;=X_{i.}'\beta + \varepsilon_{i}
 \end{align*}\]</span> et nous savons que <span class="math display">\[\begin{align*}
 \varepsilon_{i}= \rho \sum_{i=1}^n M_{ij} \varepsilon_{j} + \eta_{i}
@@ -682,9 +688,11 @@ Y_{i}&amp;=X_{i.}'\beta + \varepsilon_{i}
 L(Y,\beta,\sigma^2,\rho)&amp;=  \frac{1}{(2\pi)^{n/2}}\frac{1}{|\sigma^{2}\Omega|^{1/2}}
 \exp\Bigl\{-\frac{1}{2\sigma^2}(Y-X\beta)'\Omega^{-1}(Y-X\beta)\Bigr\}
 \end{align*}\]</span></p></li>
-<li><p>La log-vraisemblance est <span class="math display">\[\begin{align*}
+<li><p>La log-vraisemblance est <span id="eq-vraiss"><span class="math display">\[
+\begin{align*}
 \mathcal{L}&amp;=-\frac{n}{2}\log (2\pi\sigma^{2}) - \frac{1}{2}\log|\Omega| - \frac{1}{2\sigma^2}(Y-X\beta)'\Omega^{-1}(Y-X\beta)
-\end{align*}\]</span> La dérivée par rapport à <span class="math inline">\(\beta\)</span> est <span class="math display">\[\begin{align*}
+\end{align*}
+\tag{1}\]</span></span> La dérivée par rapport à <span class="math inline">\(\beta\)</span> est <span class="math display">\[\begin{align*}
 \frac{\partial \mathcal{L}}{\partial\beta}&amp;=-\frac{1}{2\sigma^2}X'\Omega^{-1}(Y-X\beta)\\
 \end{align*}\]</span> et en l’annulant on a <span class="math display">\[\begin{align*}
 X'\Omega^{-1}Y=X'\Omega^{-1}X\hat\beta
@@ -693,7 +701,7 @@ X'\Omega^{-1}Y=X'\Omega^{-1}X\hat\beta
 \hat \beta&amp;=&amp;(X'\hat \Omega^{-1}X)^{-1}X'\hat \Omega^{-1}Y\nonumber\\
 &amp;=&amp;(X'\hat A'\hat AX)^{-1}X'\hat A'\hat AY.
 \end{eqnarray}
-\tag{1}\]</span></span></p></li>
+\tag{2}\]</span></span></p></li>
 <li><p>La dérivée par rapport à <span class="math inline">\(\sigma^2\)</span> est <span class="math display">\[\begin{align*}
 \frac{\partial \mathcal{L}}{\partial\sigma^2}&amp;=-\frac{n}{2\sigma^2} + \frac{1}{2\sigma^4}(Y-X\beta)'\Omega^{-1}(Y-X\beta)
 \end{align*}\]</span> et en l’annulant on a <span id="eq-sigmahatcalif"><span class="math display">\[
@@ -701,9 +709,17 @@ X'\Omega^{-1}Y=X'\Omega^{-1}X\hat\beta
 \hat \sigma^2&amp;=\frac{1}{n}(Y-X\hat \beta)'\hat \Omega^{-1} (Y-X\hat \beta)\nonumber\\
 &amp;=\frac{1}{n}(Y-X\hat \beta)\hat A'\hat A (Y-X\hat \beta).
 \end{align}
-\tag{2}\]</span></span></p></li>
-<li></li>
-<li><p>Comme nous savons les valeurs de <span class="math inline">\(\hat \beta\)</span> comme fonction de <span class="math inline">\(\rho\)</span> (<a href="#eq-betahatcalif" class="quarto-xref">équation&nbsp;1</a>) et de <span class="math inline">\(\hat \sigma^2\)</span> comme fonction de <span class="math inline">\(\rho\)</span> (<a href="#eq-sigmahatcalif" class="quarto-xref">équation&nbsp;2</a>) il suffit de les remplacer dans <span class="math inline">\(-\mathcal{L}\)</span> et on obtient <span class="math display">\[\begin{eqnarray*}
+\tag{3}\]</span></span></p></li>
+<li><p>En utilisant l’<a href="#eq-vraiss" class="quarto-xref">équation&nbsp;1</a> avec <span class="math inline">\(\Omega^{-1}=\hat A'\hat A\)</span> et en remplaçant <span class="math inline">\(\hat \sigma^2\)</span> par sa valeur (<a href="#eq-sigmahatcalif" class="quarto-xref">équation&nbsp;3</a>) on a <span class="math display">\[
+   \begin{align*}
+\mathcal{L}(Y,\hat\beta,\hat\sigma^2,\hat\rho)&amp;=  -\frac{n}{2}\log (2\pi\hat\sigma^{2}) + \frac{1}{2}\log|\hat A'\hat A| -
+    \frac{1}{2\hat\sigma^2}(Y-X\hat\beta)'\hat A'\hat A (Y-X\hat\beta) \\
+\mathcal{L}(Y,\hat\beta,\hat\sigma^2,\hat\rho)&amp;= -\frac{n}{2}\log (\hat\sigma^{2})  -\frac{n}{2}\log (2\pi) + \frac{1}{2}\log|\hat A'\hat A|
+- \frac{n(Y-X\hat\beta)'\hat A'\hat A (Y-X\hat\beta)}{2(Y-X\hat \beta)\hat A'\hat A (Y-X\hat \beta)}\\
+\mathcal{L}(Y,\hat\beta,\hat\sigma^2,\hat\rho)&amp;= -\frac{n}{2}\log (\hat\sigma^{2})+ \frac{1}{2}\log|\hat A'\hat A| + cte
+\end{align*}
+\]</span></p></li>
+<li><p>Comme nous savons les valeurs de <span class="math inline">\(\hat \beta\)</span> comme fonction de <span class="math inline">\(\rho\)</span> (<a href="#eq-betahatcalif" class="quarto-xref">équation&nbsp;2</a>) et de <span class="math inline">\(\hat \sigma^2\)</span> comme fonction de <span class="math inline">\(\rho\)</span> (<a href="#eq-sigmahatcalif" class="quarto-xref">équation&nbsp;3</a>) il suffit de les remplacer dans <span class="math inline">\(-\mathcal{L}\)</span> et on obtient <span class="math display">\[\begin{eqnarray*}
     h(\hat\rho)\!&amp;=\!&amp;\!\frac{n}{2}\log Y'(I\!-\!X(X'\hat A'\hat AX)^{-1}X'\hat A'\hat A)'
 \hat A'\hat A(I\!-\!X(X'\hat A'\hat AX)^{-1}X'\hat A'\hat A)Y \\
     &amp;&amp; \quad - \frac{1}{2}\log|\hat A'\hat A|^2

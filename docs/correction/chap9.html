@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../correction/chap11.html" rel="next">
+<link href="../correction/chap10.html" rel="next">
 <link href="../correction/chap8.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -445,6 +445,12 @@ window.Quarto = {
  <span class="menu-text">9 Régression sur composantes : PCR et PLS</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../correction/chap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10 Comparaison des différentes méthodes, étude de cas réels</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -550,13 +556,102 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Exercice 1 (Questions de cours)</strong></span> A, B, C, A, B (les composantes sont orthogonales donc faire des régressions univariées <span class="math inline">\(Y\)</span> contre chaque composante <span class="math inline">\(X^{*}_{j}\)</span> ou faire la régression multiple <span class="math inline">\(Y\)</span> contre toutes les composantes <span class="math inline">\(X^{*}_{j}\)</span> revient au même pour des données centrées), A, C.</p>
 </div>
 <div id="exr-9-2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 2 (Régression sur composantes)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 2 (Régression sur composantes)</strong></span> Créons une fonction pour calculer <span class="math inline">\(X^*\)</span> et la matrice <span class="math inline">\(\Lambda^{-1}\)</span> et <span class="math inline">\(P\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>orthonormalisation <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    Diago <span class="ot">&lt;-</span> <span class="fu">eigen</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X, <span class="at">symmetric=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    valpos <span class="ot">&lt;-</span> Diago<span class="sc">$</span>values<span class="sc">&gt;</span><span class="fl">1e-10</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    Lambda <span class="ot">&lt;-</span> Diago<span class="sc">$</span>values[valpos]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    P <span class="ot">&lt;-</span> Diago<span class="sc">$</span>vector[, valpos]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## X^*</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    Xet <span class="ot">&lt;-</span> X <span class="sc">%*%</span> P</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">Xet=</span>Xet, <span class="at">P=</span>P, <span class="at">Lambda=</span>Lambda))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Créons une fonction pour</p>
+<ol type="1">
+<li>centrer réduire</li>
+<li>calculer <span class="math inline">\(X^*\)</span> et la matrice <span class="math inline">\(\Lambda^{-1}\)</span> et <span class="math inline">\(P\)</span> (la fonction est proposée dans le dernier exercice)</li>
+<li>Choisir l’ordre de présentation des coefficients</li>
+<li>Calculer le BIC ou l’AIC</li>
+<li>Retourne les coefficients sur l’échelle de départ</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>reg_CP_BIC <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y, <span class="at">pen=</span><span class="fu">log</span>(<span class="fu">nrow</span>(X))) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Xbar  <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, mean)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    stdX <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">apply</span>(X, <span class="dv">2</span>, var)<span class="sc">*</span>(n<span class="dv">-1</span>)<span class="sc">/</span>n)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Xcr <span class="ot">&lt;-</span> <span class="fu">scale</span>(X, <span class="at">center=</span>Xbar, <span class="at">scale=</span>stdX)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    ortho <span class="ot">&lt;-</span> <span class="fu">orthonormalisation</span>(Xcr)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="do">## \hat \beta^*</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    betaet <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">/</span>ortho<span class="sc">$</span>Lambda <span class="sc">*</span> <span class="fu">t</span>(ortho<span class="sc">$</span>Xet)) <span class="sc">%*%</span> Y</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="do">## choix des coef non nuls</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="do">## ordre</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ordre <span class="ot">&lt;-</span> <span class="fu">order</span>(<span class="fu">abs</span>(betaet<span class="sc">*</span><span class="fu">sqrt</span>(ortho<span class="sc">$</span>Lambda)), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    betaetO <span class="ot">&lt;-</span> betaet[ordre]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    LambdaO <span class="ot">&lt;-</span> ortho<span class="sc">$</span>Lambda[ordre]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">####################</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## BIC</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="do">####################</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    BIC <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(ordre))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    SCR <span class="ot">&lt;-</span> <span class="fu">sum</span>((Y <span class="sc">-</span> <span class="fu">mean</span>(Y))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ordre)){</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        SCR <span class="ot">&lt;-</span> SCR <span class="sc">-</span> betaetO[k]<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> LambdaO[k]</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        BIC[k] <span class="ot">&lt;-</span> n<span class="sc">*</span><span class="fu">log</span>(SCR<span class="sc">/</span>n) <span class="sc">+</span> k<span class="sc">*</span>pen</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    nb <span class="ot">&lt;-</span> <span class="fu">which.min</span>(BIC)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    choix <span class="ot">&lt;-</span> ordre[<span class="dv">1</span><span class="sc">:</span>nb]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    betaetfin <span class="ot">&lt;-</span> betaet<span class="sc">*</span><span class="dv">0</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    betaetfin[choix,<span class="dv">1</span>] <span class="ot">&lt;-</span>  betaet[choix,<span class="dv">1</span>]</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="do">####################</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## RETOUR aux données</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="do">####################</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    betafin <span class="ot">&lt;-</span> (ortho<span class="sc">$</span>P<span class="sc">%*%</span>betaetfin)<span class="sc">/</span>stdX</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y)<span class="sc">-</span>Xbar<span class="sc">%*%</span>betafin</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu=</span>mu,<span class="at">beta=</span>betafin,<span class="at">nbr=</span>nb))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 <div id="exr-9-3" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 3 (Régression sur composantes)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 3 (Régression sur composantes)</strong></span> identique</p>
 </div>
 <div id="exr-9-4" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 4 (Régression sur composantes)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 4 (Régression sur composantes)</strong></span> Nous prenons ici l’ordre des composantes de l’ACP Créons une fonction pour</p>
+<ol type="1">
+<li>centrer réduire</li>
+<li>calculer <span class="math inline">\(X^*\)</span> et la matrice <span class="math inline">\(\Lambda^{-1}\)</span> et <span class="math inline">\(P\)</span> (la fonction est proposée dans le dernier exercice)</li>
+<li>Retourne les coefficients sur l’echelle de départ et sur l’échelle centrée réduite pour comparer avec la library pls.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>reg_CP <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y, K) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Xbar  <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, mean)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># standardisation comme dans pcr</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    stdX <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">apply</span>(X, <span class="dv">2</span>, var))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    Xcr <span class="ot">&lt;-</span> <span class="fu">scale</span>(X, <span class="at">center=</span>Xbar, <span class="at">scale=</span>stdX)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ortho <span class="ot">&lt;-</span> <span class="fu">orthonormalisation</span>(Xcr)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="do">## \hat \beta^*</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    betaet <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">/</span>ortho<span class="sc">$</span>Lambda <span class="sc">*</span> <span class="fu">t</span>(ortho<span class="sc">$</span>Xet)) <span class="sc">%*%</span> Y</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    betaetfin <span class="ot">&lt;-</span> betaet<span class="sc">*</span><span class="dv">0</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    betaetfin[<span class="dv">1</span><span class="sc">:</span>K,<span class="dv">1</span>] <span class="ot">&lt;-</span>  betaet[<span class="dv">1</span><span class="sc">:</span>K,<span class="dv">1</span>]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    betafinpcr <span class="ot">&lt;-</span> ortho<span class="sc">$</span>P<span class="sc">%*%</span>betaetfin</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="do">####################</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## RETOUR aux données</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">####################</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    betafin <span class="ot">&lt;-</span> (ortho<span class="sc">$</span>P<span class="sc">%*%</span>betaetfin)<span class="sc">/</span>stdX</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y)<span class="sc">-</span>Xbar<span class="sc">%*%</span>betafin</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu=</span>mu,<span class="at">beta=</span>betafin, <span class="at">betaCR=</span>betafinpcr))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>ozone <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"../donnees/ozone.txt"</span>, <span class="at">header=</span><span class="cn">TRUE</span>,<span class="at">sep=</span><span class="st">";"</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pls)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>modele.pcr <span class="ot">&lt;-</span> <span class="fu">pcr</span>(O3<span class="sc">~</span>.,<span class="at">ncomp=</span><span class="dv">2</span>,<span class="at">data =</span> ozone[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>],<span class="at">scale=</span>T)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>coefpcr1 <span class="ot">&lt;-</span> <span class="fu">coefficients</span>(modele.pcr)[,<span class="dv">1</span>,<span class="dv">1</span>]</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>coefpcr2 <span class="ot">&lt;-</span> <span class="fu">reg_CP</span>(ozone[,<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>], ozone[,<span class="dv">1</span>], <span class="at">K=</span><span class="dv">2</span>)<span class="sc">$</span>betaCR</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>( <span class="fu">abs</span>(coefpcr1<span class="sc">-</span>coefpcr2)<span class="sc">&lt;</span><span class="fl">1e-14</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
 </div>
 <div id="exr-9-5" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercice 5 (Théorème 9.2)</strong></span> Elle s’effectue par récurrence. Nous allons ajouter à cette propriété un résultat intermédiaire qui constituera la première partie de la propriété: <span class="math display">\[
@@ -587,25 +682,25 @@ X^{(j)}&amp;=X^{(j-1)}-t^{(j-1)}({t^{(j-1)}}'t^{(j-1)})^{-1}{t^{(j-1)}}'X\\
 <li><p>Intuitivement, l’image d’un cercle par une application linéaire est une ellipse et l’image d’un losange est un parallélogramme.</p></li>
 <li><p>Le dessin suivant représente les ensembles <span class="math inline">\(C_1\)</span> et <span class="math inline">\(C_2\)</span> et <span class="math inline">\(\hat Y\)</span> grâce aux ordres <strong>R</strong> suivants :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">2</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">0</span>),<span class="dv">3</span>,<span class="dv">2</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sss <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>coord <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>,<span class="dv">500</span>,<span class="dv">2</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (tt <span class="cf">in</span>  <span class="fu">seq</span>(<span class="sc">-</span>pi,pi,<span class="at">length=</span><span class="dv">500</span>)) {</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   coord[iter,] <span class="ot">&lt;-</span> (X<span class="sc">%*%</span><span class="fu">as.matrix</span>(<span class="fu">sqrt</span>(sss)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">*</span><span class="fu">c</span>(<span class="fu">cos</span>(tt),<span class="fu">sin</span>(tt))))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>   iter <span class="ot">&lt;-</span> iter<span class="sc">+</span><span class="dv">1</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a> }</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>coord2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>,<span class="dv">500</span>,<span class="dv">2</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (tt <span class="cf">in</span>  <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="at">length=</span><span class="dv">250</span>)) {</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>   coord2[iter,] <span class="ot">&lt;-</span> (X<span class="sc">%*%</span><span class="fu">as.matrix</span>(<span class="fu">c</span>(tt,<span class="dv">1</span><span class="sc">-</span><span class="fu">abs</span>(tt))))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>   coord2[iter<span class="sc">+</span><span class="dv">250</span>,] <span class="ot">&lt;-</span> (X<span class="sc">%*%</span><span class="fu">as.matrix</span>(<span class="fu">c</span>(tt,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">abs</span>(tt)<span class="sc">-</span><span class="dv">1</span>)))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>   iter <span class="ot">&lt;-</span> iter<span class="sc">+</span><span class="dv">1</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a> }</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(coord,<span class="at">type=</span><span class="st">"l"</span>,<span class="at">xlab=</span><span class="st">""</span>,<span class="at">ylab=</span><span class="st">""</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(coord2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">2</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">0</span>),<span class="dv">3</span>,<span class="dv">2</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sss <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>coord <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>,<span class="dv">500</span>,<span class="dv">2</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (tt <span class="cf">in</span>  <span class="fu">seq</span>(<span class="sc">-</span>pi,pi,<span class="at">length=</span><span class="dv">500</span>)) {</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>   coord[iter,] <span class="ot">&lt;-</span> (X<span class="sc">%*%</span><span class="fu">as.matrix</span>(<span class="fu">sqrt</span>(sss)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">*</span><span class="fu">c</span>(<span class="fu">cos</span>(tt),<span class="fu">sin</span>(tt))))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>   iter <span class="ot">&lt;-</span> iter<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a> }</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>coord2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>,<span class="dv">500</span>,<span class="dv">2</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (tt <span class="cf">in</span>  <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="at">length=</span><span class="dv">250</span>)) {</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>   coord2[iter,] <span class="ot">&lt;-</span> (X<span class="sc">%*%</span><span class="fu">as.matrix</span>(<span class="fu">c</span>(tt,<span class="dv">1</span><span class="sc">-</span><span class="fu">abs</span>(tt))))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>   coord2[iter<span class="sc">+</span><span class="dv">250</span>,] <span class="ot">&lt;-</span> (X<span class="sc">%*%</span><span class="fu">as.matrix</span>(<span class="fu">c</span>(tt,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">abs</span>(tt)<span class="sc">-</span><span class="dv">1</span>)))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>   iter <span class="ot">&lt;-</span> iter<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a> }</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(coord,<span class="at">type=</span><span class="st">"l"</span>,<span class="at">xlab=</span><span class="st">""</span>,<span class="at">ylab=</span><span class="st">""</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(coord2)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -623,9 +718,9 @@ X'X = \begin{pmatrix}
 \end{eqnarray*}
 \]</span> Les valeurs propres sont 2 et 2/3. Le premier axe principal correspond au vecteur propre associé à la valeur 2. Pour trouver la première composante principale, il faut pré-multiplier ce vecteur par <span class="math inline">\(X\)</span>. Cela donne le vecteur de coordonnées <span class="math inline">\((1,1,0)'\)</span>. Les commandes GNU-R sont</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">2</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">0</span>),<span class="dv">3</span>,<span class="dv">2</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>svd <span class="ot">&lt;-</span> <span class="fu">eigen</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X<span class="sc">%*%</span>svd<span class="sc">$</span>vect[,<span class="dv">1</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">2</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>),<span class="dv">0</span>),<span class="dv">3</span>,<span class="dv">2</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>svd <span class="ot">&lt;-</span> <span class="fu">eigen</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X<span class="sc">%*%</span>svd<span class="sc">$</span>vect[,<span class="dv">1</span>]</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1]
 [1,]    1
@@ -642,7 +737,18 @@ X'X = \begin{pmatrix}
 </ol>
 </div>
 <div id="exr-9-7" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercice 7 (Orthonormalisation)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Exercice 7 (Orthonormalisation)</strong></span> Créons une fonction pour calculer <span class="math inline">\(X^*\)</span> et la matrice <span class="math inline">\(\Lambda^{-1}\)</span> et <span class="math inline">\(P\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>orthonormalisation <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    Diago <span class="ot">&lt;-</span> <span class="fu">eigen</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X, <span class="at">symmetric=</span><span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    valpos <span class="ot">&lt;-</span> Diago<span class="sc">$</span>values<span class="sc">&gt;</span><span class="fl">1e-10</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    Lambda <span class="ot">&lt;-</span> Diago<span class="sc">$</span>values[valpos]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    P <span class="ot">&lt;-</span> Diago<span class="sc">$</span>vector[, valpos]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## X^*</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    Xet <span class="ot">&lt;-</span> X <span class="sc">%*%</span> P</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">Xet=</span>Xet, <span class="at">P=</span>P, <span class="at">Lambda=</span>Lambda))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 
 
@@ -1080,8 +1186,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../correction/chap11.html" class="pagination-link" aria-label="11 Régression logistique">
-        <span class="nav-page-text">11 Régression logistique</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../correction/chap10.html" class="pagination-link" aria-label="10 Comparaison des différentes méthodes, étude de cas réels">
+        <span class="nav-page-text">10 Comparaison des différentes méthodes, étude de cas réels</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
